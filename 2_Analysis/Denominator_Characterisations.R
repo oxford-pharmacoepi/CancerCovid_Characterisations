@@ -769,12 +769,14 @@ Continuous_table_pivot <- continuous_table %>% right_join(all_covariate_names) %
 
 continuous_table <- Continuous_table_pivot %>% tidyr::pivot_longer(2:115, names_to = "covariate", values_to = "value") 
 
+# read all the covariate names from the 'forALLCharacterisations_with_functions.R
+namt <- t(all_covariate_names)
 
 save(list = c("VI_table", "RBC_table", "RMC_table", "FTRBC_table", "RBS_table", "SM_table", "SBC_table", "DM_table", "DMUS_table", 
               "BB_table", "SNBB_table", "PNB_table", "FNA_table", "WGLE_table", "EMD_table", "WLEBL_table", "ELB_table", "EBT_table", 
               "SBS_table",  "BCSP_table", "QFIT_table", "UOI_table", "COLON_table", "SIG_table", "USGI_table", "USA_table", "USR_table", 
               "FTRSL_table", "BRONC_table", "EUTNA_table", "MEDIA_table", "CTB_table", "USBC_table", "DRP_table", "MRI_table", 
-              "PSA_table", "PSAM_table", "BP_table", "continuous_table", "Continuous_table_pivot"), file = "~/R/CancerCovid/3_CustomCharacterisations/Denominator/DenominatorIndividualTabs.Rdata")
+              "PSA_table", "PSAM_table", "BP_table", "continuous_table", "Continuous_table_pivot", "namt"), file = "~/R/CancerCovid/3_CustomCharacterisations/Denominator/DenominatorIndividualTabs.Rdata")
 
 
 # =================== AGGREGATED COUNTS OF COVARIATES ======================== # 
@@ -809,6 +811,7 @@ Pretty_counts_table
 
 
 # =============================== (SMD) ====================================== #
+
 
 # Get all person level tables together and filter by cohort_definition_id_1
 All_tables_cohort_1 <- individuals_id %>% select(person_id) %>%
