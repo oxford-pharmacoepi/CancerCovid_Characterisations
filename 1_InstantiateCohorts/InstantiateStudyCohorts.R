@@ -26,7 +26,7 @@ cdm <- CDMConnector::generateCohortSet(cdm = cdm,
                                        overwrite = TRUE
 )
 
-cdm$DenominatorBeforeAfterLockdown %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
+cdm$denominator_before_after_lockdown %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
 
 info(logger, "- got denominator populations before and after lockdown")
 
@@ -44,7 +44,7 @@ cdm <- CDMConnector::generateCohortSet(cdm = cdm,
                                        cohortTableName = outcome_table_name_2,
                                        overwrite = TRUE) 
 
-cdm$CancersBeforeAfterLockdown %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
+cdm$cancers_before_after_lockdown %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
 
 info(logger, "- got cancer populations before and after lockdown")
 

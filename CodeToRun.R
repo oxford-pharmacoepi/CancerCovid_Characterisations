@@ -31,6 +31,7 @@ library(glue)
 library(tableone)
 library(glmnet)
 library(survey)
+library(webshot)
 
 
 # database metadata and connection details -----
@@ -79,8 +80,8 @@ results_database_schema<-"results"
 # Note, if there is an existing table in your results schema with the same names
 # it will be overwritten 
 
-outcome_table_name_1 <- "DenominatorBeforeAfterLockdown" # this is the four cancers
-outcome_table_name_2 <- "CancersBeforeAfterLockdown" # this is the table for the endocrine treatments
+outcome_table_name_1 <- "denominator_before_after_lockdown" # this is the four cancers
+outcome_table_name_2 <- "cancers_before_after_lockdown" # this is the table for the endocrine treatments
 
 
 # create cdm reference ----
@@ -93,6 +94,16 @@ cdm <- CDMConnector::cdm_from_con(con = db,
 # running the next line should give you a count of your person table
 cdm$person %>% 
   tally()
+
+# Databases that will be used       
+person_db             <- cdm$person
+visit_occurrence_db   <- cdm$visit_occurrence
+condition_occurrence_db <- cdm$condition_occurrence
+concept_db            <- cdm$concept
+care_site_db          <- cdm$care_site
+location_db           <- cdm$location
+death_db              <- cdm$death
+observation_period_db <- cdm$observation_period
 
 # Run the study ------
 source(here("RunStudy.R"))

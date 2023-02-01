@@ -13,7 +13,7 @@ info(logger, "- Set up for breast cancer characterisations")
 
 ## ---------- VARIABLES OF INTEREST BEFORE AND AFTER LOCKDOWN --------------- ##
 
-# Read the cancer cohort table name
+# Read the cancer cohort table name and the cdm databases
 cohorts_db        <- cdm[[outcome_table_name_2]]
 cohorts_db_df <- as.data.frame(cohorts_db)
 
@@ -98,29 +98,31 @@ age_table_formatted <- age_table_SMD %>% dplyr::mutate_if(is.numeric, round, dig
                        dplyr::mutate("Breast Cancer After Lockdown" = glue("{mean_age_1} ({var_age_1})")) %>% 
                        rename( "Standardised Mean Difference" = "smd")
 age_table_formatted <- age_table_formatted[-c(1:4)] #  remove superfluous columns
-age_table_formatted <- age_table_formatted[, c(3, 2, 1)] # reorder the columns
+age_table_formatted <- age_table_formatted[, c(2, 3, 1)] # reorder the columns
 age_table_formatted
 
 Pretty_mean_age_table <- flextable(age_table_formatted) %>% theme_vanilla() %>% 
   set_caption(caption = "Mean (variance) of age at date of breast cancer diagnosis before and after lockdown") %>% 
-  width(width = 1.4)  %>% print()
+  width(width = 1.4) 
 
 # save the table as a csv file
 write.csv(age_table_formatted, here("Results", db.name, "Breast", "age_table_formatted.csv"), row.names = FALSE)
-
-# write.csv(age_table_formatted, "~/R/CancerCovid/Custom Characterisations/Results/Breast/age_table_formatted.csv", row.names = FALSE)
 
 
 # save the table as pdf
 analysis.name <- "Breast"
 tablename <- paste0("mean_age_table", db.name, analysis.name, ".pdf")
 
-pdf(here("Results", db.name,"Breast",plotname),
-    width = 8, height = 8)
+
+
+# THIS DOESN'T WORK - OUTPUT NOT SHOWN IN R GRAPHICS OUTPUT
+pdf(here("Results", db.name , "Breast",tablename),
+    width = 10, height = 8)
 print(Pretty_mean_age_table, newpage = FALSE)
 dev.off()
 
-
+save_as_image(Pretty_mean_age_table, here("Results", db.name , "Breast",tablename), 
+              zoom=1, expand=100, webshot = "webshot")
 
 
 # FREQUENCIES OF AGES AT INDEX DATE FOR PATIENTS DIAGNOSED AFTER LOCKDOWN ------
@@ -161,7 +163,7 @@ Age_table_both_breast_cohorts <- age_table_2 %>% left_join(age_table_1) %>% rena
 
 Pretty_age_group_table <- flextable(Age_table_both_breast_cohorts) %>% theme_vanilla() %>% 
   set_caption(caption = "Age at date of breast cancer diagnosis before and after lockdown") %>% 
-  width(width = 1.4)  %>% print()
+  width(width = 1.4)  
 
 print("Age done")
 
@@ -169,14 +171,13 @@ print("Age done")
 write.csv(Age_table_both_breast_cohorts, here("Results", db.name, "Breast", "Age_table_both_breast_cohorts.csv"), row.names = FALSE)
 #write.csv(Age_table_both_breast_cohorts, "~/R/CancerCovid/Custom Characterisations/Breast/Age_table_both_breast_cohorts.csv", row.names = FALSE)
 
-# save the table as pdf
+
 analysis.name <- "Breast"
 tablename <- paste0("age_group_table", db.name, analysis.name, ".pdf")
 
-pdf(here("Results", db.name,"Breast",plotname),
-    width = 8, height = 8)
-print(Pretty_age_group_table, newpage = FALSE)
-dev.off()
+# save the table as pdf
+save_as_image(Pretty_age_group_table, here("Results", db.name , "Breast",tablename), 
+              zoom=1, expand=100, webshot = "webshot")
 
 # save RData objects
 save(Pretty_mean_age_table, Pretty_age_group_table, Age_table_both_breast_cohorts, age_table_formatted, file = here("Results", db.name, "Breast", "BreastAge.RData"))
@@ -227,21 +228,20 @@ gender_table <- gender_table %>%
   
 Pretty_gender_table <- flextable(gender_table) %>%
   set_caption(caption = "Gender of breast cancer patients in groups before and after lockdown") %>% 
-  width(width = 1.4)  %>% print()
+  width(width = 1.4)  
 
 
 # save the table as a csv file
 write.csv(gender_table, here("Results", db.name, "Breast", "Gender_table_both_breast_cohorts.csv"), row.names = FALSE)
-# write.csv(gender_table, "~/R/CancerCovid/Custom Characterisations/Breast/gender_table.csv", row.names = FALSE)
 
 
 # save the table as pdf
 tablename <- paste0("gender_table", db.name, analysis.name, ".pdf")
 
-pdf(here("Results", db.name,"Breast",plotname),
-    width = 8, height = 8)
-print(Pretty_gender_table, newpage = FALSE)
-dev.off()
+# save the table as pdf
+save_as_image(Pretty_gender_table, here("Results", db.name , "Breast",tablename), 
+              zoom=1, expand=100, webshot = "webshot")
+
 
 # save RData objects
 save(gender_table, Pretty_gender_table, file = here("Results", db.name, "Breast", "BreastGender.RData"))
@@ -579,6 +579,11 @@ Pretty_counts_table <- flextable(All_count_joined) %>% set_caption(caption =
         "Frequencies of visits, breast cancer-related observations and procedures during different time periods before and after lockdown") 
 Pretty_counts_table
 
+tablename <- paste0("All_covariate_counts", db.name, analysis.name, ".pdf")
+
+# save the table as pdf
+save_as_image(Pretty_counts_table, here("Results", db.name , "Breast",tablename), 
+              zoom=1, expand=100, webshot = "webshot")
 
 print(paste0("- Got aggregated counts of breast cancer covariate tables"))
 info(logger, "- Got aggregated counts of breast cancer covariate tables")
@@ -629,17 +634,24 @@ Pretty_SMD_table <- flextable(All_SMD) %>% set_caption(caption = "Mean(var) freq
 
 Pretty_SMD_table
 
+tablename <- paste0("All_covariate_SMD", db.name, analysis.name, ".pdf")
+
+# save the table as pdf
+save_as_image(Pretty_SMD_table, here("Results", db.name , "Breast",tablename), 
+              zoom=1, expand=100, webshot = "webshot")
+
 ## ========================= Save all tables ================================ ##
 
 save(list = c("All_tables_counts1", "All_tables_counts2", "All_count_joined", "Pretty_counts_table", "All_tables_cohort_1", "All_tables_cohort_2",
               "All_SMD", "Pretty_SMD_table"), file = here("Results", db.name, "Breast", "Breast_covariates", BreastCountsSMDTabs.Rdata))
 
-
-
 write.csv(All_count_joined, here("Results", db.name, "Breast", "All_count_joined.csv"), row.names = FALSE)
 write.csv(All_SMD, here("Results", db.name, "Breast", "All_SMD.csv"), row.names = FALSE)
 
-#write.csv(All_count_joined, "~/R/CancerCovid/Custom Characterisations/Breast/All_count_joined.csv", row.names = FALSE)
-#write.csv(All_SMD, "~/R/CancerCovid/Custom Characterisations/Breast/All_SMD.csv", row.names = FALSE)
-     
 
+print(paste0("- Got SMD of breast cancer covariate tables"))
+info(logger, "- Got SMD counts of breast cancer covariate tables")
+
+
+print(paste0("- 2. BREAST CANCER CUSTOM CHARACTERISATIONS DONE"))
+info(logger, "- 2. BREAST CANCER CUSTOM CHARACTERISATIONS DONE")
