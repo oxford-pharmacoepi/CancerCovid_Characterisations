@@ -106,7 +106,7 @@ Pretty_mean_age_table <- flextable(age_table_formatted) %>% theme_vanilla() %>%
   width(width = 1.4) 
 
 # save the table as a csv file
-write.csv(age_table_formatted, here("Results", db.name, "Breast", "age_table_formatted.csv"), row.names = FALSE)
+write.csv(age_table_formatted, here("Results", db.name, "Breast", "age_table_formatted_breast.csv"), row.names = FALSE)
 
 
 # save the table as pdf
@@ -165,7 +165,6 @@ Pretty_age_group_table <- flextable(Age_table_both_breast_cohorts) %>% theme_van
   set_caption(caption = "Age at date of breast cancer diagnosis before and after lockdown") %>% 
   width(width = 1.4)  
 
-print("Age done")
 
 # save the table as a csv file
 write.csv(Age_table_both_breast_cohorts, here("Results", db.name, "Breast", "Age_table_both_breast_cohorts.csv"), row.names = FALSE)
@@ -182,6 +181,7 @@ save_as_image(Pretty_age_group_table, here("Results", db.name , "Breast",tablena
 # save RData objects
 save(Pretty_mean_age_table, Pretty_age_group_table, Age_table_both_breast_cohorts, age_table_formatted, file = here("Results", db.name, "Breast", "BreastAge.RData"))
 
+print("Age done")
 
 # GENDER BREAST CANCER COHORT AFTER LOCKDOWN ----------------------------
 gender_patients_1 <-  list_id %>% 
@@ -235,7 +235,7 @@ Pretty_gender_table <- flextable(gender_table) %>%
 write.csv(gender_table, here("Results", db.name, "Breast", "Gender_table_both_breast_cohorts.csv"), row.names = FALSE)
 
 
-# save the table as pdf
+# create file name
 tablename <- paste0("gender_table", db.name, analysis.name, ".pdf")
 
 # save the table as pdf
@@ -273,7 +273,7 @@ VI_id <- tibble(FeatureExtractionId = 581477001,covariateId = 581477,
 
 AnalysisRef  <- tibble(AnalysisId = 1, AnalysisName = "Visits_within_healthcare_system")
 
-save(list = c("VI_patients","VI_id"), file = here("Results", db.name, "Breast", "Breast_covariates", Visits.RData))
+save(list = c("VI_patients","VI_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Visits.RData"))
      
 print("Visits done")
 
@@ -298,7 +298,7 @@ RMC_id <- get_observations_id(4086282, 3, "Referral_to_mammography_clinic")
 
 AnalysisRef  <- rbind(AnalysisRef,c(3,"Referral_to_mammography_clinic"))
 
-save(list = c("RMC_patients","RMC_id"), file = here("Results", db.name, "Breast", "Breast_covariates", Referral_to_mammography_clinic.RData))
+save(list = c("RMC_patients","RMC_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Referral_to_mammography_clinic.RData"))
 
 print("Referral to mammography clinic done")
 
@@ -309,7 +309,7 @@ FTRBC_id <- get_observations_id(44791272, 4, "Fasttrack referral for suspected b
 
 AnalysisRef  <- rbind(AnalysisRef,c(4,"Fasttrack referral for suspected breast cancer"))
 
-save(list = c("FTRBC_patients","FTRBC_id"), file = here("Results", db.name, "Breast", "Breast_covariates", Fasttrack_referral.RData))
+save(list = c("FTRBC_patients","FTRBC_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Fasttrack_referral.RData"))
 
 print("Fast track referral for suspected breast cancer done")
 
@@ -320,7 +320,7 @@ RBS_id <- get_observations_id(4141840, 5, "Referral to breast surgeon")
 
 AnalysisRef  <- rbind(AnalysisRef,c(5,"Referral to breast surgeon"))
 
-save(list = c("RBS_patients","RBS_id"), file = here("Results", db.name, "Breast", "Breast_covariates", Referral_breast_surgeon.RData))
+save(list = c("RBS_patients","RBS_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Referral_breast_surgeon.RData"))
 
 
 print("Referral to breast surgeon done")
@@ -332,7 +332,7 @@ SM_id <- get_procedures_id(4077697, 6, "Screening mammography")
 
 AnalysisRef  <- rbind(AnalysisRef,c(6,"Screening mammography"))
 
-save(list = c("SM_patients","SM_id"), file = here("Results", db.name, "Breast", "Breast_covariates", Screening_mammography.RData))
+save(list = c("SM_patients","SM_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Screening_mammography.RData"))
 
 print("Screening mammograms done")
 
@@ -343,7 +343,7 @@ SBC_id <- get_observations_id(4089031, 7, "Seen in breast clinic")
 
 AnalysisRef  <- rbind(AnalysisRef,c(7,"Seen in breast clinic"))
 
-save(list = c("SBC_patients","SBC_id"), file = here("Results", db.name, "Breast", "Breast_covariates", Seen_breast_clinic.RData))
+save(list = c("SBC_patients","SBC_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Seen_breast_clinic.RData"))
 
 print("Seen in breast clinic done")
 
@@ -354,7 +354,7 @@ DM_id <- get_procedures_id(4324693, 8, "Diagnostic mammograms")
 
 AnalysisRef  <- rbind(AnalysisRef,c(8,"Diagnostic mammograms"))
 
-save(list = c("DM_patients","DM_id"), file = here("Results", db.name, "Breast", "Breast_covariates", Diagnostic_mammograms.RData))
+save(list = c("DM_patients","DM_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Diagnostic_mammograms.RData"))
 
 print("Diagnostic mammograms done")
 
@@ -373,7 +373,7 @@ DMUS_id <- tibble(FeatureExtractionId = 36203740009,covariateId = 36203740, cova
 
 AnalysisRef  <- rbind(AnalysisRef,c(9,"Diagnostic mammogram and ultrasound"))
 
-save(list = c("DMUS_patients","DMUS_id"), file = here("Results", db.name, "Breast", "Breast_covariates", Diagnostic_mammogram_ultrasound.RData))
+save(list = c("DMUS_patients","DMUS_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Diagnostic_mammogram_ultrasound.RData"))
 
 print("Diagnostic mammogram and ultrasound done")
 
@@ -385,7 +385,7 @@ BB_id <- get_procedures_id(4047494, 10, "Biopsy of breast")
 
 AnalysisRef  <- rbind(AnalysisRef,c(10,"Biopsy of breast"))
 
-save(list = c("BB_patients","BB_id"), file = here("Results", db.name, "Breast", "Breast_covariates", Biopsy_breast.RData))
+save(list = c("BB_patients","BB_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Biopsy_breast.RData"))
 
 print("Biopsy of breast done")
 
@@ -396,7 +396,7 @@ SNBB_id <- get_procedures_id(4022932, 11, "Stereotactically guided core needle b
 
 AnalysisRef  <- rbind(AnalysisRef,c(11,"Stereotactically guided core needle biopsy of breast"))
 
-save(list = c("SNBB_patients","SNBB_id"), file = here("Results", db.name, "Breast", "Breast_covariates", Sterotactically_biopsy_breast.RData))
+save(list = c("SNBB_patients","SNBB_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Sterotactically_biopsy_breast.RData"))
 
 print("Stereotactically guided core needle biopsy of breast done")
 
@@ -407,7 +407,7 @@ PNB_id <- get_procedures_id(4028790, 12, "Percutaneous needle biopsy of breast")
 
 AnalysisRef  <- rbind(AnalysisRef,c(12,"Percutaneous needle biopsy of breast"))
 
-save(list = c("PNB_patients","PNB_id"), file = here("Results", db.name, "Breast", "Breast_covariates", Percutaneous_needle_biopsy.RData))
+save(list = c("PNB_patients","PNB_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Percutaneous_needle_biopsy.RData"))
 
 print("Percutaneous needle biopsy of breast done")
 
@@ -419,7 +419,7 @@ FNA_id <- get_procedures_id(4306207, 13, "Fine needle aspiration of breast")
 
 AnalysisRef  <- rbind(AnalysisRef,c(13,"Fine needle aspiration of breast"))
 
-save(list = c("FNA_patients","FNA_id"), file = here("Results", db.name, "Breast", "Breast_covariates", Fine_needle_aspiration.RData))
+save(list = c("FNA_patients","FNA_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Fine_needle_aspiration.RData"))
 
 print("Fine needle aspiration of breast done")
 
@@ -430,7 +430,7 @@ WGLE_id <- get_procedures_id(4216180, 14, "Wire guided local excision of breast 
 
 AnalysisRef  <- rbind(AnalysisRef,c(14,"Wire guided local excision of breast lump"))
 
-save(list = c("WGLE_patients","WGLE_id"), file = here("Results", db.name, "Breast", "Breast_covariates", Wire_guided_local_excision.RData))
+save(list = c("WGLE_patients","WGLE_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Wire_guided_local_excision.RData"))
 
 
 print("Wire guided local excision of breast lump done")
@@ -442,7 +442,7 @@ EMD_id <- get_procedures_id(4146780, 15, "Excision of mammary duct")
 
 AnalysisRef  <- rbind(AnalysisRef,c(15,"Excision of mammary duct"))
 
-save(list = c("EMD_patients","EMD_id"), file = here("Results", db.name, "Breast", "Breast_covariates", Excision_mammary_duct.RData))
+save(list = c("EMD_patients","EMD_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Excision_mammary_duct.RData"))
 
 print("Excision of mammary duct done")
 
@@ -453,7 +453,7 @@ WLEBL_id <- get_procedures_id(4129190, 16, "Wide local excision of breast lesion
 
 AnalysisRef  <- rbind(AnalysisRef,c(16,"Wide local excision of breast lesion"))
 
-save(list = c("WLEBL_patients","WLEBL_id"), file = here("Results", db.name, "Breast", "Breast_covariates", Wide_local_excision_breast_lesion.RData))
+save(list = c("WLEBL_patients","WLEBL_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Wide_local_excision_breast_lesion.RData"))
 
 print("Wide local excision of breast lesion done")
 
@@ -464,7 +464,7 @@ ELB_id <- get_procedures_id(4194124, 17, "Excision of lesion of breast")
 
 AnalysisRef  <- rbind(AnalysisRef,c(17,"Excision of lesion of breast"))
 
-save(list = c("ELB_patients","ELB_id"), file = here("Results", db.name, "Breast", "Breast_covariates", Excision_lesion_breast.RData))
+save(list = c("ELB_patients","ELB_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Excision_lesion_breast.RData"))
 
 print("Excision of lesion of breast done")
 
@@ -475,7 +475,7 @@ EBT_id <- get_procedures_id(4286804, 18, "Excision of breast tissue")
 
 AnalysisRef  <- rbind(AnalysisRef,c(18,"Excision of breast tissue"))
 
-save(list = c("EBT_patients","EBT_id"), file = here("Results", db.name, "Breast", "Breast_covariates", Excision_breast_tissue.RData))
+save(list = c("EBT_patients","EBT_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Excision_breast_tissue.RData"))
 
 print("Excision of breast tissue done")
 
@@ -486,7 +486,7 @@ SBS_id <- get_observations_id(4136626, 19, "Seen by breast surgeon")
 
 AnalysisRef  <- rbind(AnalysisRef,c(19,"Seen by breast surgeon"))
 
-save(list = c("SBS_patients","SBS_id"), file = here("Results", db.name, "Breast", "Breast_covariates", Seen_breast_surgeon.RData))
+save(list = c("SBS_patients","SBS_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Seen_breast_surgeon.RData"))
 
 print("Seen by breast surgeon done")
 
@@ -541,7 +541,8 @@ namt <- t(breast_covariate_names)
 
 save(list = c("VI_table", "RBC_table", "RMC_table", "FTRBC_table", "RBS_table", "SM_table", "SBC_table", "DM_table", "DMUS_table", 
               "BB_table", "SNBB_table", "PNB_table", "FNA_table", "WGLE_table", "EMD_table", "WLEBL_table", "ELB_table", "EBT_table", 
-              "SBS_table", "continuous_table", "Continuous_table_pivot", "namt"),  file = here("Results", db.name, "Breast", "Breast_covariates", BreastIndividualTabs.Rdata))
+              "SBS_table", "continuous_table", "Continuous_table_pivot", "namt"),  
+     file = here("Results", db.name, "Breast", "Breast_covariates", "BreastIndividualTabs.Rdata"))
 
 print(paste0("- Got breast cancer individual covariate tables"))
 info(logger, "- Got breast cancer individual covariate tables")
@@ -592,7 +593,7 @@ info(logger, "- Got aggregated counts of breast cancer covariate tables")
 # =============================== (SMD) ====================================== #
 
 print(paste0("- Getting SMD of breast cancer covariate tables"))
-info(logger, "- Getting SMD counts of breast cancer covariate tables")
+info(logger, "- Getting SMD of breast cancer covariate tables")
 
 # Get all person level tables together and filter by cohort_definition_id_1
 All_tables_cohort_1 <- individuals_id %>% select(person_id) %>%
@@ -643,14 +644,14 @@ save_as_image(Pretty_SMD_table, here("Results", db.name , "Breast",tablename),
 ## ========================= Save all tables ================================ ##
 
 save(list = c("All_tables_counts1", "All_tables_counts2", "All_count_joined", "Pretty_counts_table", "All_tables_cohort_1", "All_tables_cohort_2",
-              "All_SMD", "Pretty_SMD_table"), file = here("Results", db.name, "Breast", "Breast_covariates", BreastCountsSMDTabs.Rdata))
+              "All_SMD", "Pretty_SMD_table"), file = here("Results", db.name, "Breast", "Breast_covariates", "BreastCountsSMDTabs.Rdata"))
 
-write.csv(All_count_joined, here("Results", db.name, "Breast", "All_count_joined.csv"), row.names = FALSE)
-write.csv(All_SMD, here("Results", db.name, "Breast", "All_SMD.csv"), row.names = FALSE)
+write.csv(All_count_joined, here("Results", db.name, "Breast", "All_count_joined_breast.csv"), row.names = FALSE)
+write.csv(All_SMD, here("Results", db.name, "Breast", "All_SMD_breast.csv"), row.names = FALSE)
 
 
 print(paste0("- Got SMD of breast cancer covariate tables"))
-info(logger, "- Got SMD counts of breast cancer covariate tables")
+info(logger, "- Got SMD of breast cancer covariate tables")
 
 
 print(paste0("- 2. BREAST CANCER CUSTOM CHARACTERISATIONS DONE"))
