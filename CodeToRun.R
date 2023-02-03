@@ -40,6 +40,7 @@ db.name<-"CPRDGold"
 
 # Set output folder locations -----
 # the paths to the folders where the results from this analysis will be saved
+output.folder<-here("Results", db.name, "Denominator")
 output.folder1<-here("Results", db.name, "Breast")
 output.folder2<-here("Results", db.name, "Colorectal")
 output.folder3<-here("Results", db.name, "Lung")
@@ -80,8 +81,7 @@ results_database_schema<-"results"
 # Note, if there is an existing table in your results schema with the same names
 # it will be overwritten 
 
-outcome_table_name_1 <- "denominator_before_after_lockdown" # this is the four cancers
-outcome_table_name_2 <- "cancers_before_after_lockdown" # this is the table for the endocrine treatments
+outcome_table_name_1 <- "cancers_before_after_lockdown" # this is the four cancers
 
 
 # create cdm reference ----
@@ -104,6 +104,7 @@ care_site_db          <- cdm$care_site
 location_db           <- cdm$location
 death_db              <- cdm$death
 observation_period_db <- cdm$observation_period
+procedure_occurrence_db >- cdm$procedure_occurrence
 
 # Run the study ------
 source(here("RunStudy.R"))
