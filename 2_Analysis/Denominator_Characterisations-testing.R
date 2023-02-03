@@ -18,22 +18,156 @@ level(logger) <- "INFO"
 
 info(logger, "- Getting counts of mammography tests - with filter")
 
+# ================== N IN DATABASE BEFORE AND AFTER LOCKDOWN ================= #
+
+# how many people are observed in the database before lockdown
+N_total_before_lockdown <-cdm$observation_period %>%
+  select(person_id, observation_period_start_date, observation_period_end_date) %>%
+  filter(observation_period_end_date >="2017-01-01" & observation_period_start_date <="2020-03-22") %>%
+  distinct() %>%
+  collect() %>%
+  tally() %>%
+  print()
+
+# observed n the data after lockdown
+N_total_after_lockdown <-cdm$observation_period %>%
+  select(person_id, observation_period_start_date, observation_period_end_date) %>%
+  filter(observation_period_end_date >="2020-03-23" & observation_period_start_date <="2020-06-29") %>%
+  distinct() %>%
+  collect() %>%
+  tally() %>%
+  print()
+
+
+# ================== COUNTS OF ALL CANCER COVARIATES ========================= #
+
+## VISITS - STANDALONE  CODE
+## 1. VISITS IN THE HEALTHCARE SYSTEM ------------------------------------------
+Visits_1 <- cdm$visit_occurrence %>%
+  select(person_id,visit_start_date) %>% # note that this does not require any filtering 
+  # by concept_id because we want any visit occurring in the visit occurrence table
+  filter(visit_start_date >= "2017-01-01" & visit_start_date <="2020-03-22") %>%
+  collect() %>%
+  tally() %>%
+  print()
+
+Visits_2 <- cdm$visit_occurrence %>%
+  select(person_id,visit_start_date) %>% # note that this does not require any filtering 
+  # by concept_id because we want any visit occurring in the visit occurrence table
+  filter(visit_start_date >= "2020-03-23" & visit_start_date <="2020-06-29") %>%
+  collect() %>%
+  tally() %>%
+  print()
+
+# create a table to put this info in
+Counts_table  <- tibble(Covariate = "Visits in the healthcare system", "N Before Lockdown" = Visits_1, "N After Lockdown" = Visits_2)
+
+
+
+# ============ TEST LOOP ===================================================== #
+Counts_table  <- tibble(Covariate = "Screening_Mammographies", "N Before Lockdown" = Mammography_test[[1]], "N After Lockdown" = Mammography_test_2[[1]])
+
+test_concepts <- c(4197459,4086282)
+test_covariate_name <- c("Referral to Breast clinic", "Referral to mammography clinic")
+test_acronym <- c("RBC","RMC")
+i <- 1
+
+tibble(concept_id=test_concepts, Covariate_name=test_covariate_names, acronymn=test_acronym)
+
+test_loop <- for (each_concept in test_concepts) {
+  
+  value_from_loop_before <- cdm$procedure_occurrence %>%
+    select(person_id, procedure_concept_id, procedure_date) %>%
+    filter(procedure_concept_id == each_concept) %>% 
+    filter(procedure_date >= "2017-01-01" & procedure_date <="2020-03-22") %>%
+    collect() %>%
+    tally() 
+  
+  value_from_loop_after <- cdm$procedure_occurrence %>%
+    select(person_id, procedure_concept_id, procedure_date) %>%
+    filter(procedure_concept_id == each_concept) %>% 
+    filter(procedure_date >= "2020-03-22" & procedure_date <="2020-06-29") %>%
+    collect() %>%
+    tally() 
+  
+  # code to add additional rows
+  Counts_table  <- rbind(Counts_table,c(test_covariate_name[i], value_from_loop_before[[1]], value_from_loop_after[[1]]))
+  i<-i+1
+}
+
+
+
+
+## 2. Set up for creating a for loop to get all observations of interest --------------------
+
+# CONCEPT ID'S OF INTEREST
+observation_concepts <- c(4197459,4086282,44791272,4141840,4089031,4136626,44791283,4215705 )
+observation_covariate_names <- c("Referral to Breast clinic", "Referral to mammography clinic", "Fasttrack referral for suspected breast cancer",
+                                 "Referral to breast surgeon", "Seen in breast clinic","Seen by breast surgeon","Fast track referral for lung cancer","PSA monitoring")
+observation_acronym <- c("RBC","RMC","FTRSBC","RBS","SBC","SBS","FTRLC","PSAM")
+
+test_concepts <- c(4197459,4086282)
+test_covariate_names <- c("Referral to Breast clinic", "Referral to mammography clinic")
+test_acronym <- c("RBC","RMC")
+
+test_loop <- for (concept in observation_concepts) {
+
+    cdm$procedure_occurrence %>%
+      select(person_id, procedure_concept_id, procedure_date) %>%
+      filter(procedure_concept_id ==observation_concepts) %>% 
+     filter(procedure_date >= "2017-01-01" & procedure_date <="2020-03-22") %>%
+      collect() %>%
+      tally() %>%
+  print()
+
+}
+
+# create a table containing covariate IDs, names and acronyms
+observation_covariate_info  <- tibble(concept_id=observation_concepts, Covariate_name=observation_covariate_names, acronymn=observation_acronym)
+
+## 3. Set up for creating a loop to get all procedures of interest ----------------------
+procedure_concepts <- c(4077697,4324693,4047494,4022932,4028790,4306207,4216180,4146780,4129190,4194124,4286804,4082528,4249893,4087381,4125529,
+                        4261497,2787168,4032404,44809038,4128302,4304406,4167553,45889178,4246485,4278515)
+procedure_covariate_names <- c("Screening mammography", "Diagnostic mammograms", "Biopsy of breast", "Stereotactically guided core needle biopsy of breast",
+                               "Percutaneous needle biopsy of breast","Fine needle aspiration of breast","Wire guided local excision of breast lump", 
+                               "Excision of mammary duct","Wide local excision of breast lesion","Excision of lesion of breast","Excision of breast tissue",
+                               "Ultrasonography of intestine","Colonoscopies","Sigmoidoscopy","Ultrasound of gastrointestinal tract",
+                               "Ultrasonography of abdomen","Ultrasonography of rectum","Bronchoscopy","Endobronchial ultrasonography guided transbronchial needle aspiration",
+                               "Mediastinoscopy","CT and biopsy of chest","US scan and biopsy of chest","Diagnostic Radiology (Diagnostic Imaging) Procedures of the Chest",
+                               "MRI of chest","Biopsy of prostate")  
+procedure_acronym <- c("SM","DM","BB","SGCNB","PNBB","FNAB","WGLEBL","EMD","WLEBL","ELB","EBT","UOI","COL","SIG","UGT","UOA","UOR","BRONCH","ENDO","MED","CTBC","USBC","DRC","MRI","BP")
+
+# create a table containing covariate IDs, names and acronyms
+procedure_covariate_info  <- tibble(concept_id=procedure_concepts, Covariate_name=procedure_covariate_names, acronymn=procedure_acronym)
+
+
+## 4. Set up for creating a for loop to get all measurements of interest --------------------
+
+measurement_concepts <- c(36203740,36203750,44791543,37395561,4272032)
+measurement_covariate_names <- c("Diagnostic mammogram and ultrasound-L","Diagnostic mammogram and ultrasound-R","Bowel cancer screening programme",
+                                 "Quantitative faecal immunochemical tests","Prostate specific antigen measurement")
+measurement_acronym <- c("DMSUL","DMSUR","BCSP","QFIT","PSA")
+
+# create a table containing covariate IDs, names and acronyms
+measurement_covariate_info  <- tibble(concept_id=measurement_concepts, Covariate_name=measurement_covariate_names, acronymn=measurement_acronym)
+
+
+
 
 # Get counts of mammography tests before lockdown
 
-Mammography_test_1 <- cdm$procedure_occurrence %>%
+Mammography_1 <- cdm$procedure_occurrence %>%
   select(person_id, procedure_concept_id, procedure_date) %>%
   filter(procedure_concept_id ==4077697) %>% 
   filter(procedure_date >= "2017-01-01" & procedure_date <="2020-03-22") %>%
-    distinct() %>%
     collect() %>%
     tally() %>%
     print()
 
-info(logger, "- Got counts of mammography tests - with filter")
+# create a table to put this info in
+  
+Counts_table  <- tibble(Covariate = "Screening_Mammographies", "N Before Lockdown" = Mammography_test, "N After Lockdown" = Mammography_test_2)
 
-
-    
 # Get counts of mammography tests after lockdown
 
 Mammography_test_2 <- cdm$procedure_occurrence %>%
@@ -45,160 +179,28 @@ Mammography_test_2 <- cdm$procedure_occurrence %>%
     tally() %>%
     print()
   
-  
-# create a table to put this info in
-  
-  AnalysisRef  <- tibble(AnalysisId = 1, AnalysisName = "Screening_Mammographies")
-  
-  
-  ## UP TO HERE ##
-  
-  
-  
-# code to add additional rows
-  AnalysisRef  <- rbind(AnalysisRef,c(5,"Referral to breast surgeon"))
+
+ 
+
+
+
+# ================== ADD PROPORTION TO THE COUNTS TABLE ====================== #
+Counts_table %>% 
+mutate(n_before_lockdown = paste0(N before Lockdown, " (", round(100*n_before_lockdown/sum(n_before_lockdown),1), "%)")) %>%
+  mutate(n_after_lockdown = paste0(N_after_lockdown, " (", round(100*n_after_lockdown/sum(n_after_lockdown),1), "%)")) 
 
 # ========================= INDIVIDUAL TABLES================================= # 
 
 print(paste0("- Getting breast cancer individual covariate tables"))
 info(logger, "- Getting breast cancer individual covariate tables")
 
-# Get tables: person: id, covariate, value
-
-SM_table        <- getIndividualTabs(SM_id, SM_patients, individuals_id, 3, FALSE)
-
-
-# Join the tables
-continuous_table <- VI_table %>% union_all(RBC_table) %>% union_all(RMC_table) %>% union_all(FTRBC_table) %>% union_all(RBS_table) %>%
-  union_all(SM_table) %>% union_all(SBC_table) %>% union_all(DM_table) %>% union_all(DMUS_table) %>% union_all(BB_table) %>% 
-  union_all(SNBB_table) %>% union_all(PNB_table) %>% union_all(FNA_table) %>% union_all(WGLE_table) %>% union_all(EMD_table) %>% 
-  union_all(WLEBL_table) %>% union_all(ELB_table) %>% union_all(EBT_table) %>% union_all(SBS_table) %>%ungroup()
-
-# Pivot the continuous table around, and rename person_id as subject_id. This
-# is later used to run the SMD function
-Continuous_table_pivot <- continuous_table %>% inner_join(breast_covariate_names) %>%
-  select(person_id, covariate, value) %>% 
-  rename("subject_id" = "person_id") %>%
-   tidyr::pivot_wider(names_from = covariate, values_from = value,values_fill = 0) 
-
-continuous_table <- Continuous_table_pivot %>% tidyr::pivot_longer(2:58, names_to = "covariate", values_to = "value") 
-
-# read all the covariate names from the 'forAllCharacterisations_with_functions.R
-namt <- t(breast_covariate_names)
-
-save(list = c("VI_table", "RBC_table", "RMC_table", "FTRBC_table", "RBS_table", "SM_table", "SBC_table", "DM_table", "DMUS_table", 
-              "BB_table", "SNBB_table", "PNB_table", "FNA_table", "WGLE_table", "EMD_table", "WLEBL_table", "ELB_table", "EBT_table", 
-              "SBS_table", "continuous_table", "Continuous_table_pivot", "namt"),  
-     file = here("Results", db.name, "Breast", "Breast_covariates", "BreastIndividualTabs.Rdata"))
-
-print(paste0("- Got breast cancer individual covariate tables"))
-info(logger, "- Got breast cancer individual covariate tables")
-
-
-# =================== AGGREGATED COUNTS OF COVARIATES ======================== # 
-
-print(paste0("- Getting aggregated counts of breast cancer covariate tables"))
-info(logger, "- Getting aggregated counts of breast cancer covariate tables")
-
-# All tables joined together
-# Cohort 1 - breast cancer after lockdown
-All_tables_counts1 <- continuous_table %>%  
-  inner_join(cohorts_db_df, by = "subject_id") %>% 
-  filter(cohort_definition_id ==1) %>%
-  group_by(covariate) %>% 
-  tally(value) %>% 
-    print(n=57)
-
-
-# cohort 2 - breast cancer before lockdown
-All_tables_counts2 <- continuous_table %>%  
-  inner_join(cohorts_db_df, by = "subject_id") %>% 
-  filter(cohort_definition_id ==2) %>%
-  group_by(covariate) %>% 
-  tally(value) %>% 
-    print(n=57)
-
-All_tables_counts1 <- All_tables_counts1 %>% rename("n after lockdown" = "n") %>% rename("Covariate" = "covariate")
-All_tables_counts2 <- All_tables_counts2 %>% rename("n before lockdown" = "n") %>% rename("Covariate" = "covariate")
-
-All_count_joined <- All_tables_counts2 %>% inner_join(All_tables_counts1) %>% print()
-
-Pretty_counts_table <- flextable(All_count_joined) %>% set_caption(caption = 
-        "Frequencies of visits, breast cancer-related observations and procedures during different time periods before and after lockdown") 
-Pretty_counts_table
-
-tablename <- paste0("All_covariate_counts", db.name, analysis.name, ".pdf")
-
-# save the table as pdf
-save_as_image(Pretty_counts_table, here("Results", db.name , "Breast",tablename), 
-              zoom=1, expand=100, webshot = "webshot")
-
-print(paste0("- Got aggregated counts of breast cancer covariate tables"))
-info(logger, "- Got aggregated counts of breast cancer covariate tables")
-
 
 # =============================== (SMD) ====================================== #
 
-print(paste0("- Getting SMD of breast cancer covariate tables"))
-info(logger, "- Getting SMD of breast cancer covariate tables")
-
-# Get all person level tables together and filter by cohort_definition_id_1
-All_tables_cohort_1 <- individuals_id %>% select(person_id) %>%
-  rename("subject_id"="person_id") %>%
-  left_join(continuous_table) %>%
-  select(subject_id, covariate, value) %>%
-  inner_join(cohorts_db_df, by = "subject_id") %>%
-  distinct() %>%
-  filter(cohort_definition_id==1)
- 
-# Pivot the table so that all the covariates which were rows in the above code are now column headings
-All_tables_cohort_1 <- All_tables_cohort_1 %>% select(subject_id, covariate, value, cohort_definition_id, cohort_start_date, cohort_end_date) %>% 
-  tidyr::pivot_wider(names_from = covariate, values_from = value,values_fill = 0) # if this throws an error it's because there are duplicate records in the data somewhere. Look for it!
 
 
-# Get all person level tables together and filter by cohort_definition_id_2
-All_tables_cohort_2 <- individuals_id %>% select(person_id) %>%
-  rename("subject_id"="person_id") %>%
-  left_join(continuous_table) %>%
-  select(subject_id, covariate, value) %>%
-  inner_join(cohorts_db_df, by = "subject_id") %>%
-  distinct() %>%
-  filter(cohort_definition_id==2)
-
-# Pivot the table so that all the covariates which were rows in the above code are now column headings
-All_tables_cohort_2 <- All_tables_cohort_2 %>% select(subject_id, covariate, value, cohort_definition_id, cohort_start_date, cohort_end_date) %>% 
-  tidyr::pivot_wider(names_from = covariate, values_from = value,values_fill = 0)
-
-# Run SMD function to create table of all
-All_SMD <- compute_continuous_smd(All_tables_cohort_1, All_tables_cohort_2) 
 
 
-All_SMD <- All_SMD %>% rename("mean after lockdown" = "mean1") %>% rename("var after lockdown" = "var1") %>% 
-                                  rename("mean before lockdown" = "mean2") %>% rename("var before lockdown" = "var2") %>%
-                                  rename("Covariate" = "covariate") 
-All_SMD <- All_SMD[,c(1,4,5,2,3,6)]
-
-Pretty_SMD_table <- flextable(All_SMD) %>% set_caption(caption = "Mean(var) frequencies of visits, breast cancer-related observations and procedures during different time periods before and after lockdown") 
-
-Pretty_SMD_table
-
-tablename <- paste0("All_covariate_SMD", db.name, analysis.name, ".pdf")
-
-# save the table as pdf
-save_as_image(Pretty_SMD_table, here("Results", db.name , "Breast",tablename), 
-              zoom=1, expand=100, webshot = "webshot")
-
-## ========================= Save all tables ================================ ##
-
-save(list = c("All_tables_counts1", "All_tables_counts2", "All_count_joined", "Pretty_counts_table", "All_tables_cohort_1", "All_tables_cohort_2",
-              "All_SMD", "Pretty_SMD_table"), file = here("Results", db.name, "Breast", "Breast_covariates", "BreastCountsSMDTabs.Rdata"))
-
-write.csv(All_count_joined, here("Results", db.name, "Breast", "All_count_joined_breast.csv"), row.names = FALSE)
-write.csv(All_SMD, here("Results", db.name, "Breast", "All_SMD_breast.csv"), row.names = FALSE)
-
-
-print(paste0("- Got SMD of breast cancer covariate tables"))
-info(logger, "- Got SMD of breast cancer covariate tables")
 
 
 print(paste0("- 2. BREAST CANCER CUSTOM CHARACTERISATIONS DONE"))
