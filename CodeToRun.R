@@ -32,6 +32,11 @@ library(tableone)
 library(glmnet)
 library(survey)
 library(webshot)
+library(RPostgres)
+library(FeatureExtraction)
+library(DatabaseConnector)
+library(Andromeda)
+library(gt)
 
 
 # database metadata and connection details -----
@@ -54,6 +59,7 @@ password    <-  "..."
 port        <-  "..." 
 host        <-  "..." 
 server_dbi  <-  "..."
+server      <-  "..."
 
 # Specify cdm_reference via DBI connection details -----
 # In this study we also use the DBI package to connect to the database

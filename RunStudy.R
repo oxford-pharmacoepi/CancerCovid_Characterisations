@@ -62,6 +62,11 @@ info(logger, 'RUNNING CUSTOM CHARACTERISATIONS OF PROSTATE CANCER POPULATION')
 source(here("2_Analysis","ProstateCharacterisations.R"))
 info(logger, 'CUSTOM CHARACTERISATIONS OF PROSTATE CANCER POPULATION RAN')
 
+# Run feature extraction package on all cancer populations ----
+info(logger, 'RUNNING FEATURE EXTRACTION OF ALL CANCERS')
+source(here("2_Analysis","FeatureExtraction.R"))
+info(logger, 'FEATURE EXTRACTION OF ALL CANCERS RAN')
+
 
 print("Done!")
 print("-- If all has worked, there should now be .csv files, data objects and 
