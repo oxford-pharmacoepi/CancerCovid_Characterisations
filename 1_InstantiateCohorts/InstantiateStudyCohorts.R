@@ -11,9 +11,9 @@
 # ============================================================================ #
 info(logger, "- getting cancer populations before and after lockdown")
 
-outcome_cohorts_1 <- CDMConnector::readCohortSet(here("1_InstantiateCohorts", "CancerCohortsBeforeAfterLockdown"))
+outcome_cohorts_1 <- readCohortSet(here("1_InstantiateCohorts", "CancerCohortsBeforeAfterLockdown"))
 
-cdm <- CDMConnector::generateCohortSet(cdm = cdm, 
+cdm <- generateCohortSet(cdm = cdm, 
                                        cohortSet = outcome_cohorts_1,
                                        cohortTableName = outcome_table_name_1,
                                        overwrite = TRUE) 

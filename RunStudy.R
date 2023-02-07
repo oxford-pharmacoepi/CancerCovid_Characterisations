@@ -14,6 +14,10 @@ if (!file.exists(output.folder3)){
 if (!file.exists(output.folder4)){
   dir.create(output.folder4, recursive = TRUE)}
 
+
+# table names----
+outcome_table_name_1 <- paste0(outcome_table_stem,"_cancers_before_after_lockdown") # this is the four cancers
+
 start<-Sys.time()
 
 # start log ----

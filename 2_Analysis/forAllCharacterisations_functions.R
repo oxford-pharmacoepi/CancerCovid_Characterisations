@@ -247,7 +247,7 @@ prostate_covariate_names <- data.frame(c("Biopsy of prostate_1._1to30","Biopsy o
 colnames(prostate_covariate_names) <- c("covariate")
 
 
-## SMD for continuous variables MY WAY
+## SMD for continuous variables
 compute_continuous_smd <- function(data_table_cohort_1, data_table_cohort_2){
   
     data_g1 <- data_table_cohort_1
