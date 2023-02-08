@@ -18,7 +18,7 @@ cdm <- generateCohortSet(cdm = cdm,
                                        cohortTableName = outcome_table_name_1,
                                        overwrite = TRUE) 
 
-cdm$cancers_before_after_lockdown %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
+cdm[[outcome_table_name_1]] %>% group_by(cohort_definition_id) %>% tally() %>% collect() 
 
 info(logger, "- got cancer populations before and after lockdown")
 
