@@ -36,7 +36,7 @@ N_total_before_lockdown <-cdm$observation_period %>%
 # observed n the data after lockdown
 N_total_after_lockdown <-cdm$observation_period %>%
   select(person_id, observation_period_start_date, observation_period_end_date) %>%
-  filter(observation_period_end_date >="2020-03-23" & observation_period_start_date <="2020-06-29") %>%
+  filter(observation_period_end_date >="2020-03-23" & observation_period_start_date <="2022-01-01") %>%
   distinct() %>%
   collect() %>%
   tally() %>%
@@ -68,7 +68,7 @@ Visits_1 <- cdm$visit_occurrence %>%
 Visits_2 <- cdm$visit_occurrence %>%
   select(person_id,visit_start_date) %>% # note that this does not require any filtering 
   # by concept_id because we want any visit occurring in the visit occurrence table
-  filter(visit_start_date >= "2020-03-23" & visit_start_date <="2020-06-29") %>%
+  filter(visit_start_date >= "2020-03-23" & visit_start_date <="2022-01-01") %>%
   collect() %>%
   tally() %>%
   print()
@@ -86,38 +86,38 @@ info(logger, "- Got counts of visits in the healthcare system before and after l
 # ========== TEST LOOP ======================================================= #
 
 # CONCEPT ID'S OF INTEREST
-test_concepts <- c(4077697,4047494)
-test_covariate_names <- c("Screening mammography", "Biopsy of Breast")  
-test_acronym <- c("SM", "BOB")
+#test_concepts <- c(4077697,4047494)
+#test_covariate_names <- c("Screening mammography", "Biopsy of Breast")  
+#test_acronym <- c("SM", "BOB")
 
 
 # Loop to get counts of all procedure concepts of interest before and after lockdown
 
-i <- 1
+#i <- 1
 
-test_loop <- for (each_concept in test_concepts) {
+#test_loop <- for (each_concept in test_concepts) {
   
-  value_from_test_before <- cdm$procedure_occurrence %>%
-    select(person_id, procedure_concept_id, procedure_date) %>%
-    filter(procedure_concept_id == each_concept) %>% 
-    filter(procedure_date >= "2017-01-01" & procedure_date <="2020-03-22") %>%
-    collect()  %>%
-    tally() 
+ # value_from_test_before <- cdm$procedure_occurrence %>%
+  #  select(person_id, procedure_concept_id, procedure_date) %>%
+   # filter(procedure_concept_id == each_concept) %>% 
+    #filter(procedure_date >= "2017-01-01" & procedure_date <="2020-03-22") %>%
+    #collect()  %>%
+    #tally() 
   
-  value_from_test_after <- cdm$procedure_occurrence %>%
-    select(person_id, procedure_concept_id, procedure_date) %>%
-    filter(procedure_concept_id == each_concept) %>% 
-    filter(procedure_date >= "2020-03-22" & procedure_date <="2020-06-29") %>%
-    collect() %>%
-    tally() 
+#  value_from_test_after <- cdm$procedure_occurrence %>%
+ #   select(person_id, procedure_concept_id, procedure_date) %>%
+  #  filter(procedure_concept_id == each_concept) %>% 
+   # filter(procedure_date >= "2020-03-23" & procedure_date <="2022-01-01") %>%
+    #collect() %>%
+    #tally() 
   
   # code to add additional rows
-  Counts_table_test  <- rbind(Counts_table,c(test_covariate_names[i], value_from_test_before[[1]], value_from_test_after[[1]]))
-  i<-i+1
-}
+  #Counts_table_test  <- rbind(Counts_table,c(test_covariate_names[i], value_from_test_before[[1]], value_from_test_after[[1]]))
+  #i<-i+1
+#}
 
 # save RData objects
-save(value_from_test_before, value_from_test_after, file = here("Results", db.name, "Denominator", "Test.RData"))
+#save(value_from_test_before, value_from_test_after, file = here("Results", db.name, "Denominator", "Test.RData"))
 
 
 ## 2. === Set up for creating a for loop to get all observations of interest == #
@@ -148,7 +148,7 @@ observation_loop <- for (each_concept in observation_concepts) {
   value_from_obs_after <- cdm$observation %>%
     select(person_id, observation_concept_id, observation_date) %>%
     filter(observation_concept_id == each_concept) %>% 
-    filter(observation_date >= "2020-03-22" & observation_date <="2020-06-29") %>%
+    filter(observation_date >= "2020-03-23" & observation_date <="2022-01-01") %>%
     collect() %>%
     tally() 
   
@@ -161,6 +161,27 @@ observation_loop <- for (each_concept in observation_concepts) {
 
 # save RData objects
 save(value_from_obs_before, value_from_obs_after, file = here("Results", db.name, "Denominator", "Observations.RData"))
+rm(i)
+
+# Manual check of one concept
+# Referral to breast clinic
+RBC_before <- cdm$observation %>%
+  select(person_id, observation_concept_id, observation_date) %>%
+  filter(observation_concept_id == 4197459) %>% 
+  filter(observation_date >= "2017-01-01" & observation_date <="2020-03-22") %>%
+  collect() %>%
+  tally() 
+
+RBC_after <- cdm$observation %>%
+  select(person_id, observation_concept_id, observation_date) %>%
+  filter(observation_concept_id == 4197459) %>% 
+  filter(observation_date >= "2020-03-23" & observation_date <="2022-01-01") %>%
+  collect() %>%
+  tally() 
+
+print(RBC_before, RBC_after)
+
+save(RBC_before, RBC_after, file = here("Results", db.name, "Denominator", "RBC_Check.RData"))
 
 print(paste0("- Got counts of observations before and after lockdown"))
 info(logger, "- Got counts of observations before and after lockdown")
@@ -184,7 +205,6 @@ procedure_covariate_names <- c("Screening mammography", "Diagnostic mammograms",
 procedure_acronym <- c("SM","DM","BB","SGCNB","PNBB","FNAB","WGLEBL","EMD","WLEBL","ELB","EBT","UOI","COL","SIG","UGT","UOA","UOR","BRONCH","ENDO","MED","CTBC","USBC","DRC","MRI","BP")
 
 
-
 # Loop to get counts of all procedure concepts of interest before and after lockdown
 
 i <- 1
@@ -201,7 +221,7 @@ procedure_loop <- for (each_concept in procedure_concepts) {
   value_from_proc_after <- cdm$procedure_occurrence %>%
     select(person_id, procedure_concept_id, procedure_date) %>%
     filter(procedure_concept_id == each_concept) %>% 
-    filter(procedure_date >= "2020-03-22" & procedure_date <="2020-06-29") %>%
+    filter(procedure_date >= "2020-03-23" & procedure_date <="2022-01-01") %>%
     collect() %>%
     tally() 
   
@@ -212,9 +232,52 @@ procedure_loop <- for (each_concept in procedure_concepts) {
 
 # save RData objects
 save(value_from_proc_before, value_from_proc_after, file = here("Results", db.name, "Denominator", "Procedures.RData"))
+rm(i)
+
+
+#Manual check of one concepts
+# Screening mammography
+SM_before <- cdm$procedure_occurrence %>%
+  select(person_id, procedure_concept_id, procedure_date) %>%
+  filter(procedure_concept_id == 4077697) %>% 
+  filter(procedure_date >= "2017-01-01" & procedure_date <="2020-03-22") %>%
+  collect() %>%
+  tally() 
+
+SM_after <- cdm$procedure_occurrence %>%
+  select(person_id, procedure_concept_id, procedure_date) %>%
+  filter(procedure_concept_id == 4077697) %>% 
+  filter(procedure_date >= "2020-03-23" & procedure_date <="2022-01-01") %>%
+  collect() %>%
+  tally() 
+
+SM_before
+SM_after
+
+
+save(SM_before, SM_after, file = here("Results", db.name, "Denominator", "SM_Check.RData"))
+
+# try to find counts of screening mammography from read code in measurement table. But this is a non-standard
+SM_before_read_code <- cdm$measurement %>%
+  select(person_id, measurement_concept_id, measurement_date) %>%
+  filter(measurement_concept_id == 45508743) %>% 
+  filter(measurement_date >= "2017-01-01" & measurement_date <="2020-03-22") %>%
+  collect() %>%
+  tally() 
+
+SM_after_read_code <- cdm$measurement %>%
+  select(person_id, measurement_concept_id, measurement_date) %>%
+  filter(measurement_concept_id == 45508743) %>% 
+  filter(measurement_date >= "2020-03-23" & measurement_date <="2022-01-01") %>%
+  collect() %>%
+  tally() 
+
+
+save(SM_before_read_code, SM_after_read_code, file = here("Results", db.name, "Denominator", "SM_read_code_Check.RData"))
+
 
 print(paste0("- Got counts of procedures before and after lockdown"))
-info(logger, "- Got counts of observations before and after lockdown")
+info(logger, "- Got counts of procedures before and after lockdown")
 
 
 
@@ -246,7 +309,7 @@ measurement_loop <- for (each_concept in measurement_concepts) {
   value_from_meas_after <- cdm$measurement %>%
     select(person_id, measurement_concept_id, measurement_date) %>%
     filter(measurement_concept_id == each_concept) %>% 
-    filter(measurement_date >= "2020-03-22" & measurement_date <="2020-06-29") %>%
+    filter(measurement_date >= "2020-03-23" & measurement_date <="2022-01-01") %>%
     collect() %>%
     tally() 
   
@@ -257,6 +320,7 @@ measurement_loop <- for (each_concept in measurement_concepts) {
 
 # save RData objects
 save(value_from_meas_before, value_from_meas_after, file = here("Results", db.name, "Denominator", "Measurements.RData"))
+rm(i)
 
 print(paste0("- Got counts of measurements before and after lockdown"))
 info(logger, "- Got counts of measurements before and after lockdown")
@@ -280,10 +344,17 @@ print(paste0("- Added proportions to counts table"))
 info(logger, "- Added proportions to counts table")
 
 
+# save RData objects
+save(Counts_table, file = here("Results", db.name, "Denominator", "Counts_table.RData"))
+write.csv(Counts_table, file=here("Results", db.name, "Denominator", "Counts_table.csv"))
+Pretty_Counts_table <- flextable(Counts_table) %>% theme_vanilla() %>% 
+  set_caption(caption = "Counts of healthcare vistits, screening and diagnostic procedures, before and after lockdown") %>% 
+  width(width = 1.4) 
 
+Pretty_Counts_table
 
-
-
+save_as_docx('Denominator_counts_table' = Pretty_Counts_table, path="~/R/CancerCovid_Characterisations/Results/CPRDGold_202201/Denominator/Denominator_Counts.docx")
+                                                                      
 print(paste0("- 1. DENOMINATOR CUSTOM CHARACTERISATIONS DONE"))
 info(logger, "- 1. DENOMINATOR CUSTOM CHARACTERISATIONS DONE")
 
