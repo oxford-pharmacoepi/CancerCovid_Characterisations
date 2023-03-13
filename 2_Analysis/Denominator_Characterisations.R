@@ -358,4 +358,17 @@ save_as_docx('Denominator_counts_table' = Pretty_Counts_table, path="~/R/CancerC
 print(paste0("- 1. DENOMINATOR CUSTOM CHARACTERISATIONS DONE"))
 info(logger, "- 1. DENOMINATOR CUSTOM CHARACTERISATIONS DONE")
 
+# Create table of covariate names and concept ids
+Concept_ids_table  <- rbind(observation_concepts, observation_covariate_names)
+Concept_ids_table
 
+
+# join all covariate concept ids and names into one dataframe
+Observation_ids_table  <- cbind(observation_concepts, observation_covariate_names)
+Procedure_ids_table  <- cbind(procedure_concepts, procedure_covariate_names)
+Measurement_ids_table  <- cbind(measurement_concepts, measurement_covariate_names)
+Concept_ids_table <- rbind(Observation_ids_table, Procedure_ids_table, Measurement_ids_table)
+as.data.frame(Concept_ids_table)
+
+
+write.csv(Concept_ids_table, file=here("Results", db.name, "Denominator", "Concept_ids_table.csv"))
