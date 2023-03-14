@@ -80,6 +80,9 @@ cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4197459)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4197459) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -108,6 +111,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4086282)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4086282) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -135,6 +141,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 44791272)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 44791272) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -163,6 +172,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4141840)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4141840) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -189,6 +201,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4089031)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4089031) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -219,6 +234,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4136626)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4136626) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -239,13 +257,16 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4136626)# change concept code
 
 
-
 #------------ 7. Fast track referral for lung cancer -----------
 
 # TO DO IN THE ORIGINAL CPRD GOLD 0720 DATABASE
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 44791283)
+
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 44791283) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -273,6 +294,10 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4215705)
+
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4215705) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -300,6 +325,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4077697)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4077697) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -325,12 +353,15 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4077697)# change concept code
 
 
-#------------ 10. Diagnostic mammograms -----------
+#------------ 10. Diagnostic mammograms (mammography)-----------
 
 # TO DO IN THE ORIGINAL CPRD GOLD 0720 DATABASE
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4324693)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4324693) %>% print(n=Inf)
  
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -362,6 +393,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4047494)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4047494) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -394,6 +428,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4022932)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4022932) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -424,6 +461,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4028790)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4028790) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -449,6 +489,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4306207)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4306207) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -474,6 +517,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4216180)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4216180) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -499,6 +545,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4146780)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4146780) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -526,6 +575,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4129190)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4129190) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -553,6 +605,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4194124)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4194124) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -582,6 +637,8 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+cdm$concept %>% filter(concept_id == 4286804)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4286804) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -615,6 +672,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4082528)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4082528) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -642,6 +702,8 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+cdm$concept %>% filter(concept_id == 4249893)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4249893) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -676,6 +738,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4087381)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4087381) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -712,6 +777,10 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+
+cdm$concept %>% filter(concept_id == 4125529)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4125529) %>% print(n=Inf)
  
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -737,6 +806,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+
+cdm$concept %>% filter(concept_id == 4261497)
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4261497) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -766,6 +838,8 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 2787168)
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 2787168) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -792,6 +866,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+
+cdm$concept %>% filter(concept_id == 4032404)
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4032404) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -828,6 +905,8 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 44809038)
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 44809038) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -853,6 +932,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4128302)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4128302) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -887,6 +969,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4304406)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4304406) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -911,6 +996,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4167553)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4167553) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -935,6 +1023,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 45889178)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 45889178) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -961,6 +1052,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4246485)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4246485) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -986,6 +1080,8 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 4278515)
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4278515) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -1012,6 +1108,8 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 36203740)
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 36203740) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -1036,6 +1134,8 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 36203750)
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 36203750) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -1061,6 +1161,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 44791543)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 44791543) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -1085,6 +1188,9 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+
+cdm$concept %>% filter(concept_id == 37395561)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 37395561) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
@@ -1111,6 +1217,8 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 # to find the source values that the concept_id of interest was mapped from, run the following. The concept_id_2 column shows ALL the source concept
 # codes that were mapped to your code of interest:
+cdm$concept %>% filter(concept_id == 4272032)
+
 cdm$concept_relationship %>% filter(relationship_id == "Mapped from") %>% filter(concept_id_1 == 4272032) %>% print(n=Inf)
 
 # then in the original database you can check the counts of the concept ids and populate the table with these counts
