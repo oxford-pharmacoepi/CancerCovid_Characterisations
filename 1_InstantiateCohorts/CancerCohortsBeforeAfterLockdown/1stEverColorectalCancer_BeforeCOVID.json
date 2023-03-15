@@ -1,7 +1,7 @@
 {
   "ConceptSets": [
     {
-      "id": 0,
+      "id": 1,
       "name": "CRC2",
       "expression": {
         "items": [
@@ -797,7 +797,7 @@
     "CriteriaList": [
       {
         "ConditionOccurrence": {
-          "CodesetId": 0,
+          "CodesetId": 1,
           "OccurrenceStartDate": {
             "Value": "2017-01-01",
             "Extent": "2020-03-22",
@@ -822,19 +822,18 @@
   },
   "InclusionRules": [
     {
-      "name": "no cancer in prior 365 days",
+      "name": "no history of the same cancer in history",
       "expression": {
         "Type": "ALL",
         "CriteriaList": [
           {
             "Criteria": {
               "ConditionOccurrence": {
-                "CodesetId": 0
+                "CodesetId": 1
               }
             },
             "StartWindow": {
               "Start": {
-                "Days": 365,
                 "Coeff": -1
               },
               "End": {

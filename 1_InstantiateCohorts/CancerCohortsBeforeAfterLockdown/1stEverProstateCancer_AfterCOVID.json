@@ -1,7 +1,7 @@
 {
   "ConceptSets": [
     {
-      "id": 0,
+      "id": 1,
       "name": "PC",
       "expression": {
         "items": [
@@ -195,11 +195,10 @@
     "CriteriaList": [
       {
         "ConditionOccurrence": {
-          "CodesetId": 0,
+          "CodesetId": 1,
           "OccurrenceStartDate": {
-            "Value": "2017-01-01",
-            "Extent": "2020-03-22",
-            "Op": "bt"
+            "Value": "2020-03-23",
+            "Op": "gte"
           }
         }
       }
@@ -220,19 +219,18 @@
   },
   "InclusionRules": [
     {
-      "name": "no cancer in prior 365 days",
+      "name": "no history of same cancer in history",
       "expression": {
         "Type": "ALL",
         "CriteriaList": [
           {
             "Criteria": {
               "ConditionOccurrence": {
-                "CodesetId": 0
+                "CodesetId": 1
               }
             },
             "StartWindow": {
               "Start": {
-                "Days": 365,
                 "Coeff": -1
               },
               "End": {
