@@ -101,7 +101,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4197459)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4197459)
 
 
 
@@ -132,7 +132,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4086282)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4086282)
 
 
 #------------ 3. Fasttrack referral for suspected breast cancer -----------
@@ -162,7 +162,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 44791272)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 44791272)
 
 
 
@@ -193,7 +193,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4141840)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4141840)
 
 #------------ 5. Seen in breast clinic -----------
 
@@ -224,7 +224,12 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4089031)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4089031)
+
+
+# codelist generator indicated possibility of including 44793351 Seen in fast track suspected breast cancer clinic. Check counts
+
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 44793351)
 
 
 
@@ -254,7 +259,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4136626)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4136626)
 
 
 #------------ 7. Fast track referral for lung cancer -----------
@@ -284,7 +289,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 44791283)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 44791283)
 
 
 
@@ -316,7 +321,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4215705)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4215705)
 
 
 #------------ 9. Screening mammography -----------
@@ -350,8 +355,19 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45508743)
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4077697)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4077697)
 
+# codelist generator indicated possibility of including 2211814, 40218347, 42627987, 42737560, 45888264,36713187,36713191,36713192
+# - none of these are mapped
+
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 2211814)
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 40218347)
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 42627987)
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 42737560)
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 45888264)
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 36713187)
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 36713191)
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 36713192)
 
 #------------ 10. Diagnostic mammograms (mammography)-----------
 
@@ -384,7 +400,22 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4324693)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4324693)
+
+# codelist generator indicated possibility of including 2211813,2211814,42628028,42627940,42627987,40218348,40218349,40218347,42737560 
+
+# - none of these are mapped
+
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 2211813)
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 2211814)
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 42628028)
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 42627940)
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 42627987)
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 40218348)
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 40218349)
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 40218347)
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 42737560)
+
 
 
 #------------ 11. Biopsy of breast -----------
@@ -419,7 +450,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4047494)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4047494)
 
 
 #------------ 12. Stereotactically guided core needle biopsy of breast -----------
@@ -448,9 +479,17 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4022932)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4022932)
 
 
+# codelist generator indicated possibility of including 44791926,44791927,44792005,44792006
+
+# - none of these are mapped
+
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 44791926)
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 44791927)
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 44792005)
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 44792006)
 
 
 
@@ -480,7 +519,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45422333)
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4028790)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4028790)
 
 
 #------------ 14. Fine needle aspiration of breast -----------
@@ -508,7 +547,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45428931)
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4306207)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4306207)
 
 
 #------------ 15. Wire guided local excision of breast lump -----------
@@ -536,7 +575,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45489000)
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4216180)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4216180)
 
 
 #------------ 16. Excision of mammary duct -----------
@@ -565,7 +604,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45508791)
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4146780)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4146780)
 
 
 
@@ -595,7 +634,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4129190)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4129190)
 
 
 
@@ -628,7 +667,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4194124)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4194124)
 
 
 #------------ 19. Excision of breast tissue -----------
@@ -662,7 +701,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4286804)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4286804)
 
 
 
@@ -692,7 +731,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4082528)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4082528)
 
 
 
@@ -727,7 +766,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4249893)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4249893)
 
 
 
@@ -765,8 +804,10 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4087381)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4087381)
 
+# additional code identified from hierarchy on atlas
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4196378)
 
 
 
@@ -796,7 +837,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4125529)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4125529)
 
 
 
@@ -827,7 +868,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4261497)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4261497)
 
 
 
@@ -856,8 +897,12 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 2787168)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 2787168)
 
+
+# codelist generator identified 40489305 which is a descendent of biopsy of rectum (4184601). See how many counts there are:
+# none
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4184601)
 
 
 #------------ 26. Bronchoscopy -----------
@@ -895,7 +940,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4032404)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4032404)
 
 
 
@@ -922,7 +967,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 44809038)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 44809038)
 
 
 
@@ -959,7 +1004,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45527592)
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4128302)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4128302)
 
 
 
@@ -987,7 +1032,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4304406)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4304406)
 
 
 #------------ 30. US scan and biopsy of chest -----------
@@ -1014,7 +1059,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4167553)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4167553)
 
 
 #------------ 31. Diagnostic Radiology (Diagnostic Imaging) Procedures of the Chest -----------
@@ -1041,7 +1086,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 45889178)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 45889178)
 
 
 
@@ -1070,7 +1115,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45426099 )
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4246485)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4246485)
 
 
 
@@ -1097,7 +1142,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45529498 )
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4278515)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4278515)
 
 
 
@@ -1125,7 +1170,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 36203740)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 36203740)
 
 
 #------------ 35. Diagnostic mammogram and ultrasound-R -----------
@@ -1151,7 +1196,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 36203750)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 36203750)
 
 
 
@@ -1179,7 +1224,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45482304)
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 44791543)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 44791543)
 
 
 #------------ 37. Quantitative faecal immunochemical tests -----------
@@ -1206,9 +1251,15 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 37395561 )
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 37395561)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 37395561)
+
+#looking through the hierarchy brings up this code 1397752 which is the READ code equivalent for Quantitative faecal immunochemical test
+# which appears to have two mappings in 202201 database, which 64760 subjects
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 1397752)
+cdm$concept %>% filter(concept_id == 1397752)
 
 
+1397752
 
 
 #------------ 38. Prostate specific antigen measurement -----------
@@ -1235,7 +1286,7 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 44835093 )
 # then in the new database you can check the counts of the concept ids and populate the table with these counts
 
-tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4272032)# change concept code
+tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_table")) %>% filter(concept_id == 4272032)
 
 
 
