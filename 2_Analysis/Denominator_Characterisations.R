@@ -138,16 +138,16 @@ print(paste0("- Getting counts of procedures before and after lockdown"))
 info(logger, "- Getting counts of procedures before and after lockdown")
 
 # CONCEPT ID'S OF INTEREST
-procedure_concepts <- c(4324693,4047494,4022932,4028790,4306207,4216180,4146780,4129190,4194124,4286804,4082528,4249893,4087381,4125529,
-                        4261497,2787168,4032404,44809038,4128302,4304406,4167553,45889178,4246485,4278515)
+procedure_concepts <- c(4324693,4047494,4022932,4028790,4306207,4216180,4146780,4129190,4194124,4286804,4082528,4061134,4249893,4087381,4125529,
+                        4261497,2787168,4032404,44809038,4128302,4070986,4304406,4167553,45889178,4246485,4278515,4073010)
 procedure_covariate_names <- c("Diagnostic mammograms", "Biopsy of breast", "Stereotactically guided core needle biopsy of breast",
                                "Percutaneous needle biopsy of breast","Fine needle aspiration of breast","Wire guided local excision of breast lump", 
                                "Excision of mammary duct","Wide local excision of breast lesion","Excision of lesion of breast","Excision of breast tissue",
-                               "Ultrasonography of intestine","Colonoscopies","Sigmoidoscopy","Ultrasound of gastrointestinal tract",
+                               "Ultrasonography of intestine","Endoscopic ultrasound of upper gastrointestinal tract","Colonoscopies","Sigmoidoscopy","Ultrasound of gastrointestinal tract",
                                "Ultrasonography of abdomen","Ultrasonography of rectum","Bronchoscopy","Endobronchial ultrasonography guided transbronchial needle aspiration",
-                               "Mediastinoscopy","CT and biopsy of chest","US scan and biopsy of chest","Diagnostic Radiology (Diagnostic Imaging) Procedures of the Chest",
-                               "MRI of chest","Biopsy of prostate")  
-procedure_acronym <- c("DM","BB","SGCNB","PNBB","FNAB","WGLEBL","EMD","WLEBL","ELB","EBT","UOI","COL","SIG","UGT","UOA","UOR","BRONCH","ENDO","MED","CTBC","USBC","DRC","MRI","BP")
+                               "Mediastinoscopy"," Mediastinoscopy - inspection only","CT and biopsy of chest","US scan and biopsy of chest","Diagnostic Radiology (Diagnostic Imaging) Procedures of the Chest",
+                               "MRI of chest","Biopsy of prostate","Open biopsy of prostate")  
+procedure_acronym <- c("DM","BB","SGCNB","PNBB","FNAB","WGLEBL","EMD","WLEBL","ELB","EBT","UOI","ENDOGAS","COL","SIG","UGT","UOA","UOR","BRONCH","ENDO","MED","MED-IN","CTBC","USBC","DRC","MRI","BP","OBP")
 
 
 # Loop to get counts of all procedure concepts of interest before and after lockdown
@@ -193,10 +193,10 @@ print(paste0("- Getting counts of measurements before and after lockdown"))
 info(logger, "- Getting counts of measurements before and after lockdown")
 
 # CONCEPT ID'S OF INTEREST
-measurement_concepts <- c(4077697,36203740,36203750,44791543,37395561,4272032)
+measurement_concepts <- c(4077697,36203740,36203750,44791543,37395561,1397752,40480729,4272032,37398806)
 measurement_covariate_names <- c("Screening mammography", "Diagnostic mammogram and ultrasound-L","Diagnostic mammogram and ultrasound-R","Bowel cancer screening programme",
-                                 "Quantitative faecal immunochemical tests","Prostate specific antigen measurement")
-measurement_acronym <- c("SM","DMSUL","DMSUR","BCSP","QFIT","PSA")
+                                 "Quantitative faecal immunochemical tests","Quantitative faecal immunochemical test-READ","Screening colonoscopy","Prostate specific antigen measurement","PSA (prostate-specific antigen) level measurement")
+measurement_acronym <- c("SM","DMSUL","DMSUR","BCSP","QFIT","QFIT-READ","SC","PSA","PSA-Level")
 
 
 # Loop to get counts of all measurement concepts of interest before and after lockdown
