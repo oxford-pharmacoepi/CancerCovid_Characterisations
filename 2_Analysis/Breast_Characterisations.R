@@ -327,8 +327,16 @@ print("Referral to breast surgeon done")
 
 
 ## 6. SCREENING MAMMOGRAMS -----------------------------------------------------
-SM_patients <- get_procedures(4077697, 6)
-SM_id <- get_procedures_id(4077697, 6, "Screening mammography")
+SM_patients <- cdm$measurement %>%
+  select(person_id,measurement_concept_id, measurement_date) %>%
+  filter(measurement_concept_id ==4077697) %>%
+  inner_join(list_id) %>% 
+  distinct() %>%
+  collect() %>%
+  rename("Event_date"="measurement_date") %>%
+  mutate(FeatureExtractionId = 4077697006)
+  
+SM_id <- tibble(FeatureExtractionId = 4077697006, covariateId = 4077697, covariateName = "Screening mammography", AnalysisId = 6)
 
 AnalysisRef  <- rbind(AnalysisRef,c(6,"Screening mammography"))
 
@@ -336,6 +344,8 @@ save(list = c("SM_patients","SM_id"), file = here("Results", db.name, "Breast", 
 
 print("Screening mammograms done")
 
+
+DMUS_patients <- 
 
 ## 7. SEEN IN BREAST CLINIC ----------------------------------------------------
 SBC_patients <- get_observations(4089031, 7)

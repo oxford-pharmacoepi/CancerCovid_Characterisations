@@ -318,8 +318,40 @@ save(list = c("BP_patients","BP_id"), file = here("Results", db.name, "Prostate"
 
 print("Biopsy of prostate done")
 
+
+
+## 5. OPEN BIOPSY OF PROSTATE -------
+OBP_patients <- get_procedures(4073010, 5)
+OBP_id <- get_procedures_id(4073010, 5, "Open biopsy of prostate")
+
+AnalysisRef  <- rbind(AnalysisRef,c(5,"Open biopsy of prostate"))
+
+save(list = c("OBP_patients","OBP_id"), file = here("Results", db.name, "Prostate", "Prostate_covariates", "Open_biopsy_prostate.RData"))
+
+print("Open biopsy of prostate done")
+
 print(paste0("- Prostate cancer covariate counts done"))
 info(logger, "- Prostate cancer covariate counts done")
+
+
+## 6. PROSTATE SPECIFIC ANTIGEN MEASUREMENT - LEVEL ------------------------------------------------
+PSAL_patients <-  cdm$measurement %>%
+  select(person_id,measurement_concept_id, measurement_date) %>%
+  filter(measurement_concept_id ==37398806) %>%
+  inner_join(list_id) %>% 
+  distinct() %>%
+  collect() %>%
+  rename("Event_date"="measurement_date") %>%
+  mutate(FeatureExtractionId = 37398806006)
+
+PSAL_id <- tibble(FeatureExtractionId = 37398806006,covariateId = 37398806, covariateName = "Prostate specific antigen measurement - level", AnalysisId = 6)
+
+AnalysisRef  <- rbind(AnalysisRef,c(6,"Prostate specific antigen measurement - level"))
+
+save(list = c("PSAL_patients","PSAL_id"), file = here("Results", db.name, "Prostate", "Prostate_covariates", "PSAL.RData"))
+
+print("Prostate specific antigen measurement level done")
+
 
 # ========================= INDIVIDUAL TABLES================================= # 
 
@@ -331,10 +363,11 @@ VI_table        <- getIndividualTabs(VI_id, VI_patients, individuals_id,3, FALSE
 PSA_table        <- getIndividualTabs(PSA_id, PSA_patients, individuals_id, 3, FALSE)
 PSAM_table        <- getIndividualTabs(PSAM_id, PSAM_patients, individuals_id, 3, FALSE)
 BP_table      <- getIndividualTabs(BP_id, BP_patients, individuals_id, 3, FALSE)
-
+OBP_table        <- getIndividualTabs(OBP_id, OBP_patients, individuals_id, 3, FALSE)
+PSAL_table      <- getIndividualTabs(PSAL_id, PSAL_patients, individuals_id, 3, FALSE)
 
 # Join the tables
-continuous_table <- VI_table %>% union_all(PSA_table) %>% union_all(PSAM_table) %>% union_all(BP_table) %>% ungroup()
+continuous_table <- VI_table %>% union_all(PSA_table) %>% union_all(PSAM_table) %>% union_all(BP_table) %>% union_all(OBP_table) %>% union_all(PSAL_table) %>% ungroup()
 
 # Pivot the continuous table around, and rename person_id as subject_id. This
 # is later used to run the SMD function
@@ -343,7 +376,7 @@ Continuous_table_pivot <- continuous_table %>% right_join(prostate_covariate_nam
   rename("subject_id" = "person_id") %>%
   tidyr::pivot_wider(names_from = covariate, values_from = value,values_fill = 0) 
 
-continuous_table <- Continuous_table_pivot %>% tidyr::pivot_longer(2:13, names_to = "covariate", values_to = "value") 
+continuous_table <- Continuous_table_pivot %>% tidyr::pivot_longer(2:19, names_to = "covariate", values_to = "value") 
 
 # read all the covariate names from the 'forALLCharacterisations_with_functions.R
 namt <- t(prostate_covariate_names)

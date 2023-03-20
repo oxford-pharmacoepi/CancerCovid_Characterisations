@@ -134,44 +134,58 @@ get_procedures_id <- function(yourconceptid, analysis_num, covariateName){
 
 # CREATE DATA FRAME OF COVARIATE NAMES FOR DENOMINATOR POPULATION ANALYSES
 
-all_covariate_names <- data.frame(c("Biopsy_of_breast_1._1to30", "Biopsy_of_breast_2._31_to_180", "Biopsy_of_breast_3._+181",                                          
-                                    "Diagnostic_mammogram_and_ultrasound_1._1to30", "Diagnostic_mammogram_and_ultrasound_2._31_to_180", "Diagnostic_mammogram_and_ultrasound_3._+181",
-                                    "Diagnostic_mammograms_1._1to30","Diagnostic_mammograms_2._31_to_180","Diagnostic_mammograms_3._+181",
-                                    "Excision_of_breast_tissue_1._1to30","Excision_of_breast_tissue_2._31_to_180","Excision_of_breast_tissue_3._+181",
-                                    "Excision_of_lesion_of_breast_1._1to30","Excision_of_lesion_of_breast_2._31_to_180","Excision_of_lesion_of_breast_3._+181",
-                                    "Excision_of_mammary_duct_1._1to30","Excision_of_mammary_duct_2._31_to_180","Excision_of_mammary_duct_3._+181",
-                                    "Fasttrack_referral_for_suspected_breast_cancer_1._1to30","Fasttrack_referral_for_suspected_breast_cancer_2._31_to_180","Fasttrack_referral_for_suspected_breast_cancer_3._+181",
-                                    "Fine_needle_aspiration_of_breast_1._1to30","Fine_needle_aspiration_of_breast_2._31_to_180","Fine_needle_aspiration_of_breast_3._+181",
-                                    "Percutaneous_needle_biopsy_of_breast_1._1to30","Percutaneous_needle_biopsy_of_breast_2._31_to_180","Percutaneous_needle_biopsy_of_breast_3._+181",
-                                    "Referral_to_breast_clinic_1._1to30", "Referral_to_breast_clinic_2._31_to_180", "Referral_to_breast_clinic_3._+181",
-                                    "Referral_to_breast_surgeon_1._1to30","Referral_to_breast_surgeon_2._31_to_180", "Referral_to_breast_surgeon_3._+181",
-                                    "Referral_to_mammography_clinic_1._1to30","Referral_to_mammography_clinic_2._31_to_180","Referral_to_mammography_clinic_3._+181",
-                                    "Screening_mammography_1._1to30", "Screening_mammography_2._31_to_180", "Screening_mammography_3._+181",
-                                    "Seen_by_breast_surgeon_1._1to30","Seen_by_breast_surgeon_2._31_to_180","Seen_by_breast_surgeon_3._+181",
-                                    "Seen_in_breast_clinic_1._1to30", "Seen_in_breast_clinic_2._31_to_180", "Seen_in_breast_clinic_3._+181",
-                                    "Stereotactically_guided_core_needle_biopsy_of_breast_1._1to30","Stereotactically_guided_core_needle_biopsy_of_breast_2._31_to_180","Stereotactically_guided_core_needle_biopsy_of_breast_3._+181",
-                                    "Visits_within_healthcare_system_1._1to30", "Visits_within_healthcare_system_2._31_to_180", "Visits_within_healthcare_system_3._+181",
-                                    "Wide_local_excision_of_breast_lesion_1._1to30","Wide_local_excision_of_breast_lesion_2._31_to_180","Wide_local_excision_of_breast_lesion_3._+181",
-                                    "Wire_guided_local_excision_of_breast_lump_1._1to30", "Wire_guided_local_excision_of_breast_lump_2._31_to_180", "Wire_guided_local_excision_of_breast_lump_3._+181",
-                                    "Bowel_cancer_screening_prog_1._1to30", "Bowel_cancer_screening_prog_2._31_to_180", "Bowel_cancer_screening_prog_3._+181",                                          
-                                    "Colonoscopies_1._1to30", "Colonoscopies_2._31_to_180", "Colonoscopies_3._+181",
-                                    "Sigmoidoscopy_1._1to30","Sigmoidoscopy_2._31_to_180","Sigmoidoscopy_3._+181",
-                                    "Quantitative_faecal_immunochemical_tests_1._1to30","Quantitative_faecal_immunochemical_tests_2._31_to_180","Quantitative_faecal_immunochemical_tests_3._+181",
-                                    "Ultrasonography of abdomen_1._1to30","Ultrasonography of abdomen_2._31_to_180","Ultrasonography of abdomen_3._+181",
-                                    "Ultrasonography of intestine_1._1to30","Ultrasonography of intestine_2._31_to_180","Ultrasonography of intestine_3._+181",
-                                    "Ultrasonography of rectum_1._1to30","Ultrasonography of rectum_2._31_to_180","Ultrasonography of rectum_3._+181",
-                                    "Ultrasound of gastrointestinal tract_1._1to30","Ultrasound of gastrointestinal tract_2._31_to_180","Ultrasound of gastrointestinal tract_3._+181",
-                                    "Bronchoscopy_1._1to30", "Bronchoscopy_2._31_to_180", "Bronchoscopy_3._+181",   
-                                    "CT and biopsy of chest_1._1to30","CT and biopsy of chest_2._31_to_180","CT and biopsy of chest_3._+181",
-                                    "Diagnostic Radiology (Diagnostic Imaging) Procedures of the Chest_1._1to30","Diagnostic Radiology (Diagnostic Imaging) Procedures of the Chest_2._31_to_180","Diagnostic Radiology (Diagnostic Imaging) Procedures of the Chest_3._+181",
-                                    "Endobronchial ultrasonography guided transbronchial needle aspiration_1._1to30","Endobronchial ultrasonography guided transbronchial needle aspiration_2._31_to_180","Endobronchial ultrasonography guided transbronchial needle aspiration_3._+181",
-                                    "Fast track referral for lung cancer_1._1to30", "Fast track referral for lung cancer_2._31_to_180", "Fast track referral for lung cancer_3._+181",
-                                    "Mediastinoscopy_1._1to30","Mediastinoscopy_2._31_to_180","Mediastinoscopy_3._+181",
-                                    "MRI of chest_1._1to30","MRI of chest_2._31_to_180","MRI of chest_3._+181",
-                                    "US scan and biopsy of chest_1._1to30","US scan and biopsy of chest_2._31_to_180","US scan and biopsy of chest_3._+181",
-                                    "Biopsy of prostate_1._1to30","Biopsy of prostate_2._31_to_180","Biopsy of prostate_3._+181",
-                                    "Prostate specific antigen measurement_1._1to30", "Prostate specific antigen measurement_2._31_to_180", "Prostate specific antigen measurement_3._+181",                                          
-                                    "PSA monitoring_1._1to30", "PSA monitoring_2._31_to_180", "PSA monitoring_3._+181"))
+all_covariate_names <- data.frame(c("Referral to Breast clinic","Referral to mammography clinic","Fasttrack referral for suspected breast cancer",
+                                    "Referral to breast surgeon","Seen in breast clinic","Seen by breast surgeon","Fast track referral for lung cancer","PSA monitoring",                                                       
+                                    "Diagnostic mammograms","Biopsy of breast","Stereotactically guided core needle biopsy of breast",
+                                    "Percutaneous needle biopsy of breast","Fine needle aspiration of breast","Wire guided local excision of breast lump",                            
+                                    "Excision of mammary duct","Wide local excision of breast lesion","Excision of lesion of breast","Excision of breast tissue",                                            
+                                    "Ultrasonography of intestine","Endoscopic ultrasound of upper gastrointestinal tract","Colonoscopies","Sigmoidoscopy","Ultrasound of gastrointestinal tract",
+                                    "Ultrasonography of abdomen","Ultrasonography of rectum","Bronchoscopy","Endobronchial ultrasonography guided transbronchial needle aspiration","Mediastinoscopy",                                                      
+                                    " Mediastinoscopy - inspection only","CT and biopsy of chest","US scan and biopsy of chest","Diagnostic Radiology (Diagnostic Imaging) Procedures of the Chest",    
+                                    "MRI of chest","Biopsy of prostate","Open biopsy of prostate","Screening mammography","Diagnostic mammogram and ultrasound-L","Diagnostic mammogram and ultrasound-R",                                
+                                    "Bowel cancer screening programme","Quantitative faecal immunochemical tests","Quantitative faecal immunochemical test-READ","Screening colonoscopy",                                                
+                                    "Prostate specific antigen measurement","PSA (prostate-specific antigen) level measurement"))  
+
+
+
+#all_covariate_names_old <- data.frame(c("Biopsy_of_breast_1._1to30", "Biopsy_of_breast_2._31_to_180", "Biopsy_of_breast_3._+181",                                          
+#                                    "Diagnostic_mammogram_and_ultrasound_1._1to30", "Diagnostic_mammogram_and_ultrasound_2._31_to_180", "Diagnostic_mammogram_and_ultrasound_3._+181",
+#                                    "Diagnostic_mammograms_1._1to30","Diagnostic_mammograms_2._31_to_180","Diagnostic_mammograms_3._+181",
+#                                    "Excision_of_breast_tissue_1._1to30","Excision_of_breast_tissue_2._31_to_180","Excision_of_breast_tissue_3._+181",
+#                                    "Excision_of_lesion_of_breast_1._1to30","Excision_of_lesion_of_breast_2._31_to_180","Excision_of_lesion_of_breast_3._+181",
+#                                    "Excision_of_mammary_duct_1._1to30","Excision_of_mammary_duct_2._31_to_180","Excision_of_mammary_duct_3._+181",
+#                                    "Fasttrack_referral_for_suspected_breast_cancer_1._1to30","Fasttrack_referral_for_suspected_breast_cancer_2._31_to_180","Fasttrack_referral_for_suspected_breast_cancer_3._+181",
+#                                    "Fine_needle_aspiration_of_breast_1._1to30","Fine_needle_aspiration_of_breast_2._31_to_180","Fine_needle_aspiration_of_breast_3._+181",
+#                                    "Percutaneous_needle_biopsy_of_breast_1._1to30","Percutaneous_needle_biopsy_of_breast_2._31_to_180","Percutaneous_needle_biopsy_of_breast_3._+181",
+#                                    "Referral_to_breast_clinic_1._1to30", "Referral_to_breast_clinic_2._31_to_180", "Referral_to_breast_clinic_3._+181",
+#                                   "Referral_to_breast_surgeon_1._1to30","Referral_to_breast_surgeon_2._31_to_180", "Referral_to_breast_surgeon_3._+181",
+#                                  "Referral_to_mammography_clinic_1._1to30","Referral_to_mammography_clinic_2._31_to_180","Referral_to_mammography_clinic_3._+181",
+#                                    "Screening_mammography_1._1to30", "Screening_mammography_2._31_to_180", "Screening_mammography_3._+181",
+#                                    "Seen_by_breast_surgeon_1._1to30","Seen_by_breast_surgeon_2._31_to_180","Seen_by_breast_surgeon_3._+181",
+#                                    "Seen_in_breast_clinic_1._1to30", "Seen_in_breast_clinic_2._31_to_180", "Seen_in_breast_clinic_3._+181",
+#                                    "Stereotactically_guided_core_needle_biopsy_of_breast_1._1to30","Stereotactically_guided_core_needle_biopsy_of_breast_2._31_to_180","Stereotactically_guided_core_needle_biopsy_of_breast_3._+181",
+#                                    "Visits_within_healthcare_system_1._1to30", "Visits_within_healthcare_system_2._31_to_180", "Visits_within_healthcare_system_3._+181",
+#                                    "Wide_local_excision_of_breast_lesion_1._1to30","Wide_local_excision_of_breast_lesion_2._31_to_180","Wide_local_excision_of_breast_lesion_3._+181",
+#                                    "Wire_guided_local_excision_of_breast_lump_1._1to30", "Wire_guided_local_excision_of_breast_lump_2._31_to_180", "Wire_guided_local_excision_of_breast_lump_3._+181",
+#                                    "Bowel_cancer_screening_prog_1._1to30", "Bowel_cancer_screening_prog_2._31_to_180", "Bowel_cancer_screening_prog_3._+181",                                          
+#                                    "Colonoscopies_1._1to30", "Colonoscopies_2._31_to_180", "Colonoscopies_3._+181",
+#                                    "Sigmoidoscopy_1._1to30","Sigmoidoscopy_2._31_to_180","Sigmoidoscopy_3._+181",
+#                                    "Quantitative_faecal_immunochemical_tests_1._1to30","Quantitative_faecal_immunochemical_tests_2._31_to_180","Quantitative_faecal_immunochemical_tests_3._+181",
+#                                    "Ultrasonography of abdomen_1._1to30","Ultrasonography of abdomen_2._31_to_180","Ultrasonography of abdomen_3._+181",
+#                                    "Ultrasonography of intestine_1._1to30","Ultrasonography of intestine_2._31_to_180","Ultrasonography of intestine_3._+181",
+#                                    "Ultrasonography of rectum_1._1to30","Ultrasonography of rectum_2._31_to_180","Ultrasonography of rectum_3._+181",
+#                                    "Ultrasound of gastrointestinal tract_1._1to30","Ultrasound of gastrointestinal tract_2._31_to_180","Ultrasound of gastrointestinal tract_3._+181",
+#                                    "Bronchoscopy_1._1to30", "Bronchoscopy_2._31_to_180", "Bronchoscopy_3._+181",   
+#                                    "CT and biopsy of chest_1._1to30","CT and biopsy of chest_2._31_to_180","CT and biopsy of chest_3._+181",
+#                                    "Diagnostic Radiology (Diagnostic Imaging) Procedures of the Chest_1._1to30","Diagnostic Radiology (Diagnostic Imaging) Procedures of the Chest_2._31_to_180","Diagnostic Radiology (Diagnostic Imaging) Procedures of the Chest_3._+181",
+#                                    "Endobronchial ultrasonography guided transbronchial needle aspiration_1._1to30","Endobronchial ultrasonography guided transbronchial needle aspiration_2._31_to_180","Endobronchial ultrasonography guided transbronchial needle aspiration_3._+181",
+#                                    "Fast track referral for lung cancer_1._1to30", "Fast track referral for lung cancer_2._31_to_180", "Fast track referral for lung cancer_3._+181",
+#                                    "Mediastinoscopy_1._1to30","Mediastinoscopy_2._31_to_180","Mediastinoscopy_3._+181",
+#                                    "MRI of chest_1._1to30","MRI of chest_2._31_to_180","MRI of chest_3._+181",
+#                                    "US scan and biopsy of chest_1._1to30","US scan and biopsy of chest_2._31_to_180","US scan and biopsy of chest_3._+181",
+#                                    "Biopsy of prostate_1._1to30","Biopsy of prostate_2._31_to_180","Biopsy of prostate_3._+181",
+#                                    "Prostate specific antigen measurement_1._1to30", "Prostate specific antigen measurement_2._31_to_180", "Prostate specific antigen measurement_3._+181",                                          
+#                                    "PSA monitoring_1._1to30", "PSA monitoring_2._31_to_180", "PSA monitoring_3._+181"))
 
 
 colnames(all_covariate_names) <- c("covariate")
@@ -215,6 +229,9 @@ colorectal_covariate_names <- data.frame(c("Bowel_cancer_screening_prog_1._1to30
                                            "Ultrasonography of intestine_1._1to30","Ultrasonography of intestine_2._31_to_180","Ultrasonography of intestine_3._+181",
                                            "Ultrasonography of rectum_1._1to30","Ultrasonography of rectum_2._31_to_180","Ultrasonography of rectum_3._+181",
                                            "Ultrasound of gastrointestinal tract_1._1to30","Ultrasound of gastrointestinal tract_2._31_to_180","Ultrasound of gastrointestinal tract_3._+181",
+                                           "Screening Colonoscopies_1._1to30","Screening Colonoscopies_2._31_to_180","Screening Colonoscopies_3._+181",
+                                           "Endoscopic ultrasound of upper gastrointestinal tract_1._1to30","Endoscopic ultrasound of upper gastrointestinal tract_2._31_to_180","Endoscopic ultrasound of upper gastrointestinal tract_3._+181",
+                                           "Quantitative faecal immunochemical test-READ_1._1to30","Quantitative faecal immunochemical test-READ_2._31_to_180","Quantitative faecal immunochemical test-READ_3._+181",
                                            "Visits_within_healthcare_system_1._1to30", "Visits_within_healthcare_system_2._31_to_180", "Visits_within_healthcare_system_3._+181"))
 
 colnames(colorectal_covariate_names) <- c("covariate")
@@ -231,7 +248,8 @@ lung_covariate_names <- data.frame(c("Bronchoscopy_1._1to30", "Bronchoscopy_2._3
                                      "Mediastinoscopy_1._1to30","Mediastinoscopy_2._31_to_180","Mediastinoscopy_3._+181",
                                      "MRI of chest_1._1to30","MRI of chest_2._31_to_180","MRI of chest_3._+181",
                                      "US scan and biopsy of chest_1._1to30","US scan and biopsy of chest_2._31_to_180","US scan and biopsy of chest_3._+181",
-                                     "Visits_within_healthcare_system_1._1to30", "Visits_within_healthcare_system_2._31_to_180", "Visits_within_healthcare_system_3._+181"))
+                                     "Mediastinoscopy - inspection only_1._1to30", "Mediastinoscopy - inspection only_2._31_to_180", "Mediastinoscopy - inspection only_3._+181",
+                                     "Visits_within_healthcare_system_1._1to30", "Visits_within_healthcare_system_2._31_to_180", "Visits_within_healthcare_system_3._+181",))
 
 colnames(lung_covariate_names) <- c("covariate")
 
@@ -241,6 +259,8 @@ colnames(lung_covariate_names) <- c("covariate")
 prostate_covariate_names <- data.frame(c("Biopsy of prostate_1._1to30","Biopsy of prostate_2._31_to_180","Biopsy of prostate_3._+181",
                                          "Prostate specific antigen measurement_1._1to30", "Prostate specific antigen measurement_2._31_to_180", "Prostate specific antigen measurement_3._+181",                                          
                                          "PSA monitoring_1._1to30", "PSA monitoring_2._31_to_180", "PSA monitoring_3._+181",
+                                         "Open biopsy of prostate_1._1to30","Open biopsy of prostate_2._31_to_180","Open biopsy of prostate_3._+181",
+                                         "Prostate specific antigen measurement - level_1._1to30", "Prostate specific antigen measurement - level_2._31_to_180", "Prostate specific antigen measurement - level_3._+181",
                                          "Visits_within_healthcare_system_1._1to30", "Visits_within_healthcare_system_2._31_to_180", "Visits_within_healthcare_system_3._+181"))
 
 

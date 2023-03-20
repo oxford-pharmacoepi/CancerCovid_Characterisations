@@ -372,6 +372,19 @@ save(list = c("MRI_patients","MRI_id"), file = here("Results", db.name, "Lung", 
 
 print("MRI of chest done")
 
+
+
+
+## 10. MEDIASTINOSCOPY - INSPECTION ONLY ------------------------------------------------
+MED_IN_patients <- get_procedures(4070986, 10)
+MED_IN_id <- get_procedures_id(4070986, 10, "Mediastinoscopy - inspection only")
+
+AnalysisRef  <- rbind(AnalysisRef,c(10,"Mediastinoscopy - inspection only"))
+
+save(list = c("MED_IN_patients","MED_IN_id"), file = here("Results", db.name, "Lung", "Lung_covariates", "Mediastinisciopy_ins.RData"))
+
+print("Mediastinoscopy - inspection only done")
+
 print(paste0("- Lung cancer covariate counts done"))
 info(logger, "- Lung cancer covariate counts done")
 
@@ -392,11 +405,11 @@ CTB_table        <- getIndividualTabs(CTB_id, CTB_patients, individuals_id,  3, 
 USBC_table        <- getIndividualTabs(USBC_id, USBC_patients, individuals_id,  3, FALSE)
 DRP_table        <- getIndividualTabs(DRP_id, DRP_patients, individuals_id, 3, FALSE)
 MRI_table        <- getIndividualTabs(MRI_id, MRI_patients, individuals_id, 3, FALSE)
-
+MED_IN_table        <- getIndividualTabs(MED_IN_id, MED_IN_patients, individuals_id, 3, FALSE)
 
 # Join the tables
 continuous_table <- VI_table %>% union_all(FTRSL_table) %>% union_all(BRONC_table) %>% union_all(EUTNA_table) %>% union_all(MEDIA_table) %>%
-  union_all(CTB_table) %>% union_all(USBC_table) %>% union_all(DRP_table) %>% union_all(MRI_table) %>% ungroup()
+  union_all(CTB_table) %>% union_all(USBC_table) %>% union_all(DRP_table) %>% union_all(MRI_table) %>% union_all(MED_IN_table) %>% ungroup()
 
 # Pivot the continuous table around, and rename person_id as subject_id. This
 # is later used to run the SMD function
@@ -405,12 +418,12 @@ Continuous_table_pivot <- continuous_table %>% right_join(lung_covariate_names) 
   rename("subject_id" = "person_id") %>%
   tidyr::pivot_wider(names_from = covariate, values_from = value,values_fill = 0) 
 
-continuous_table <- Continuous_table_pivot %>% tidyr::pivot_longer(2:28, names_to = "covariate", values_to = "value") 
+continuous_table <- Continuous_table_pivot %>% tidyr::pivot_longer(2:31, names_to = "covariate", values_to = "value") 
 
 # read all the covariate names from the 'forALLCharacterisations_with_functions.R
 namt <- t(lung_covariate_names)
 
-save(list = c("VI_table", "FTRSL_table", "BRONC_table", "EUTNA_table", "MEDIA_table", "CTB_table", "USBC_table", "DRP_table", "MRI_table", 
+save(list = c("VI_table", "FTRSL_table", "BRONC_table", "EUTNA_table", "MEDIA_table", "CTB_table", "USBC_table", "DRP_table", "MRI_table", "MED_IN_table",
               "continuous_table", "Continuous_table_pivot", "namt"), file = here("Results", db.name, "Lung", "Lung_covariates", "LungIndividualTabs.Rdata"))
 
 print(paste0("- Got lung cancer individual covariate tables"))

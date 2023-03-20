@@ -381,9 +381,65 @@ save(list = c("USR_patients","USR_id"), file = here("Results", db.name, "Colorec
 
 print("Ultrasonography of Rectum done")
 
+
+
+## 10. SCREENING COLONOSCOPIES ------------------------------------------------
+SC_patients <- cdm$measurement %>%
+  select(person_id,measurement_concept_id, measurement_date) %>%
+  filter(measurement_concept_id ==40480729) %>%
+  inner_join(list_id) %>% 
+  distinct() %>%
+  collect() %>%
+  rename("Event_date"="measurement_date") %>%
+  mutate(FeatureExtractionId = 40480729010)
+
+SC_id <- tibble(FeatureExtractionId = 40480729010,covariateId = 40480729, covariateName = "Screening Colonoscopies", AnalysisId = 10)
+
+
+AnalysisRef  <- rbind(AnalysisRef,c(10,"Screening Colonoscopies"))
+
+save(list = c("SC_patients","SC_id"), file = here("Results", db.name, "Colorectal", "Colorectal_covariates", "Screening Colonoscopies.RData"))
+
+
+print("Screening Colonoscopies done")
+
+
+
+
+## 11. ENDOSCOPIC ULTRASOUND OF UPPER GASTROINTESTINAL TRACT ------------------------------------------------
+ENDO_GAS_patients <- get_procedures(4061134, 11)
+ENDO_GAS_id <- get_procedures_id(4061134, 11, "Endoscopic ultrasound of upper gastrointestinal tract")
+
+AnalysisRef  <- rbind(AnalysisRef,c(11,"Endoscopic ultrasound of upper gastrointestinal tract"))
+
+save(list = c("ENDO_GAS_patients","ENDO_GAS_id"), file = here("Results", db.name, "Colorectal", "Colorectal_covariates", "Endoscopic ultrasound of upper gastrointestinal tract.RData"))
+
+print("Endoscopic ultrasound of upper gastrointestinal tract done")
+
+
+
+## 12. QUANTITATIVE FAECAL IMMUNOCHEMICAL TEST READ CODE ------------------------------------------------
+QFIT_READ_patients <- cdm$measurement %>%
+  select(person_id,measurement_concept_id, measurement_date) %>%
+  filter(measurement_concept_id ==1397752) %>%
+  inner_join(list_id) %>% 
+  distinct() %>%
+  collect() %>%
+  rename("Event_date"="measurement_date") %>%
+  mutate(FeatureExtractionId = 1397752012)
+
+QFIT_READ_id <- tibble(FeatureExtractionId = 1397752012,covariateId = 1397752, covariateName = "Quantitative faecal immunochemical test-READ code", AnalysisId = 12)
+
+
+AnalysisRef  <- rbind(AnalysisRef,c(12,"Quantitative faecal immunochemical test-READ code"))
+
+save(list = c("QFIT_READ_patients","QFIT_READ_id"), file = here("Results", db.name, "Colorectal", "Colorectal_covariates", "Quantitative faecal immunochemical test-READ code.RData"))
+
+
+print("Quantitative faecal immunochemical test-READ code done")
+
 print(paste0("- Colorectal cancer covariate counts done"))
 info(logger, "- Colorectal cancer covariate counts done")
-
 
 # ========================= INDIVIDUAL TABLES================================= # 
 print(paste0("- Getting colorectal cancer individual covariate tables"))
@@ -399,11 +455,15 @@ SIG_table        <- getIndividualTabs(SIG_id, SIG_patients, individuals_id, 3, F
 USGI_table        <- getIndividualTabs(USGI_id, USGI_patients, individuals_id,  3, FALSE)
 USA_table        <- getIndividualTabs(USA_id, USA_patients, individuals_id, 3, FALSE)
 USR_table        <- getIndividualTabs(USR_id, USR_patients, individuals_id, 3, FALSE)
+SC_table        <- getIndividualTabs(SC_id, SC_patients, individuals_id, 3, FALSE)
+ENDO_GAS_table        <- getIndividualTabs(ENDO_GAS_id, ENDO_GAS_patients, individuals_id, 3, FALSE)
+QFIT_READ_table        <- getIndividualTabs(QFIT_READ_id, QFIT_READ_patients, individuals_id, 3, FALSE)
 
 
 # Join the tables
 continuous_table <- VI_table %>% union_all(BCSP_table) %>% union_all(QFIT_table) %>% union_all(UOI_table) %>% union_all(COLON_table) %>%
-  union_all(SIG_table) %>% union_all(USGI_table) %>% union_all(USA_table) %>% union_all(USR_table) %>% ungroup()
+  union_all(SIG_table) %>% union_all(USGI_table) %>% union_all(USA_table) %>% union_all(USR_table) %>% union_all(SC_table) %>% 
+  union_all(ENDO_GAS_table) %>% union_all(QFIT_READ_table) %>% ungroup()
 
 # Pivot the continuous table around, and rename person_id as subject_id. This
 # is later used to run the SMD function
@@ -412,12 +472,12 @@ Continuous_table_pivot <- continuous_table %>% right_join(colorectal_covariate_n
   rename("subject_id" = "person_id") %>%
   tidyr::pivot_wider(names_from = covariate, values_from = value,values_fill = 0) 
 
-continuous_table <- Continuous_table_pivot %>% tidyr::pivot_longer(2:28, names_to = "covariate", values_to = "value") 
+continuous_table <- Continuous_table_pivot %>% tidyr::pivot_longer(2:37, names_to = "covariate", values_to = "value") 
 
 # read all the covariate names from the 'forAllCharacterisations_with_functions.R
 namt <- t(colorectal_covariate_names)
 
-save(list = c("VI_table", "BCSP_table", "QFIT_table", "UOI_table", "COLON_table", "SIG_table", "USGI_table", "USA_table", "USR_table", 
+save(list = c("VI_table", "BCSP_table", "QFIT_table", "UOI_table", "COLON_table", "SIG_table", "USGI_table", "USA_table", "USR_table", "SC_table", "ENDO_GAS_table", 
               "continuous_table", "Continuous_table_pivot", "namt"), file = here("Results", db.name, "Colorectal", "Colorectal_covariates", "ColorectalIndividualTabs.Rdata"))
 
 print(paste0("- Got colorectal cancer individual covariate tables"))
