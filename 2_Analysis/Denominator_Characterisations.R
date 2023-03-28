@@ -90,10 +90,10 @@ print(paste0("- Getting counts of observations before and after lockdown"))
 info(logger, "- Getting counts of observations before and after lockdown")
 
 # CONCEPT ID'S OF INTEREST
-observation_concepts <- c(4197459,4086282,44791272,4141840,4089031,4136626,44791283,4215705 )
+observation_concepts <- c(4197459,4086282,44791272,4141840,4089031,4136626,44791283,4215705,44791274 )
 observation_covariate_names <- c("Referral to Breast clinic", "Referral to mammography clinic", "Fasttrack referral for suspected breast cancer",
-                                 "Referral to breast surgeon", "Seen in breast clinic","Seen by breast surgeon","Fast track referral for lung cancer","PSA monitoring")
-observation_acronym <- c("RBC","RMC","FTRSBC","RBS","SBC","SBS","FTRLC","PSAM")
+                                 "Referral to breast surgeon", "Seen in breast clinic","Seen by breast surgeon","Fast track referral for suspected lung cancer","PSA monitoring","Fast track referral for suspected colorectal cancer")
+observation_acronym <- c("RBC","RMC","FTRSBC","RBS","SBC","SBS","FTRLC","PSAM","FTRSCC")
 
 
 # Loop to get counts of all observation concepts of interest before and after lockdown

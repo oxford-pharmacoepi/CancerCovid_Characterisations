@@ -144,7 +144,7 @@ all_covariate_names <- data.frame(c("Referral to Breast clinic","Referral to mam
                                     " Mediastinoscopy - inspection only","CT and biopsy of chest","US scan and biopsy of chest","Diagnostic Radiology (Diagnostic Imaging) Procedures of the Chest",    
                                     "MRI of chest","Biopsy of prostate","Open biopsy of prostate","Screening mammography","Diagnostic mammogram and ultrasound-L","Diagnostic mammogram and ultrasound-R",                                
                                     "Bowel cancer screening programme","Quantitative faecal immunochemical tests","Quantitative faecal immunochemical test-READ","Screening colonoscopy",                                                
-                                    "Prostate specific antigen measurement","PSA (prostate-specific antigen) level measurement"))  
+                                    "Prostate specific antigen measurement","PSA (prostate-specific antigen) level measurement", "Fast track referral for suspected colorectal cancer"))  
 
 
 
@@ -232,7 +232,8 @@ colorectal_covariate_names <- data.frame(c("Bowel_cancer_screening_prog_1._1to30
                                            "Screening Colonoscopies_1._1to30","Screening Colonoscopies_2._31_to_180","Screening Colonoscopies_3._+181",
                                            "Endoscopic ultrasound of upper gastrointestinal tract_1._1to30","Endoscopic ultrasound of upper gastrointestinal tract_2._31_to_180","Endoscopic ultrasound of upper gastrointestinal tract_3._+181",
                                            "Quantitative faecal immunochemical test-READ_1._1to30","Quantitative faecal immunochemical test-READ_2._31_to_180","Quantitative faecal immunochemical test-READ_3._+181",
-                                           "Visits_within_healthcare_system_1._1to30", "Visits_within_healthcare_system_2._31_to_180", "Visits_within_healthcare_system_3._+181"))
+                                           "Visits_within_healthcare_system_1._1to30", "Visits_within_healthcare_system_2._31_to_180", "Visits_within_healthcare_system_3._+181",
+                                           "Fast track referral for suspected colorectal cancer_1._1to30", "Fast track referral for suspected colorectal cancer_2._31_to_180", "Fast track referral for suspected colorectal cancer_3._+181"))
 
 colnames(colorectal_covariate_names) <- c("covariate")
 
@@ -249,7 +250,7 @@ lung_covariate_names <- data.frame(c("Bronchoscopy_1._1to30", "Bronchoscopy_2._3
                                      "MRI of chest_1._1to30","MRI of chest_2._31_to_180","MRI of chest_3._+181",
                                      "US scan and biopsy of chest_1._1to30","US scan and biopsy of chest_2._31_to_180","US scan and biopsy of chest_3._+181",
                                      "Mediastinoscopy - inspection only_1._1to30", "Mediastinoscopy - inspection only_2._31_to_180", "Mediastinoscopy - inspection only_3._+181",
-                                     "Visits_within_healthcare_system_1._1to30", "Visits_within_healthcare_system_2._31_to_180", "Visits_within_healthcare_system_3._+181",))
+                                     "Visits_within_healthcare_system_1._1to30", "Visits_within_healthcare_system_2._31_to_180", "Visits_within_healthcare_system_3._+181"))
 
 colnames(lung_covariate_names) <- c("covariate")
 

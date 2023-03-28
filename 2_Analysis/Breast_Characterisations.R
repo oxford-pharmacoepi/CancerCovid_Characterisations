@@ -1,5 +1,5 @@
 # ============================================================================ #
-#                         Custom Characterisations                             #
+#                Custom Characterisations - over 3 time periods                #
 #                               Breast Cancer                                  #
 #                              Nicola Barclay                                  #
 #                                8-12-2022                                     #
@@ -11,20 +11,20 @@ info(logger, "- 2. BREAST CANCER CUSTOM CHARACTERISATIONS")
 print(paste0("- Set up for breast cancer characterisations"))
 info(logger, "- Set up for breast cancer characterisations")
 
-## ---------- VARIABLES OF INTEREST BEFORE AND AFTER LOCKDOWN --------------- ##
+## ---------- VARIABLES OF INTEREST BEFORE, DURING AND AFTER LOCKDOWN --------------- ##
 
 # Read the cancer cohort table name and the cdm databases
 cohorts_db        <- cdm[[outcome_table_name_2]]
 cohorts_db_df <- as.data.frame(cohorts_db)
 
 # Cohorts_ID
-Breast_after       <- 1
-Breast_before      <- 2
-
+BreastCancer_BeforeCOVID       <- 1
+BreastCancer_DuringLockdown      <- 2
+BreastCancer_AfterCOVID   <- 3
 
 # List of individuals 
 individuals_id <- cohorts_db %>% 
-  filter(cohort_definition_id %in% c(Breast_after,Breast_before)) %>%
+  filter(cohort_definition_id %in% c(BreastCancer_BeforeCOVID,BreastCancer_DuringLockdown,BreastCancer_AfterCOVID)) %>%
   select(subject_id, cohort_start_date) %>%
   rename("person_id" = "subject_id", "index_date" = "cohort_start_date" ) %>%
   compute()
@@ -35,7 +35,7 @@ individuals_id <- individuals_id %>% collect()
 
 # uncollect individuals_id to calculate index_date for age below
 individuals_id_for_age <- cohorts_db %>% 
-  filter(cohort_definition_id %in% c(Breast_after,Breast_before)) %>%
+  filter(cohort_definition_id %in% c(BreastCancer_BeforeCOVID,BreastCancer_DuringLockdown,BreastCancer_AfterCOVID)) %>%
   select(subject_id, cohort_start_date) %>%
   rename("person_id" = "subject_id", "index_date" = "cohort_start_date" ) %>%
   compute()
@@ -64,7 +64,7 @@ age_group <- age_patients %>%
     mutate(age_grouping = cut(age, c(0,10,20,30,40,50,60,70,80,90,100,110),labels = c("0 to 9 years", "10 to 19 years","20 to 29 years","30 to 39 years","40 to 49 years","50 to 59 years","60 to 69 years","70 to 79 years","80 to 89 years","90 to 99 years","100+ years"),include.lowest = TRUE, right = FALSE, is.na = FALSE)) %>%
     mutate(agegid = as.numeric(age_grouping)) 
  
-# -------- SMD OF AGE AT INDEX DATE BEFORE AND AFTER LOCKDOWN -----------------#
+# -------- SMD OF AGE AT INDEX DATE BEFORE, DURING AND AFTER LOCKDOWN -----------------#
 
 age_1 <- age_patients %>%
   rename("subject_id"="person_id") %>% 
@@ -86,46 +86,48 @@ age_2 <- age_patients %>%
 mean_age_2 <-  mean(age_2$age) %>% print()
 var_age_2 <- var(age_2$age) %>% print()
 
-  
-age_table1  <- rbind(mean_age_1,var_age_1,mean_age_2,var_age_2) %>% as.data.frame() %>% dplyr::mutate_if(is.numeric, round, digits = 2)
+age_3 <- age_patients %>%
+  rename("subject_id"="person_id") %>% 
+  left_join(cohorts_db_df, by = "subject_id") %>% 
+  filter(cohort_definition_id ==3) %>%
+  filter(index_date==cohort_start_date) %>%
+  collect() 
 
-age_table_SMD  <- tibble(mean_age_1 = t(age_table1[1,])[,1], var_age_1 = t(age_table1[2,])[,1], mean_age_2 = t(age_table1[3,])[,1], var_age_2 = t(age_table1[4,])[,1]) %>%
-  mutate(smd = abs(mean_age_1-mean_age_2)/sqrt(var_age_1+var_age_2)) %>% print()
+mean_age_3 <-  mean(age_3$age) %>% print()
+var_age_3 <- var(age_3$age) %>% print()
+
+  
+age_table1  <- rbind(mean_age_1,var_age_1,mean_age_2,var_age_2,mean_age_3,var_age_3) %>% as.data.frame() %>% dplyr::mutate_if(is.numeric, round, digits = 2)
+
+age_table_SMD  <- tibble(mean_age_1 = t(age_table1[1,])[,1], var_age_1 = t(age_table1[2,])[,1], 
+                         mean_age_2 = t(age_table1[3,])[,1], var_age_2 = t(age_table1[4,])[,1],
+                         mean_age_3 = t(age_table1[5,])[,1], var_age_3 = t(age_table1[6,])[,1]) %>%
+  mutate("Pre/During SMD" = abs(mean_age_1-mean_age_2)/sqrt(var_age_1+var_age_2)) %>% 
+  mutate("Pre/Post SMD" = abs(mean_age_1-mean_age_3)/sqrt(var_age_1+var_age_3)) %>% print()
 
 
 age_table_formatted <- age_table_SMD %>% dplyr::mutate_if(is.numeric, round, digits = 2) %>%  
-                       dplyr::mutate("Breast Cancer Before Lockdown" = glue("{mean_age_2} ({var_age_2})")) %>%
-                       dplyr::mutate("Breast Cancer After Lockdown" = glue("{mean_age_1} ({var_age_1})")) %>% 
-                       rename( "Standardised Mean Difference" = "smd")
-age_table_formatted <- age_table_formatted[-c(1:4)] #  remove superfluous columns
-age_table_formatted <- age_table_formatted[, c(2, 3, 1)] # reorder the columns
+                       dplyr::mutate("Age at diagnosis before lockdown" = glue("{mean_age_1} ({var_age_1})")) %>%
+                       dplyr::mutate("Age at diagnosis during lockdown" = glue("{mean_age_2} ({var_age_2})")) %>% 
+                       dplyr::mutate("Age at diagnosis after lockdown" = glue("{mean_age_3} ({var_age_3})")) 
+
+age_table_formatted <- age_table_formatted[-c(1:6)] #  remove superfluous columns
+age_table_formatted <- age_table_formatted[, c(3, 4, 5, 1, 2)] # reorder the columns
 age_table_formatted
 
 Pretty_mean_age_table <- flextable(age_table_formatted) %>% theme_vanilla() %>% 
-  set_caption(caption = "Mean (variance) of age at date of breast cancer diagnosis before and after lockdown") %>% 
+  set_caption(caption = "Mean (variance) of age at date of breast cancer diagnosis before, during and after lockdown") %>% 
   width(width = 1.4) 
 
 # save the table as a csv file
 write.csv(age_table_formatted, here("Results", db.name, "Breast", "age_table_formatted_breast.csv"), row.names = FALSE)
+save(age_table_formatted, file = here("Results", db.name, "Breast", "age_table_formatted.RData"))
+
+# save the table as docx
+save_as_docx('Breast_mean_age_table' = Pretty_mean_age_table, path=here("Results", db.name, "Breast", "breast_age_table_formatted.docx"))
 
 
-# save the table as pdf
-analysis.name <- "Breast"
-tablename <- paste0("mean_age_table", db.name, analysis.name, ".pdf")
-
-
-
-# THIS DOESN'T WORK - OUTPUT NOT SHOWN IN R GRAPHICS OUTPUT
-pdf(here("Results", db.name , "Breast",tablename),
-    width = 10, height = 8)
-print(Pretty_mean_age_table, newpage = FALSE)
-dev.off()
-
-save_as_image(Pretty_mean_age_table, here("Results", db.name , "Breast",tablename), 
-              zoom=1, expand=100, webshot = "webshot")
-
-
-# FREQUENCIES OF AGES AT INDEX DATE FOR PATIENTS DIAGNOSED AFTER LOCKDOWN ------
+# FREQUENCIES OF AGES AT INDEX DATE FOR PATIENTS DIAGNOSED BEFORE LOCKDOWN ------
 age_table_1 <- age_group %>% 
   rename("subject_id"="person_id") %>% 
   left_join(cohorts_db_df, by = "subject_id") %>% 
@@ -135,11 +137,22 @@ age_table_1 <- age_group %>%
   tally() %>% 
   print()
 
-# FREQUENCIES OF AGES AT INDEX DATE FOR PATIENTS DIAGNOSED BEFORE LOCKDOWN -----
+# FREQUENCIES OF AGES AT INDEX DATE FOR PATIENTS DIAGNOSED DURING LOCKDOWN -----
 age_table_2 <- age_group %>% 
   rename("subject_id"="person_id") %>% 
   left_join(cohorts_db_df, by = "subject_id") %>% 
   filter(cohort_definition_id ==2) %>%
+  filter(index_date==cohort_start_date) %>%
+  group_by(age_grouping) %>%
+  tally() %>% 
+  print()
+
+
+# FREQUENCIES OF AGES AT INDEX DATE FOR PATIENTS DIAGNOSED AFTER LOCKDOWN -----
+age_table_3 <- age_group %>% 
+  rename("subject_id"="person_id") %>% 
+  left_join(cohorts_db_df, by = "subject_id") %>% 
+  filter(cohort_definition_id ==3) %>%
   filter(index_date==cohort_start_date) %>%
   group_by(age_grouping) %>%
   tally() %>% 
@@ -152,38 +165,35 @@ age_group_labels <- c("0 to 9 years", "10 to 19 years","20 to 29 years","30 to 3
 
 age_group_labels <- as.data.frame(age_group_labels) %>% rename("age_grouping" = "V1") %>% select("age_grouping")
 
-age_table_1 <- age_table_1 %>% rename("Breast Cancer after lockdown"="n")
-age_table_2 <- age_table_2 %>% rename("Breast Cancer before lockdown"="n")
+age_table_1 <- age_table_1 %>% rename("N diagnosed before lockdown"="n")
+age_table_2 <- age_table_2 %>% rename("N diagnosed during lockdown"="n")
+age_table_3 <- age_table_3 %>% rename("N diagnosed after lockdown"="n")
 
 # get the age grouping tables and join them with the full rows of categories and replace NAs with 0
 age_table_1 <- age_group_labels  %>% left_join(age_table_1) %>% replace(is.na(.), 0) %>% print()
 age_table_2 <- age_group_labels  %>% left_join(age_table_2) %>% replace(is.na(.), 0) %>% print()
+age_table_3 <- age_group_labels  %>% left_join(age_table_3) %>% replace(is.na(.), 0) %>% print()
 
-Age_table_both_breast_cohorts <- age_table_2 %>% left_join(age_table_1) %>% rename("Age Group" = "age_grouping") %>% print()
+Age_table_all_breast_cohorts <- age_table_1 %>% right_join(age_table_2) %>% right_join(age_table_3) %>% rename("Age Group" = "age_grouping") %>% print()
 
-Pretty_age_group_table <- flextable(Age_table_both_breast_cohorts) %>% theme_vanilla() %>% 
-  set_caption(caption = "Age at date of breast cancer diagnosis before and after lockdown") %>% 
+Pretty_age_group_table <- flextable(Age_table_all_breast_cohorts) %>% theme_vanilla() %>% 
+  set_caption(caption = "Age at date of breast cancer diagnosis before, during and after lockdown") %>% 
   width(width = 1.4)  
 
 
 # save the table as a csv file
-write.csv(Age_table_both_breast_cohorts, here("Results", db.name, "Breast", "Age_table_both_breast_cohorts.csv"), row.names = FALSE)
-#write.csv(Age_table_both_breast_cohorts, "~/R/CancerCovid/Custom Characterisations/Breast/Age_table_both_breast_cohorts.csv", row.names = FALSE)
+write.csv(Age_table_all_breast_cohorts, here("Results", db.name, "Breast", "Age_table_all_breast_cohorts.csv"), row.names = FALSE)
 
+# save the table as docx
+save_as_docx('Breast_age_counts_table' = Pretty_age_group_table, path=here("Results", db.name, "Breast", "breast_age_counts_table.docx"))
 
-analysis.name <- "Breast"
-tablename <- paste0("age_group_table", db.name, analysis.name, ".pdf")
-
-# save the table as pdf
-save_as_image(Pretty_age_group_table, here("Results", db.name , "Breast",tablename), 
-              zoom=1, expand=100, webshot = "webshot")
 
 # save RData objects
-save(Pretty_mean_age_table, Pretty_age_group_table, Age_table_both_breast_cohorts, age_table_formatted, file = here("Results", db.name, "Breast", "BreastAge.RData"))
+save(Pretty_mean_age_table, Pretty_age_group_table, Age_table_all_breast_cohorts, age_table_formatted, file = here("Results", db.name, "Breast", "BreastAge.RData"))
 
 print("Age done")
 
-# GENDER BREAST CANCER COHORT AFTER LOCKDOWN ----------------------------
+# GENDER BREAST CANCER COHORT BEFORE LOCKDOWN ----------------------------
 gender_patients_1 <-  list_id %>% 
   left_join(person_db) %>%
   select(person_id,gender_concept_id) %>%
@@ -201,7 +211,7 @@ gender_patients_1 <-  list_id %>%
 
 
 
-# GENDER BREAST CANCER COHORT BEFORE LOCKDOWN ----------------------------
+# GENDER BREAST CANCER COHORT DURING LOCKDOWN ----------------------------
 gender_patients_2 <-  list_id %>% 
   left_join(person_db) %>%
   select(person_id,gender_concept_id) %>%
@@ -217,30 +227,48 @@ gender_patients_2 <-  list_id %>%
   tally() %>%
   print()
 
-gender_table_1 <- gender_patients_1 %>% rename("n_after_lockdown" = "n")
-gender_table_2 <- gender_patients_2 %>% rename("n_before_lockdown" = "n")
 
-gender_table <- gender_table_2 %>% left_join(gender_table_1) %>% replace(is.na(.), 0)
+# GENDER BREAST CANCER COHORT AFTER LOCKDOWN ----------------------------
+gender_patients_3 <-  list_id %>% 
+  left_join(person_db) %>%
+  select(person_id,gender_concept_id) %>%
+  rename("subject_id" ="person_id") %>%
+  inner_join(cohorts_db, by = "subject_id") %>%
+  filter(cohort_definition_id==3) %>%
+  collect() %>%
+  distinct() %>%
+  mutate(value = if_else(gender_concept_id==8532,1,2)) %>%
+  select(-gender_concept_id) %>%
+  mutate(sex = if_else(value==1,"Female","Male")) %>%
+  group_by(sex) %>%
+  tally() %>%
+  print()
+
+gender_table_1 <- gender_patients_1 %>% rename(n_diagnosed_before_lockdown = "n")
+gender_table_2 <- gender_patients_2 %>% rename(n_diagnosed_during_lockdown = "n")
+gender_table_3 <- gender_patients_3 %>% rename(n_diagnosed_after_lockdown = "n")
+
+gender_table <- gender_table_1 %>% right_join(gender_table_2) %>% right_join(gender_table_3) %>% replace(is.na(.), 0)
 
 gender_table <- gender_table %>%
-  mutate(n_before_lockdown = paste0(n_before_lockdown, " (", round(100*n_before_lockdown/sum(n_before_lockdown),1), "%)")) %>%
-  mutate(n_after_lockdown = paste0(n_after_lockdown, " (", round(100*n_after_lockdown/sum(n_after_lockdown),1), "%)")) 
+  mutate("n diagnosed before lockdown" = paste0(n_diagnosed_before_lockdown, " (", round(100*n_diagnosed_before_lockdown/sum(n_diagnosed_before_lockdown),1), "%)")) %>%
+  mutate("n diagnosed during lockdown" = paste0(n_diagnosed_during_lockdown, " (", round(100*n_diagnosed_during_lockdown/sum(n_diagnosed_during_lockdown),1), "%)")) %>%
+  mutate("n diagnosed after lockdown" = paste0(n_diagnosed_after_lockdown, " (", round(100*n_diagnosed_after_lockdown/sum(n_diagnosed_after_lockdown),1), "%)"))
+
   
+gender_table <- gender_table[-c(2:4)] #  remove superfluous columns
+
 Pretty_gender_table <- flextable(gender_table) %>%
-  set_caption(caption = "Gender of breast cancer patients in groups before and after lockdown") %>% 
+  set_caption(caption = "Gender of breast cancer patients in groups before, during and after lockdown") %>% 
   width(width = 1.4)  
 
 
 # save the table as a csv file
-write.csv(gender_table, here("Results", db.name, "Breast", "Gender_table_both_breast_cohorts.csv"), row.names = FALSE)
+write.csv(gender_table, here("Results", db.name, "Breast", "Gender_table_all_breast_cohorts.csv"), row.names = FALSE)
 
 
-# create file name
-tablename <- paste0("gender_table", db.name, analysis.name, ".pdf")
-
-# save the table as pdf
-save_as_image(Pretty_gender_table, here("Results", db.name , "Breast",tablename), 
-              zoom=1, expand=100, webshot = "webshot")
+# save the table as docx
+save_as_docx('Breast_gender_counts_table' = Pretty_gender_table, path=here("Results", db.name, "Breast", "breast_gender_counts_table.docx"))
 
 
 # save RData objects
@@ -326,7 +354,42 @@ save(list = c("RBS_patients","RBS_id"), file = here("Results", db.name, "Breast"
 print("Referral to breast surgeon done")
 
 
-## 6. SCREENING MAMMOGRAMS -----------------------------------------------------
+## 6. SEEN IN BREAST CLINIC ----------------------------------------------------
+SBC_patients <- get_observations(4089031, 6)
+SBC_id <- get_observations_id(4089031, 6, "Seen in breast clinic")
+
+AnalysisRef  <- rbind(AnalysisRef,c(6,"Seen in breast clinic"))
+
+save(list = c("SBC_patients","SBC_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Seen_breast_clinic.RData"))
+
+print("Seen in breast clinic done")
+
+
+## 7. SEEN BY BREAST SURGEON --------------------------------------------------
+SBS_patients <- get_observations(4136626, 7)
+SBS_id <- get_observations_id(4136626, 7, "Seen by breast surgeon")
+
+AnalysisRef  <- rbind(AnalysisRef,c(7,"Seen by breast surgeon"))
+
+save(list = c("SBS_patients","SBS_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Seen_breast_surgeon.RData"))
+
+print("Seen by breast surgeon done")
+
+
+
+
+## 8. DIAGNOSTIC MAMMOGRAMS ----------------------------------------------------
+DM_patients <- get_procedures(4324693, 7)
+DM_id <- get_procedures_id(4324693, 7, "Diagnostic mammograms")
+
+AnalysisRef  <- rbind(AnalysisRef,c(7,"Diagnostic mammograms"))
+
+save(list = c("DM_patients","DM_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Diagnostic_mammograms.RData"))
+
+print("Diagnostic mammograms done")
+
+
+## 9. SCREENING MAMMOGRAMS -----------------------------------------------------
 SM_patients <- cdm$measurement %>%
   select(person_id,measurement_concept_id, measurement_date) %>%
   filter(measurement_concept_id ==4077697) %>%
@@ -334,42 +397,18 @@ SM_patients <- cdm$measurement %>%
   distinct() %>%
   collect() %>%
   rename("Event_date"="measurement_date") %>%
-  mutate(FeatureExtractionId = 4077697006)
-  
-SM_id <- tibble(FeatureExtractionId = 4077697006, covariateId = 4077697, covariateName = "Screening mammography", AnalysisId = 6)
+  mutate(FeatureExtractionId = 4077697009)
 
-AnalysisRef  <- rbind(AnalysisRef,c(6,"Screening mammography"))
+SM_id <- tibble(FeatureExtractionId = 4077697009, covariateId = 4077697, covariateName = "Screening mammography", AnalysisId = 9)
+
+AnalysisRef  <- rbind(AnalysisRef,c(9,"Screening mammography"))
 
 save(list = c("SM_patients","SM_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Screening_mammography.RData"))
 
 print("Screening mammograms done")
 
 
-DMUS_patients <- 
-
-## 7. SEEN IN BREAST CLINIC ----------------------------------------------------
-SBC_patients <- get_observations(4089031, 7)
-SBC_id <- get_observations_id(4089031, 7, "Seen in breast clinic")
-
-AnalysisRef  <- rbind(AnalysisRef,c(7,"Seen in breast clinic"))
-
-save(list = c("SBC_patients","SBC_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Seen_breast_clinic.RData"))
-
-print("Seen in breast clinic done")
-
-
-## 8. DIAGNOSTIC MAMMOGRAMS ----------------------------------------------------
-DM_patients <- get_procedures(4324693, 8)
-DM_id <- get_procedures_id(4324693, 8, "Diagnostic mammograms")
-
-AnalysisRef  <- rbind(AnalysisRef,c(8,"Diagnostic mammograms"))
-
-save(list = c("DM_patients","DM_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Diagnostic_mammograms.RData"))
-
-print("Diagnostic mammograms done")
-
-
-## 9. DIAGNOSTIC MAMMOGRAM AND ULTRASOUND - MEASUREMENT - STANDALONE CODE ------
+## 10. 11 DIAGNOSTIC MAMMOGRAM AND ULTRASOUND - MEASUREMENT - STANDALONE CODE ------
 DMUS_patients <- cdm$measurement %>%
   select(person_id,measurement_concept_id, measurement_date) %>%
   filter(measurement_concept_id ==c(36203740, 36203750)) %>%
@@ -377,11 +416,11 @@ DMUS_patients <- cdm$measurement %>%
   distinct() %>%
   collect() %>%
   rename("Event_date"="measurement_date") %>%
-  mutate(FeatureExtractionId = 36203740009)
+  mutate(FeatureExtractionId = 36203740010)
 
-DMUS_id <- tibble(FeatureExtractionId = 36203740009,covariateId = 36203740, covariateName = "Diagnostic mammogram and ultrasound", AnalysisId = 9)
+DMUS_id <- tibble(FeatureExtractionId = 36203740010,covariateId = 36203740, covariateName = "Diagnostic mammogram and ultrasound", AnalysisId = 10)
 
-AnalysisRef  <- rbind(AnalysisRef,c(9,"Diagnostic mammogram and ultrasound"))
+AnalysisRef  <- rbind(AnalysisRef,c(10,"Diagnostic mammogram and ultrasound"))
 
 save(list = c("DMUS_patients","DMUS_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Diagnostic_mammogram_ultrasound.RData"))
 
@@ -389,33 +428,33 @@ print("Diagnostic mammogram and ultrasound done")
 
 
 
-## 10. BIOPSY OF BREAST --------------------------------------------------------
-BB_patients <- get_procedures(4047494, 10)
-BB_id <- get_procedures_id(4047494, 10, "Biopsy of breast")
+## 12. BIOPSY OF BREAST --------------------------------------------------------
+BB_patients <- get_procedures(4047494, 12)
+BB_id <- get_procedures_id(4047494, 12, "Biopsy of breast")
 
-AnalysisRef  <- rbind(AnalysisRef,c(10,"Biopsy of breast"))
+AnalysisRef  <- rbind(AnalysisRef,c(12,"Biopsy of breast"))
 
 save(list = c("BB_patients","BB_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Biopsy_breast.RData"))
 
 print("Biopsy of breast done")
 
 
-## 11. STEREOTACTICALLY GUIDED CORE NEEDLE BIOPSY OF BREAST --------------------
-SNBB_patients <- get_procedures(4022932, 11)
-SNBB_id <- get_procedures_id(4022932, 11, "Stereotactically guided core needle biopsy of breast")
+## 13. STEREOTACTICALLY GUIDED CORE NEEDLE BIOPSY OF BREAST --------------------
+SNBB_patients <- get_procedures(4022932, 13)
+SNBB_id <- get_procedures_id(4022932, 13, "Stereotactically guided core needle biopsy of breast")
 
-AnalysisRef  <- rbind(AnalysisRef,c(11,"Stereotactically guided core needle biopsy of breast"))
+AnalysisRef  <- rbind(AnalysisRef,c(13,"Stereotactically guided core needle biopsy of breast"))
 
 save(list = c("SNBB_patients","SNBB_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Sterotactically_biopsy_breast.RData"))
 
 print("Stereotactically guided core needle biopsy of breast done")
 
 
-## 12. PERCUTANEOUS NEEDLE BIOPSY OF BREAST ------------------------------------
-PNB_patients <- get_procedures(4028790, 12)
-PNB_id <- get_procedures_id(4028790, 12, "Percutaneous needle biopsy of breast")
+## 14. PERCUTANEOUS NEEDLE BIOPSY OF BREAST ------------------------------------
+PNB_patients <- get_procedures(4028790, 14)
+PNB_id <- get_procedures_id(4028790, 14, "Percutaneous needle biopsy of breast")
 
-AnalysisRef  <- rbind(AnalysisRef,c(12,"Percutaneous needle biopsy of breast"))
+AnalysisRef  <- rbind(AnalysisRef,c(14,"Percutaneous needle biopsy of breast"))
 
 save(list = c("PNB_patients","PNB_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Percutaneous_needle_biopsy.RData"))
 
@@ -424,21 +463,21 @@ print("Percutaneous needle biopsy of breast done")
 
 
 ## 13. FINE NEEDLE ASPIRATION OF BREAST ----------------------------------------
-FNA_patients <- get_procedures(4306207, 13)
-FNA_id <- get_procedures_id(4306207, 13, "Fine needle aspiration of breast")
+FNA_patients <- get_procedures(4306207, 15)
+FNA_id <- get_procedures_id(4306207, 15, "Fine needle aspiration of breast")
 
-AnalysisRef  <- rbind(AnalysisRef,c(13,"Fine needle aspiration of breast"))
+AnalysisRef  <- rbind(AnalysisRef,c(15,"Fine needle aspiration of breast"))
 
 save(list = c("FNA_patients","FNA_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Fine_needle_aspiration.RData"))
 
 print("Fine needle aspiration of breast done")
 
 
-## 14. WIRE GUIDED LOCAL EXCISION ----------------------------------------------
-WGLE_patients <- get_procedures(4216180, 14)
-WGLE_id <- get_procedures_id(4216180, 14, "Wire guided local excision of breast lump")
+## 16. WIRE GUIDED LOCAL EXCISION ----------------------------------------------
+WGLE_patients <- get_procedures(4216180, 16)
+WGLE_id <- get_procedures_id(4216180, 16, "Wire guided local excision of breast lump")
 
-AnalysisRef  <- rbind(AnalysisRef,c(14,"Wire guided local excision of breast lump"))
+AnalysisRef  <- rbind(AnalysisRef,c(16,"Wire guided local excision of breast lump"))
 
 save(list = c("WGLE_patients","WGLE_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Wire_guided_local_excision.RData"))
 
@@ -446,59 +485,50 @@ save(list = c("WGLE_patients","WGLE_id"), file = here("Results", db.name, "Breas
 print("Wire guided local excision of breast lump done")
 
 
-## 15. EXCISION OF MAMMARY DUCT ------------------------------------------------
-EMD_patients <- get_procedures(4146780, 15)
-EMD_id <- get_procedures_id(4146780, 15, "Excision of mammary duct")
+## 17. EXCISION OF MAMMARY DUCT ------------------------------------------------
+EMD_patients <- get_procedures(4146780, 17)
+EMD_id <- get_procedures_id(4146780, 17, "Excision of mammary duct")
 
-AnalysisRef  <- rbind(AnalysisRef,c(15,"Excision of mammary duct"))
+AnalysisRef  <- rbind(AnalysisRef,c(17,"Excision of mammary duct"))
 
 save(list = c("EMD_patients","EMD_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Excision_mammary_duct.RData"))
 
 print("Excision of mammary duct done")
 
 
-## 16. WIDE LOCAL EXCISION OF BREAST LESION ------------------------------------
-WLEBL_patients <- get_procedures(4129190, 16)
-WLEBL_id <- get_procedures_id(4129190, 16, "Wide local excision of breast lesion")
+## 18. WIDE LOCAL EXCISION OF BREAST LESION ------------------------------------
+WLEBL_patients <- get_procedures(4129190, 18)
+WLEBL_id <- get_procedures_id(4129190, 18, "Wide local excision of breast lesion")
 
-AnalysisRef  <- rbind(AnalysisRef,c(16,"Wide local excision of breast lesion"))
+AnalysisRef  <- rbind(AnalysisRef,c(18,"Wide local excision of breast lesion"))
 
 save(list = c("WLEBL_patients","WLEBL_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Wide_local_excision_breast_lesion.RData"))
 
 print("Wide local excision of breast lesion done")
 
 
-## 17. EXCISION OF LESION OF BREAST --------------------------------------------
-ELB_patients <- get_procedures(4194124, 17)
-ELB_id <- get_procedures_id(4194124, 17, "Excision of lesion of breast")
+## 19. EXCISION OF LESION OF BREAST --------------------------------------------
+ELB_patients <- get_procedures(4194124, 19)
+ELB_id <- get_procedures_id(4194124, 19, "Excision of lesion of breast")
 
-AnalysisRef  <- rbind(AnalysisRef,c(17,"Excision of lesion of breast"))
+AnalysisRef  <- rbind(AnalysisRef,c(19,"Excision of lesion of breast"))
 
 save(list = c("ELB_patients","ELB_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Excision_lesion_breast.RData"))
 
 print("Excision of lesion of breast done")
 
 
-## 18. EXCISION OF BREAST TISSUE -----------------------------------------------
-EBT_patients <- get_procedures(4286804, 18)
-EBT_id <- get_procedures_id(4286804, 18, "Excision of breast tissue")
+## 20. EXCISION OF BREAST TISSUE -----------------------------------------------
+EBT_patients <- get_procedures(4286804, 20)
+EBT_id <- get_procedures_id(4286804, 20, "Excision of breast tissue")
 
-AnalysisRef  <- rbind(AnalysisRef,c(18,"Excision of breast tissue"))
+AnalysisRef  <- rbind(AnalysisRef,c(20,"Excision of breast tissue"))
 
 save(list = c("EBT_patients","EBT_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Excision_breast_tissue.RData"))
 
 print("Excision of breast tissue done")
 
 
-## 19. SEEN BY BREAST SURGEON --------------------------------------------------
-SBS_patients <- get_observations(4136626, 19)
-SBS_id <- get_observations_id(4136626, 19, "Seen by breast surgeon")
-
-AnalysisRef  <- rbind(AnalysisRef,c(19,"Seen by breast surgeon"))
-
-save(list = c("SBS_patients","SBS_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Seen_breast_surgeon.RData"))
-
-print("Seen by breast surgeon done")
 
 
 print(paste0("- Breast cancer covariate counts done"))
@@ -516,9 +546,10 @@ RBC_table        <- getIndividualTabs(RBC_id, RBC_patients, individuals_id, 3, F
 RMC_table        <- getIndividualTabs(RMC_id, RMC_patients, individuals_id, 3, FALSE)
 FTRBC_table      <- getIndividualTabs(FTRBC_id, FTRBC_patients, individuals_id,  3, FALSE)
 RBS_table        <- getIndividualTabs(RBS_id, RBS_patients, individuals_id, 3, FALSE)
-SM_table        <- getIndividualTabs(SM_id, SM_patients, individuals_id, 3, FALSE)
 SBC_table        <- getIndividualTabs(SBC_id, SBC_patients, individuals_id, 3, FALSE)
+SBS_table        <- getIndividualTabs(SBS_id, SBS_patients, individuals_id, 3, FALSE)
 DM_table        <- getIndividualTabs(DM_id, DM_patients, individuals_id, 3, FALSE)
+SM_table        <- getIndividualTabs(SM_id, SM_patients, individuals_id, 3, FALSE)
 DMUS_table        <- getIndividualTabs(DMUS_id, DMUS_patients, individuals_id, 3, FALSE)
 BB_table        <- getIndividualTabs(BB_id, BB_patients, individuals_id, 3, FALSE)
 SNBB_table        <- getIndividualTabs(SNBB_id, SNBB_patients, individuals_id, 3, FALSE)
@@ -529,13 +560,22 @@ EMD_table        <- getIndividualTabs(EMD_id, EMD_patients, individuals_id, 3, F
 WLEBL_table        <- getIndividualTabs(WLEBL_id, WLEBL_patients, individuals_id, 3, FALSE)
 ELB_table        <- getIndividualTabs(ELB_id, ELB_patients, individuals_id, 3, FALSE)
 EBT_table        <- getIndividualTabs(EBT_id, EBT_patients, individuals_id, 3, FALSE)
-SBS_table        <- getIndividualTabs(SBS_id, SBS_patients, individuals_id, 3, FALSE)
+
+
 
 # Join the tables
 continuous_table <- VI_table %>% union_all(RBC_table) %>% union_all(RMC_table) %>% union_all(FTRBC_table) %>% union_all(RBS_table) %>%
-  union_all(SM_table) %>% union_all(SBC_table) %>% union_all(DM_table) %>% union_all(DMUS_table) %>% union_all(BB_table) %>% 
+   union_all(SBC_table) %>% union_all(SBS_table) %>% union_all(DM_table) %>%   union_all(SM_table) %>% union_all(DMUS_table) %>% union_all(BB_table) %>% 
   union_all(SNBB_table) %>% union_all(PNB_table) %>% union_all(FNA_table) %>% union_all(WGLE_table) %>% union_all(EMD_table) %>% 
-  union_all(WLEBL_table) %>% union_all(ELB_table) %>% union_all(EBT_table) %>% union_all(SBS_table) %>%ungroup()
+  union_all(WLEBL_table) %>% union_all(ELB_table) %>% union_all(EBT_table)  %>%ungroup()
+
+save(list = c("VI_table", "RBC_table", "RMC_table", "FTRBC_table", "RBS_table", "SM_table", "SBC_table", "DM_table", "DMUS_table", 
+              "BB_table", "SNBB_table", "PNB_table", "FNA_table", "WGLE_table", "EMD_table", "WLEBL_table", "ELB_table", "EBT_table", 
+              "SBS_table", "continuous_table"),  
+     file = here("Results", db.name, "Breast", "Breast_covariates", "BreastIndividualTabs.Rdata"))
+
+
+# up to here
 
 # Pivot the continuous table around, and rename person_id as subject_id. This
 # is later used to run the SMD function
@@ -549,10 +589,7 @@ continuous_table <- Continuous_table_pivot %>% tidyr::pivot_longer(2:58, names_t
 # read all the covariate names from the 'forAllCharacterisations_with_functions.R
 namt <- t(breast_covariate_names)
 
-save(list = c("VI_table", "RBC_table", "RMC_table", "FTRBC_table", "RBS_table", "SM_table", "SBC_table", "DM_table", "DMUS_table", 
-              "BB_table", "SNBB_table", "PNB_table", "FNA_table", "WGLE_table", "EMD_table", "WLEBL_table", "ELB_table", "EBT_table", 
-              "SBS_table", "continuous_table", "Continuous_table_pivot", "namt"),  
-     file = here("Results", db.name, "Breast", "Breast_covariates", "BreastIndividualTabs.Rdata"))
+
 
 print(paste0("- Got breast cancer individual covariate tables"))
 info(logger, "- Got breast cancer individual covariate tables")
