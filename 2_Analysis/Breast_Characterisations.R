@@ -314,7 +314,7 @@ RBC_id <- get_observations_id(4197459, 2, "Referral_to_breast_clinic")
 
 AnalysisRef  <- rbind(AnalysisRef,c(2,"Referral_to_breast_clinic"))
 
-save(list = c("RBC_patients","RBC_id"), file = here("Results", db.name, "Breast", "Breast_covariates", Referral_to_breast_clinic.RData))
+save(list = c("RBC_patients","RBC_id"), file = here("Results", db.name, "Breast", "Breast_covariates", "Referral_to_breast_clinic.RData"))
 
 print("Referral to breast clinic done")
 
@@ -392,7 +392,9 @@ print("Diagnostic mammograms done")
 ## 9. SCREENING MAMMOGRAMS -----------------------------------------------------
 SM_patients <- cdm$measurement %>%
   select(person_id,measurement_concept_id, measurement_date) %>%
-  filter(measurement_concept_id ==4077697) %>%
+  inner_join(cdm$concept_ancestor %>% 
+               filter(ancestor_concept_id == 4077697) %>%
+               select("measurement_concept_id" = "descendant_concept_id")) %>%
   inner_join(list_id) %>% 
   distinct() %>%
   collect() %>%
@@ -411,7 +413,9 @@ print("Screening mammograms done")
 ## 10. 11 DIAGNOSTIC MAMMOGRAM AND ULTRASOUND - MEASUREMENT - STANDALONE CODE ------
 DMUS_patients <- cdm$measurement %>%
   select(person_id,measurement_concept_id, measurement_date) %>%
-  filter(measurement_concept_id ==c(36203740, 36203750)) %>%
+  inner_join(cdm$concept_ancestor %>% 
+               filter(ancestor_concept_id == 36203740) %>%
+               select("measurement_concept_id" = "descendant_concept_id")) %>%
   inner_join(list_id) %>% 
   distinct() %>%
   collect() %>%
@@ -575,8 +579,6 @@ save(list = c("VI_table", "RBC_table", "RMC_table", "FTRBC_table", "RBS_table", 
      file = here("Results", db.name, "Breast", "Breast_covariates", "BreastIndividualTabs.Rdata"))
 
 
-# up to here
-
 # Pivot the continuous table around, and rename person_id as subject_id. This
 # is later used to run the SMD function
 Continuous_table_pivot <- continuous_table %>% inner_join(breast_covariate_names) %>%
@@ -601,16 +603,16 @@ print(paste0("- Getting aggregated counts of breast cancer covariate tables"))
 info(logger, "- Getting aggregated counts of breast cancer covariate tables")
 
 # All tables joined together
-# Cohort 1 - breast cancer after lockdown
+# Cohort 1 - breast cancer before lockdown
 All_tables_counts1 <- continuous_table %>%  
   inner_join(cohorts_db_df, by = "subject_id") %>% 
   filter(cohort_definition_id ==1) %>%
   group_by(covariate) %>% 
-  tally(value) %>% 
+  tally(value)%>% 
     print(n=57)
 
 
-# cohort 2 - breast cancer before lockdown
+# cohort 2 - breast cancer during lockdown
 All_tables_counts2 <- continuous_table %>%  
   inner_join(cohorts_db_df, by = "subject_id") %>% 
   filter(cohort_definition_id ==2) %>%
@@ -618,20 +620,36 @@ All_tables_counts2 <- continuous_table %>%
   tally(value) %>% 
     print(n=57)
 
-All_tables_counts1 <- All_tables_counts1 %>% rename("n after lockdown" = "n") %>% rename("Covariate" = "covariate")
-All_tables_counts2 <- All_tables_counts2 %>% rename("n before lockdown" = "n") %>% rename("Covariate" = "covariate")
 
-All_count_joined <- All_tables_counts2 %>% inner_join(All_tables_counts1) %>% print()
+# cohort 3 - breast cancer after lockdown
+All_tables_counts3 <- continuous_table %>%  
+  inner_join(cohorts_db_df, by = "subject_id") %>% 
+  filter(cohort_definition_id ==3) %>%
+  group_by(covariate) %>% 
+  tally(value) %>% 
+  print(n=57)
+
+All_tables_counts1 <- All_tables_counts1 %>% rename("n before lockdown" = "n") %>% rename("Screening/diagnostic test" = "covariate")
+All_tables_counts2 <- All_tables_counts2 %>% rename("n during lockdown" = "n") %>% rename("Screening/diagnostic test" = "covariate")
+All_tables_counts3 <- All_tables_counts3 %>% rename("n after lockdown" = "n") %>% rename("Screening/diagnostic test" = "covariate")
+
+All_count_joined <- All_tables_counts1 %>% right_join(All_tables_counts2) %>% right_join(All_tables_counts3) %>% print()
 
 Pretty_counts_table <- flextable(All_count_joined) %>% set_caption(caption = 
-        "Frequencies of visits, breast cancer-related observations and procedures during different time periods before and after lockdown") 
+        "Frequencies of visits, breast cancer-related diagnostic/screening tests/visits during different time periods before, during and after lockdown") %>%
+  set_table_properties(layout = "autofit")
 Pretty_counts_table
 
-tablename <- paste0("All_covariate_counts", db.name, analysis.name, ".pdf")
+# save the table as a csv file
+write.csv(All_count_joined, here("Results", db.name, "Breast", "Breast_screening_diagnostic_counts_table.csv"), row.names = FALSE)
 
-# save the table as pdf
-save_as_image(Pretty_counts_table, here("Results", db.name , "Breast",tablename), 
-              zoom=1, expand=100, webshot = "webshot")
+
+# save the table as docx
+save_as_docx('Breast_counts_table' = Pretty_counts_table, path=here("Results", db.name, "Breast", "Breast_screening_diagnostic_counts_table.docx"))
+
+
+# save RData objects
+save(All_count_joined, Pretty_counts_table, file = here("Results", db.name, "Breast", "BreastScreeningDiagnosticCounts.RData"))
 
 print(paste0("- Got aggregated counts of breast cancer covariate tables"))
 info(logger, "- Got aggregated counts of breast cancer covariate tables")
@@ -669,33 +687,57 @@ All_tables_cohort_2 <- individuals_id %>% select(person_id) %>%
 All_tables_cohort_2 <- All_tables_cohort_2 %>% select(subject_id, covariate, value, cohort_definition_id, cohort_start_date, cohort_end_date) %>% 
   tidyr::pivot_wider(names_from = covariate, values_from = value,values_fill = 0)
 
+
+# Get all person level tables together and filter by cohort_definition_id_3
+All_tables_cohort_3 <- individuals_id %>% select(person_id) %>%
+  rename("subject_id"="person_id") %>%
+  left_join(continuous_table) %>%
+  select(subject_id, covariate, value) %>%
+  inner_join(cohorts_db_df, by = "subject_id") %>%
+  distinct() %>%
+  filter(cohort_definition_id==3)
+
+# Pivot the table so that all the covariates which were rows in the above code are now column headings
+All_tables_cohort_3 <- All_tables_cohort_3 %>% select(subject_id, covariate, value, cohort_definition_id, cohort_start_date, cohort_end_date) %>% 
+  tidyr::pivot_wider(names_from = covariate, values_from = value,values_fill = 0)
+
 # Run SMD function to create table of all
-All_SMD <- compute_continuous_smd(All_tables_cohort_1, All_tables_cohort_2) 
+All_SMD_Pre_lock <- compute_continuous_smd(All_tables_cohort_1, All_tables_cohort_2) 
+All_SMD_Pre_post <- compute_continuous_smd(All_tables_cohort_1, All_tables_cohort_3) 
+
+All_SMD_Pre_lock  <- All_SMD_Pre_lock  %>% rename("SMD Before lockdown vs. During lockdown" = "SMD") 
+All_SMD_Pre_post  <- All_SMD_Pre_post  %>% rename("SMD Before lockdown vs. After lockdown" = "SMD") 
+
+All_SMD_Pre_post  <- All_SMD_Pre_post  %>%  rename("mean3" = mean2) %>% rename("var3" = var2) 
 
 
-All_SMD <- All_SMD %>% rename("mean after lockdown" = "mean1") %>% rename("var after lockdown" = "var1") %>% 
-                                  rename("mean before lockdown" = "mean2") %>% rename("var before lockdown" = "var2") %>%
-                                  rename("Covariate" = "covariate") 
-All_SMD <- All_SMD[,c(1,4,5,2,3,6)]
+All_SMD <- All_SMD_Pre_lock %>% full_join(All_SMD_Pre_post) %>% arrange(covariate)
 
-Pretty_SMD_table <- flextable(All_SMD) %>% set_caption(caption = "Mean(var) frequencies of visits, breast cancer-related observations and procedures during different time periods before and after lockdown") 
+All_SMD_formatted <- All_SMD %>% mutate("Mean (var) before lockdown"= paste0(paste(mean1)," (", paste(var1), ")")) %>%
+  mutate("Mean (var) during lockdown"= paste0(paste(mean2)," (", paste(var2), ")")) %>%
+  mutate("Mean(var) after lockdown"= paste0(paste(mean3)," (", paste(var3), ")")) %>%
+  rename("Screening/Diagnostic Test" = "covariate") 
 
-Pretty_SMD_table
+All_SMD_formatted <-  All_SMD_formatted[-c(2,3,4,5,7,8)]
+All_SMD_formatted <-  All_SMD_formatted[c(1,4,5,6,2,3)]
 
-tablename <- paste0("All_covariate_SMD", db.name, analysis.name, ".pdf")
+Pretty_Breast_SMD_table <- flextable(All_SMD_formatted) %>% set_caption(caption = "Mean(var) frequencies of visits, breast cancer-related screening/diagnostic tests during different time periods before and after lockdown") %>%
+  set_table_properties(layout = "autofit")
 
-# save the table as pdf
-save_as_image(Pretty_SMD_table, here("Results", db.name , "Breast",tablename), 
-              zoom=1, expand=100, webshot = "webshot")
+Pretty_Breast_SMD_table
 
 ## ========================= Save all tables ================================ ##
 
-save(list = c("All_tables_counts1", "All_tables_counts2", "All_count_joined", "Pretty_counts_table", "All_tables_cohort_1", "All_tables_cohort_2",
-              "All_SMD", "Pretty_SMD_table"), file = here("Results", db.name, "Breast", "Breast_covariates", "BreastCountsSMDTabs.Rdata"))
+# save RData objects
+save(list = c("All_tables_counts1", "All_tables_counts2",  "All_tables_counts3", "All_count_joined", "Pretty_counts_table", "All_tables_cohort_1", "All_tables_cohort_2",
+              "All_tables_cohort_3", "All_SMD", "All_SMD_formatted", "Pretty_Breast_SMD_table"), file = here("Results", db.name, "Breast", "Breast_covariates", "BreastScreeningDiagnosticCountsSMDTabs.Rdata"))
 
+# save the table as a csv file
+write.csv(All_SMD_formatted, here("Results", db.name, "Breast", "BreastScreeningDiagnosticSMD.csv"), row.names = FALSE)
 write.csv(All_count_joined, here("Results", db.name, "Breast", "All_count_joined_breast.csv"), row.names = FALSE)
-write.csv(All_SMD, here("Results", db.name, "Breast", "All_SMD_breast.csv"), row.names = FALSE)
 
+# save the table as docx
+save_as_docx('BreastScreeningDiagnosticSMD' = Pretty_Breast_SMD_table, path=here("Results", db.name, "Breast", "BreastScreeningDiagnosticSMD.docx"))
 
 print(paste0("- Got SMD of breast cancer covariate tables"))
 info(logger, "- Got SMD of breast cancer covariate tables")
