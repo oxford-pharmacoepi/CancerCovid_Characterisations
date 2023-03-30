@@ -15,6 +15,19 @@ if (!file.exists(output.folder4)){
   dir.create(output.folder4, recursive = TRUE)}
 
 
+if (!file.exists(output.folder5)){
+  dir.create(output.folder5, recursive = TRUE)}
+
+if (!file.exists(output.folder6)){
+  dir.create(output.folder6, recursive = TRUE)}
+
+if (!file.exists(output.folder7)){
+  dir.create(output.folder7, recursive = TRUE)}
+
+if (!file.exists(output.folder8)){
+  dir.create(output.folder8, recursive = TRUE)}
+
+
 # table names----
 outcome_table_name_1 <- paste0(outcome_table_stem,"_cancers_before_after_lockdown") # this is the four cancers
 outcome_table_name_2 <- paste0(outcome_table_stem,"_cancers_3_time_periods") # this is the four cancers before, during and after lockdown

@@ -102,26 +102,26 @@ age_table1  <- rbind(mean_age_1,var_age_1,mean_age_2,var_age_2,mean_age_3,var_ag
 age_table_SMD  <- tibble(mean_age_1 = t(age_table1[1,])[,1], var_age_1 = t(age_table1[2,])[,1], 
                          mean_age_2 = t(age_table1[3,])[,1], var_age_2 = t(age_table1[4,])[,1],
                          mean_age_3 = t(age_table1[5,])[,1], var_age_3 = t(age_table1[6,])[,1]) %>%
-  mutate("Pre/During SMD" = abs(mean_age_1-mean_age_2)/sqrt(var_age_1+var_age_2)) %>% 
-  mutate("Pre/Post SMD" = abs(mean_age_1-mean_age_3)/sqrt(var_age_1+var_age_3)) %>% print()
+  mutate("SMD Before lockdown vs. During lockdown" = abs(mean_age_1-mean_age_2)/sqrt(var_age_1+var_age_2)) %>% 
+  mutate("SMD Before lockdown vs. After lockdown" = abs(mean_age_1-mean_age_3)/sqrt(var_age_1+var_age_3)) %>% print()
 
 
-age_table_formatted <- age_table_SMD %>% dplyr::mutate_if(is.numeric, round, digits = 2) %>%  
+age_table_breast_formatted <- age_table_SMD %>% dplyr::mutate_if(is.numeric, round, digits = 2) %>%  
                        dplyr::mutate("Age at diagnosis before lockdown" = glue("{mean_age_1} ({var_age_1})")) %>%
                        dplyr::mutate("Age at diagnosis during lockdown" = glue("{mean_age_2} ({var_age_2})")) %>% 
                        dplyr::mutate("Age at diagnosis after lockdown" = glue("{mean_age_3} ({var_age_3})")) 
 
-age_table_formatted <- age_table_formatted[-c(1:6)] #  remove superfluous columns
-age_table_formatted <- age_table_formatted[, c(3, 4, 5, 1, 2)] # reorder the columns
-age_table_formatted
+age_table_breast_formatted <- age_table_breast_formatted[-c(1:6)] #  remove superfluous columns
+age_table_breast_formatted <- age_table_breast_formatted[, c(3, 4, 5, 1, 2)] # reorder the columns
+age_table_breast_formatted
 
-Pretty_mean_age_table <- flextable(age_table_formatted) %>% theme_vanilla() %>% 
+Pretty_mean_age_table <- flextable(age_table_breast_formatted) %>% theme_vanilla() %>% 
   set_caption(caption = "Mean (variance) of age at date of breast cancer diagnosis before, during and after lockdown") %>% 
   width(width = 1.4) 
 
 # save the table as a csv file
-write.csv(age_table_formatted, here("Results", db.name, "Breast", "age_table_formatted_breast.csv"), row.names = FALSE)
-save(age_table_formatted, file = here("Results", db.name, "Breast", "age_table_formatted.RData"))
+write.csv(age_table_breast_formatted, here("Results", db.name, "Breast", "age_table_formatted_breast.csv"), row.names = FALSE)
+save(age_table_breast_formatted, file = here("Results", db.name, "Breast", "age_table_breast_formatted.RData"))
 
 # save the table as docx
 save_as_docx('Breast_mean_age_table' = Pretty_mean_age_table, path=here("Results", db.name, "Breast", "breast_age_table_formatted.docx"))
@@ -250,21 +250,21 @@ gender_table_3 <- gender_patients_3 %>% rename(n_diagnosed_after_lockdown = "n")
 
 gender_table <- gender_table_1 %>% right_join(gender_table_2) %>% right_join(gender_table_3) %>% replace(is.na(.), 0)
 
-gender_table <- gender_table %>%
+gender_table_breast <- gender_table %>%
   mutate("n diagnosed before lockdown" = paste0(n_diagnosed_before_lockdown, " (", round(100*n_diagnosed_before_lockdown/sum(n_diagnosed_before_lockdown),1), "%)")) %>%
   mutate("n diagnosed during lockdown" = paste0(n_diagnosed_during_lockdown, " (", round(100*n_diagnosed_during_lockdown/sum(n_diagnosed_during_lockdown),1), "%)")) %>%
   mutate("n diagnosed after lockdown" = paste0(n_diagnosed_after_lockdown, " (", round(100*n_diagnosed_after_lockdown/sum(n_diagnosed_after_lockdown),1), "%)"))
 
   
-gender_table <- gender_table[-c(2:4)] #  remove superfluous columns
+gender_table_breast <- gender_table_breast[-c(2:4)] #  remove superfluous columns
 
-Pretty_gender_table <- flextable(gender_table) %>%
+Pretty_gender_table <- flextable(gender_table_breast) %>%
   set_caption(caption = "Gender of breast cancer patients in groups before, during and after lockdown") %>% 
   width(width = 1.4)  
 
 
 # save the table as a csv file
-write.csv(gender_table, here("Results", db.name, "Breast", "Gender_table_all_breast_cohorts.csv"), row.names = FALSE)
+write.csv(gender_table_breast, here("Results", db.name, "Breast", "Gender_table_all_breast_cohorts.csv"), row.names = FALSE)
 
 
 # save the table as docx
@@ -272,7 +272,7 @@ save_as_docx('Breast_gender_counts_table' = Pretty_gender_table, path=here("Resu
 
 
 # save RData objects
-save(gender_table, Pretty_gender_table, file = here("Results", db.name, "Breast", "BreastGender.RData"))
+save(gender_table_breast, Pretty_gender_table, file = here("Results", db.name, "Breast", "BreastGender.RData"))
 
 
 

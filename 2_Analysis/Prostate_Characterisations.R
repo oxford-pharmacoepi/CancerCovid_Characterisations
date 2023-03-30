@@ -1,27 +1,30 @@
 # ============================================================================ #
-#                         Custom Characterisations                             #
-#                             Prostate Cancer                                  #
+#                Custom Characterisations - over 3 time periods                #
+#                               Prostate Cancer                                  #
 #                              Nicola Barclay                                  #
-#                                19-12-2022                                    #
+#                                8-12-2022                                     #
 # ============================================================================ #
 
-print(paste0("- 5. PROSTATE CANCER CUSTOM CHARACTERISATIONS"))
-info(logger, "- 5. PROSTATE CANCER CUSTOM CHARACTERISATIONS")
+print(paste0("- 2. Prostate CANCER CUSTOM CHARACTERISATIONS"))
+info(logger, "- 2. Prostate CANCER CUSTOM CHARACTERISATIONS")
 
-print(paste0("- Set up for prostate cancer characterisations"))
-info(logger, "- Set up for prostate cancer characterisations")
+print(paste0("- Set up for Prostate cancer characterisations"))
+info(logger, "- Set up for Prostate cancer characterisations")
 
+## ---------- VARIABLES OF INTEREST BEFORE, DURING AND AFTER LOCKDOWN --------------- ##
 
-## ------------------------------- VARIABLES -------------------------------- ##
+# Read the cancer cohort table name and the cdm databases
+cohorts_db        <- cdm[[outcome_table_name_2]]
+cohorts_db_df <- as.data.frame(cohorts_db)
+
 # Cohorts_ID
-Prostate_after     <- 7
-Prostate_before    <- 8
-
-cohort_id_groups   <- c(Prostate_after,Prostate_before)
+ProstateCancer_BeforeCOVID       <- 10
+ProstateCancer_DuringLockdown      <- 11
+ProstateCancer_AfterCOVID   <- 12
 
 # List of individuals 
 individuals_id <- cohorts_db %>% 
-  filter(cohort_definition_id %in% c(Prostate_after,Prostate_before)) %>%
+  filter(cohort_definition_id %in% c(ProstateCancer_BeforeCOVID,ProstateCancer_DuringLockdown,ProstateCancer_AfterCOVID)) %>%
   select(subject_id, cohort_start_date) %>%
   rename("person_id" = "subject_id", "index_date" = "cohort_start_date" ) %>%
   compute()
@@ -32,13 +35,13 @@ individuals_id <- individuals_id %>% collect()
 
 # uncollect individuals_id to calculate index_date for age below
 individuals_id_for_age <- cohorts_db %>% 
-  filter(cohort_definition_id %in% c(Prostate_after,Prostate_before)) %>%
+  filter(cohort_definition_id %in% c(ProstateCancer_BeforeCOVID,ProstateCancer_DuringLockdown,ProstateCancer_AfterCOVID)) %>%
   select(subject_id, cohort_start_date) %>%
   rename("person_id" = "subject_id", "index_date" = "cohort_start_date" ) %>%
   compute()
 
-print(paste0("- Set up for prostate cancer characterisations done"))
-info(logger, "- Set up for prostate cancer characterisations done")
+print(paste0("- Set up for Prostate cancer characterisations done"))
+info(logger, "- Set up for Prostate cancer characterisations done")
 
 
 # ======================== BASELINE CHARACTERISTICS=========================== #
@@ -46,7 +49,7 @@ info(logger, "- Set up for prostate cancer characterisations done")
 print(paste0("- Running baseline characteristics - age and sex"))
 info(logger, "- Running baseline characteristics - age and sex")
 
-## AGE AT INDEX DATE IN Prostate CANCER COHORTS ----------------------------
+# AGE AT INDEX DATE IN Prostate CANCER COHORTS ----------------------------
 age_patients <- individuals_id_for_age %>%
   left_join(person_db) %>%
   select(person_id,year_of_birth,index_date) %>%
@@ -57,17 +60,16 @@ age_patients <- individuals_id_for_age %>%
   mutate(age = floor(as.numeric(difftime(index_date,dob,unit="days"))/365.25)) 
 
 # AGE GROUP AT INDEX DATE IN Prostate CANCER COHORT 
-
 age_group <- age_patients %>%
-    mutate(age_grouping = cut(age, c(0,10,20,30,40,50,60,70,80,90,100,110),labels = c("0 to 9 years", "10 to 19 years","20 to 29 years","30 to 39 years","40 to 49 years","50 to 59 years","60 to 69 years","70 to 79 years","80 to 89 years","90 to 99 years","100+ years"),include.lowest = TRUE, right = FALSE, is.na = FALSE)) %>%
-    mutate(agegid = as.numeric(age_grouping)) 
- 
-# -------- SMD OF AGE AT INDEX DATE BEFORE AND AFTER LOCKDOWN -----------------#
+  mutate(age_grouping = cut(age, c(0,10,20,30,40,50,60,70,80,90,100,110),labels = c("0 to 9 years", "10 to 19 years","20 to 29 years","30 to 39 years","40 to 49 years","50 to 59 years","60 to 69 years","70 to 79 years","80 to 89 years","90 to 99 years","100+ years"),include.lowest = TRUE, right = FALSE, is.na = FALSE)) %>%
+  mutate(agegid = as.numeric(age_grouping)) 
+
+# -------- SMD OF AGE AT INDEX DATE BEFORE, DURING AND AFTER LOCKDOWN -----------------#
 
 age_1 <- age_patients %>%
   rename("subject_id"="person_id") %>% 
   left_join(cohorts_db_df, by = "subject_id") %>% 
-  filter(cohort_definition_id ==7) %>%
+  filter(cohort_definition_id ==10) %>%
   filter(index_date==cohort_start_date) %>%
   collect() 
 
@@ -77,67 +79,80 @@ var_age_1 <- var(age_1$age) %>% print()
 age_2 <- age_patients %>%
   rename("subject_id"="person_id") %>% 
   left_join(cohorts_db_df, by = "subject_id") %>% 
-  filter(cohort_definition_id ==8) %>%
+  filter(cohort_definition_id ==11) %>%
   filter(index_date==cohort_start_date) %>%
   collect() 
 
 mean_age_2 <-  mean(age_2$age) %>% print()
 var_age_2 <- var(age_2$age) %>% print()
 
-  
-age_table1  <- rbind(mean_age_1,var_age_1,mean_age_2,var_age_2) %>% as.data.frame() %>% dplyr::mutate_if(is.numeric, round, digits = 2)
+age_3 <- age_patients %>%
+  rename("subject_id"="person_id") %>% 
+  left_join(cohorts_db_df, by = "subject_id") %>% 
+  filter(cohort_definition_id ==12) %>%
+  filter(index_date==cohort_start_date) %>%
+  collect() 
 
-age_table_SMD  <- tibble(mean_age_1 = t(age_table1[1,])[,1], var_age_1 = t(age_table1[2,])[,1], mean_age_2 = t(age_table1[3,])[,1], var_age_2 = t(age_table1[4,])[,1]) %>%
-  mutate(smd = abs(mean_age_1-mean_age_2)/sqrt(var_age_1+var_age_2)) %>% print()
+mean_age_3 <-  mean(age_3$age) %>% print()
+var_age_3 <- var(age_3$age) %>% print()
 
 
-age_table_formatted <- age_table_SMD %>% dplyr::mutate_if(is.numeric, round, digits = 2) %>%  
-                       dplyr::mutate("Prostate Cancer Before Lockdown" = glue("{mean_age_2} ({var_age_2})")) %>%
-                       dplyr::mutate("Prostate Cancer After Lockdown" = glue("{mean_age_1} ({var_age_1})")) %>% 
-                       rename( "Standardised Mean Difference" = "smd")
-age_table_formatted <- age_table_formatted[-c(1:4)] #  remove superfluous columns
-age_table_formatted <- age_table_formatted[, c(2, 3, 1)] # reorder the columns
-age_table_formatted
+age_table1  <- rbind(mean_age_1,var_age_1,mean_age_2,var_age_2,mean_age_3,var_age_3) %>% as.data.frame() %>% dplyr::mutate_if(is.numeric, round, digits = 2)
 
-Pretty_mean_age_table <- flextable(age_table_formatted) %>% theme_vanilla() %>% 
-  set_caption(caption = "Mean (variance) of age at date of Prostate cancer diagnosis before and after lockdown") %>% 
-  width(width = 1.4)  
+age_table_SMD  <- tibble(mean_age_1 = t(age_table1[1,])[,1], var_age_1 = t(age_table1[2,])[,1], 
+                         mean_age_2 = t(age_table1[3,])[,1], var_age_2 = t(age_table1[4,])[,1],
+                         mean_age_3 = t(age_table1[5,])[,1], var_age_3 = t(age_table1[6,])[,1]) %>%
+  mutate("SMD Before lockdown vs. During lockdown" = abs(mean_age_1-mean_age_2)/sqrt(var_age_1+var_age_2)) %>% 
+  mutate("SMD Before lockdown vs. After lockdown" = abs(mean_age_1-mean_age_3)/sqrt(var_age_1+var_age_3)) %>% print()
+
+
+age_table_Prostate_formatted <- age_table_SMD %>% dplyr::mutate_if(is.numeric, round, digits = 2) %>%  
+  dplyr::mutate("Age at diagnosis before lockdown" = glue("{mean_age_1} ({var_age_1})")) %>%
+  dplyr::mutate("Age at diagnosis during lockdown" = glue("{mean_age_2} ({var_age_2})")) %>% 
+  dplyr::mutate("Age at diagnosis after lockdown" = glue("{mean_age_3} ({var_age_3})")) 
+
+age_table_Prostate_formatted <- age_table_Prostate_formatted[-c(1:6)] #  remove superfluous columns
+age_table_Prostate_formatted <- age_table_Prostate_formatted[, c(3, 4, 5, 1, 2)] # reorder the columns
+age_table_Prostate_formatted
+
+Pretty_mean_age_table <- flextable(age_table_Prostate_formatted) %>% theme_vanilla() %>% 
+  set_caption(caption = "Mean (variance) of age at date of Prostate cancer diagnosis before, during and after lockdown") %>% 
+  width(width = 1.4) 
 
 # save the table as a csv file
-write.csv(age_table_formatted, here("Results", db.name, "Prostate", "age_table_formatted_prostate.csv"), row.names = FALSE)
+write.csv(age_table_Prostate_formatted, here("Results", db.name, "Prostate", "age_table_formatted_Prostate.csv"), row.names = FALSE)
+save(age_table_Prostate_formatted, file = here("Results", db.name, "Prostate", "age_table_Prostate_formatted.RData"))
+
+# save the table as docx
+save_as_docx('Prostate_mean_age_table' = Pretty_mean_age_table, path=here("Results", db.name, "Prostate", "Prostate_age_table_formatted.docx"))
 
 
-# save the table as pdf
-analysis.name <- "Prostate"
-tablename <- paste0("mean_age_table", db.name, analysis.name, ".pdf")
-
-
-
-# THIS DOESN'T WORK - OUTPUT NOT SHOWN IN R GRAPHICS OUTPUT
-pdf(here("Results", db.name , "Prostate",tablename),
-    width = 10, height = 8)
-print(Pretty_mean_age_table, newpage = FALSE)
-dev.off()
-
-save_as_image(Pretty_mean_age_table, here("Results", db.name , "Prostate",tablename), 
-              zoom=1, expand=100, webshot = "webshot")
-
-
-# FREQUENCIES OF AGES AT INDEX DATE FOR Prostate PATIENTS DIAGNOSED AFTER LOCKDOWN ------
+# FREQUENCIES OF AGES AT INDEX DATE FOR PATIENTS DIAGNOSED BEFORE LOCKDOWN ------
 age_table_1 <- age_group %>% 
   rename("subject_id"="person_id") %>% 
   left_join(cohorts_db_df, by = "subject_id") %>% 
-  filter(cohort_definition_id ==7) %>%
+  filter(cohort_definition_id ==10) %>%
   filter(index_date==cohort_start_date) %>%
   group_by(age_grouping) %>%
   tally() %>% 
   print()
 
-# FREQUENCIES OF AGES AT INDEX DATE FOR Prostate PATIENTS DIAGNOSED BEFORE LOCKDOWN -----
+# FREQUENCIES OF AGES AT INDEX DATE FOR PATIENTS DIAGNOSED DURING LOCKDOWN -----
 age_table_2 <- age_group %>% 
   rename("subject_id"="person_id") %>% 
   left_join(cohorts_db_df, by = "subject_id") %>% 
-  filter(cohort_definition_id ==8) %>%
+  filter(cohort_definition_id ==11) %>%
+  filter(index_date==cohort_start_date) %>%
+  group_by(age_grouping) %>%
+  tally() %>% 
+  print()
+
+
+# FREQUENCIES OF AGES AT INDEX DATE FOR PATIENTS DIAGNOSED AFTER LOCKDOWN -----
+age_table_3 <- age_group %>% 
+  rename("subject_id"="person_id") %>% 
+  left_join(cohorts_db_df, by = "subject_id") %>% 
+  filter(cohort_definition_id ==12) %>%
   filter(index_date==cohort_start_date) %>%
   group_by(age_grouping) %>%
   tally() %>% 
@@ -150,42 +165,41 @@ age_group_labels <- c("0 to 9 years", "10 to 19 years","20 to 29 years","30 to 3
 
 age_group_labels <- as.data.frame(age_group_labels) %>% rename("age_grouping" = "V1") %>% select("age_grouping")
 
-age_table_1 <- age_table_1 %>% rename("Prostate Cancer after lockdown"="n")
-age_table_2 <- age_table_2 %>% rename("Prostate Cancer before lockdown"="n")
+age_table_1 <- age_table_1 %>% rename("N diagnosed before lockdown"="n")
+age_table_2 <- age_table_2 %>% rename("N diagnosed during lockdown"="n")
+age_table_3 <- age_table_3 %>% rename("N diagnosed after lockdown"="n")
 
 # get the age grouping tables and join them with the full rows of categories and replace NAs with 0
 age_table_1 <- age_group_labels  %>% left_join(age_table_1) %>% replace(is.na(.), 0) %>% print()
 age_table_2 <- age_group_labels  %>% left_join(age_table_2) %>% replace(is.na(.), 0) %>% print()
+age_table_3 <- age_group_labels  %>% left_join(age_table_3) %>% replace(is.na(.), 0) %>% print()
 
-Age_table_both_Prostate_cohorts <- age_table_2 %>% left_join(age_table_1) %>% rename("Age Group" = "age_grouping") %>% print()
+Age_table_all_Prostate_cohorts <- age_table_1 %>% right_join(age_table_2) %>% right_join(age_table_3) %>% rename("Age Group" = "age_grouping") %>% print()
 
-Pretty_age_group_table <- flextable(Age_table_both_Prostate_cohorts) %>% theme_vanilla() %>% 
-  set_caption(caption = "Age at date of Prostate cancer diagnosis before and after lockdown") %>% 
+Pretty_age_group_table <- flextable(Age_table_all_Prostate_cohorts) %>% theme_vanilla() %>% 
+  set_caption(caption = "Age at date of Prostate cancer diagnosis before, during and after lockdown") %>% 
   width(width = 1.4)  
 
+
 # save the table as a csv file
-write.csv(Age_table_both_prostate_cohorts, here("Results", db.name, "Prostate", "Age_table_both_prostate_cohorts.csv"), row.names = FALSE)
+write.csv(Age_table_all_Prostate_cohorts, here("Results", db.name, "Prostate", "Age_table_all_Prostate_cohorts.csv"), row.names = FALSE)
 
-analysis.name <- "Prostate"
-tablename <- paste0("age_group_table", db.name, analysis.name, ".pdf")
+# save the table as docx
+save_as_docx('Prostate_age_counts_table' = Pretty_age_group_table, path=here("Results", db.name, "Prostate", "Prostate_age_counts_table.docx"))
 
-# save the table as pdf
-save_as_image(Pretty_age_group_table, here("Results", db.name , "Prostate",tablename), 
-              zoom=1, expand=100, webshot = "webshot")
 
 # save RData objects
-save(Pretty_mean_age_table, Pretty_age_group_table, Age_table_both_prostate_cohorts, age_table_formatted, file = here("Results", db.name, "Prostate", "ProstateAge.RData"))
+save(Pretty_mean_age_table, Pretty_age_group_table, Age_table_all_Prostate_cohorts, age_table_Prostate_formatted, file = here("Results", db.name, "Prostate", "ProstateAge.RData"))
 
 print("Age done")
 
-
-## GENDER Prostate CANCER COHORT AFTER LOCKDOWN ----------------------------
+# GENDER Prostate CANCER COHORT BEFORE LOCKDOWN ----------------------------
 gender_patients_1 <-  list_id %>% 
   left_join(person_db) %>%
   select(person_id,gender_concept_id) %>%
   rename("subject_id" ="person_id") %>%
   inner_join(cohorts_db, by = "subject_id") %>%
-  filter(cohort_definition_id==7) %>%
+  filter(cohort_definition_id==10) %>%
   collect() %>%
   distinct() %>%
   mutate(value = if_else(gender_concept_id==8532,1,2)) %>%
@@ -197,13 +211,13 @@ gender_patients_1 <-  list_id %>%
 
 
 
-## GENDER Prostate CANCER COHORT BEFORE LOCKDOWN ----------------------------
+# GENDER Prostate CANCER COHORT DURING LOCKDOWN ----------------------------
 gender_patients_2 <-  list_id %>% 
   left_join(person_db) %>%
   select(person_id,gender_concept_id) %>%
   rename("subject_id" ="person_id") %>%
   inner_join(cohorts_db, by = "subject_id") %>%
-  filter(cohort_definition_id==8) %>%
+  filter(cohort_definition_id==11) %>%
   collect() %>%
   distinct() %>%
   mutate(value = if_else(gender_concept_id==8532,1,2)) %>%
@@ -213,33 +227,53 @@ gender_patients_2 <-  list_id %>%
   tally() %>%
   print()
 
-gender_table_1 <- gender_patients_1 %>% rename("n_after_lockdown" = "n")
-gender_table_2 <- gender_patients_2 %>% rename("n_before_lockdown" = "n")
 
-gender_table <- gender_table_2 %>% left_join(gender_table_1) %>% replace(is.na(.), 0)
+# GENDER Prostate CANCER COHORT AFTER LOCKDOWN ----------------------------
+gender_patients_3 <-  list_id %>% 
+  left_join(person_db) %>%
+  select(person_id,gender_concept_id) %>%
+  rename("subject_id" ="person_id") %>%
+  inner_join(cohorts_db, by = "subject_id") %>%
+  filter(cohort_definition_id==12) %>%
+  collect() %>%
+  distinct() %>%
+  mutate(value = if_else(gender_concept_id==8532,1,2)) %>%
+  select(-gender_concept_id) %>%
+  mutate(sex = if_else(value==1,"Female","Male")) %>%
+  group_by(sex) %>%
+  tally() %>%
+  print()
 
-gender_table <- gender_table %>%
-  mutate(n_before_lockdown = paste0(n_before_lockdown, " (", round(100*n_before_lockdown/sum(n_before_lockdown),1), "%)")) %>%
-  mutate(n_after_lockdown = paste0(n_after_lockdown, " (", round(100*n_after_lockdown/sum(n_after_lockdown),1), "%)")) 
-  
-Pretty_gender_table <- flextable(gender_table) %>%
-  set_caption(caption = "Gender of prostate cancer patients in groups before and after lockdown") %>% 
+gender_table_1 <- gender_patients_1 %>% rename(n_diagnosed_before_lockdown = "n")
+gender_table_2 <- gender_patients_2 %>% rename(n_diagnosed_during_lockdown = "n")
+gender_table_3 <- gender_patients_3 %>% rename(n_diagnosed_after_lockdown = "n")
+
+gender_table <- gender_table_1 %>% right_join(gender_table_2) %>% right_join(gender_table_3) %>% replace(is.na(.), 0)
+
+gender_table_Prostate <- gender_table %>%
+  mutate("n diagnosed before lockdown" = paste0(n_diagnosed_before_lockdown, " (", round(100*n_diagnosed_before_lockdown/sum(n_diagnosed_before_lockdown),1), "%)")) %>%
+  mutate("n diagnosed during lockdown" = paste0(n_diagnosed_during_lockdown, " (", round(100*n_diagnosed_during_lockdown/sum(n_diagnosed_during_lockdown),1), "%)")) %>%
+  mutate("n diagnosed after lockdown" = paste0(n_diagnosed_after_lockdown, " (", round(100*n_diagnosed_after_lockdown/sum(n_diagnosed_after_lockdown),1), "%)"))
+
+
+gender_table_Prostate <- gender_table_Prostate[-c(2:4)] #  remove superfluous columns
+
+Pretty_gender_table <- flextable(gender_table_Prostate) %>%
+  set_caption(caption = "Gender of Prostate cancer patients in groups before, during and after lockdown") %>% 
   width(width = 1.4)  
 
+
 # save the table as a csv file
-write.csv(gender_table, here("Results", db.name, "Prostate", "Gender_table_both_prostate_cohorts.csv"), row.names = FALSE)
+write.csv(gender_table_Prostate, here("Results", db.name, "Prostate", "Gender_table_all_Prostate_cohorts.csv"), row.names = FALSE)
 
 
-# create file name
-tablename <- paste0("gender_table", db.name, analysis.name, ".pdf")
-
-# save the table as pdf
-save_as_image(Pretty_gender_table, here("Results", db.name , "Prostate",tablename), 
-              zoom=1, expand=100, webshot = "webshot")
+# save the table as docx
+save_as_docx('Prostate_gender_counts_table' = Pretty_gender_table, path=here("Results", db.name, "Prostate", "Prostate_gender_counts_table.docx"))
 
 
 # save RData objects
-save(gender_table, Pretty_gender_table, file = here("Results", db.name, "Prostate", "ProstateGender.RData"))
+save(gender_table_Prostate, Pretty_gender_table, file = here("Results", db.name, "Prostate", "ProstateGender.RData"))
+
 
 
 print(paste0("- Baseline characteristics - age and sex done"))
@@ -273,33 +307,12 @@ print("Visits done")
 
 
 
+## 2. PSA MONITORING  ------------------------------------------------------------
 
-## 2. PROSTATE SPECIFIC ANTIGEN MEASUREMENT ------------------------------------------------
-PSA_patients <-  cdm$measurement %>%
-  select(person_id,measurement_concept_id, measurement_date) %>%
-  filter(measurement_concept_id ==4272032) %>%
-  inner_join(list_id) %>% 
-  distinct() %>%
-  collect() %>%
-  rename("Event_date"="measurement_date") %>%
-  mutate(FeatureExtractionId = 4272032002)
+PSAM_patients <- get_observations(4215705, 2)
+PSAM_id <- get_observations_id(4215705, 2, "PSA monitoring")
 
-PSA_id <- tibble(FeatureExtractionId = 4272032002,covariateId = 4272032, covariateName = "Prostate specific antigen measurement", AnalysisId = 2)
-
-AnalysisRef  <- rbind(AnalysisRef,c(2,"Prostate specific antigen measurement"))
-
-save(list = c("PSA_patients","PSA_id"), file = here("Results", db.name, "Prostate", "Prostate_covariates", "PSA.RData"))
-
-print("Prostate specific antigen measurement done")
-
-
-
-## 3. PSA MONITORING  ------------------------------------------------------------
-
-PSAM_patients <- get_observations(4215705, 3)
-PSAM_id <- get_observations_id(4215705, 3, "PSA monitoring")
-
-AnalysisRef  <- rbind(AnalysisRef,c(3,"PSA monitoring"))
+AnalysisRef  <- rbind(AnalysisRef,c(2,"PSA monitoring"))
 
 save(list = c("PSAM_patients","PSAM_id"), file = here("Results", db.name, "Prostate", "Prostate_covariates", "PSA_monitoring.RData"))
 
@@ -307,12 +320,56 @@ print("PSA monitoring done")
 
 
 
+## 3. PROSTATE SPECIFIC ANTIGEN MEASUREMENT ------------------------------------------------
+PSA_patients <-  cdm$measurement %>%
+  select(person_id,measurement_concept_id, measurement_date) %>%
+  inner_join(cdm$concept_ancestor %>% 
+               filter(ancestor_concept_id == 4272032) %>%
+               select("measurement_concept_id" = "descendant_concept_id")) %>% # this part of the code will include all descendant concepts too
+  inner_join(list_id) %>% 
+  distinct() %>%
+  collect() %>%
+  rename("Event_date"="measurement_date") %>%
+  mutate(FeatureExtractionId = 4272032003)
 
-## 4. BIOPSY OF PROSTATE -------
-BP_patients <- get_procedures(4278515, 4)
-BP_id <- get_procedures_id(4278515, 4, "Biopsy of prostate")
+PSA_id <- tibble(FeatureExtractionId = 4272032003,covariateId = 4272032, covariateName = "Prostate specific antigen measurement", AnalysisId = 3)
 
-AnalysisRef  <- rbind(AnalysisRef,c(4,"Biopsy of prostate"))
+AnalysisRef  <- rbind(AnalysisRef,c(3,"Prostate specific antigen measurement"))
+
+save(list = c("PSA_patients","PSA_id"), file = here("Results", db.name, "Prostate", "Prostate_covariates", "PSA.RData"))
+
+print("Prostate specific antigen measurement done")
+
+
+
+## 4. PROSTATE SPECIFIC ANTIGEN MEASUREMENT - LEVEL ------------------------------------------------
+PSAL_patients <-  cdm$measurement %>%
+  select(person_id,measurement_concept_id, measurement_date) %>%
+  inner_join(cdm$concept_ancestor %>% 
+               filter(ancestor_concept_id == 37398806) %>%
+               select("measurement_concept_id" = "descendant_concept_id")) %>% # this part of the code will include all descendant concepts too
+  inner_join(list_id) %>% 
+  distinct() %>%
+  collect() %>%
+  rename("Event_date"="measurement_date") %>%
+  mutate(FeatureExtractionId = 37398806004)
+
+PSAL_id <- tibble(FeatureExtractionId = 37398806004,covariateId = 37398806, covariateName = "Prostate specific antigen measurement - level", AnalysisId = 4)
+
+AnalysisRef  <- rbind(AnalysisRef,c(4,"Prostate specific antigen measurement - level"))
+
+save(list = c("PSAL_patients","PSAL_id"), file = here("Results", db.name, "Prostate", "Prostate_covariates", "PSAL.RData"))
+
+print("Prostate specific antigen measurement level done")
+
+
+
+
+## 5. BIOPSY OF PROSTATE -------
+BP_patients <- get_procedures(4278515, 5)
+BP_id <- get_procedures_id(4278515, 5, "Biopsy of prostate")
+
+AnalysisRef  <- rbind(AnalysisRef,c(5,"Biopsy of prostate"))
 
 save(list = c("BP_patients","BP_id"), file = here("Results", db.name, "Prostate", "Prostate_covariates", "Biopsy_prostate.RData"))
 
@@ -320,11 +377,11 @@ print("Biopsy of prostate done")
 
 
 
-## 5. OPEN BIOPSY OF PROSTATE -------
-OBP_patients <- get_procedures(4073010, 5)
-OBP_id <- get_procedures_id(4073010, 5, "Open biopsy of prostate")
+## 6. OPEN BIOPSY OF PROSTATE -------
+OBP_patients <- get_procedures(4073010, 6)
+OBP_id <- get_procedures_id(4073010, 6, "Open biopsy of prostate")
 
-AnalysisRef  <- rbind(AnalysisRef,c(5,"Open biopsy of prostate"))
+AnalysisRef  <- rbind(AnalysisRef,c(6,"Open biopsy of prostate"))
 
 save(list = c("OBP_patients","OBP_id"), file = here("Results", db.name, "Prostate", "Prostate_covariates", "Open_biopsy_prostate.RData"))
 
@@ -334,23 +391,7 @@ print(paste0("- Prostate cancer covariate counts done"))
 info(logger, "- Prostate cancer covariate counts done")
 
 
-## 6. PROSTATE SPECIFIC ANTIGEN MEASUREMENT - LEVEL ------------------------------------------------
-PSAL_patients <-  cdm$measurement %>%
-  select(person_id,measurement_concept_id, measurement_date) %>%
-  filter(measurement_concept_id ==37398806) %>%
-  inner_join(list_id) %>% 
-  distinct() %>%
-  collect() %>%
-  rename("Event_date"="measurement_date") %>%
-  mutate(FeatureExtractionId = 37398806006)
 
-PSAL_id <- tibble(FeatureExtractionId = 37398806006,covariateId = 37398806, covariateName = "Prostate specific antigen measurement - level", AnalysisId = 6)
-
-AnalysisRef  <- rbind(AnalysisRef,c(6,"Prostate specific antigen measurement - level"))
-
-save(list = c("PSAL_patients","PSAL_id"), file = here("Results", db.name, "Prostate", "Prostate_covariates", "PSAL.RData"))
-
-print("Prostate specific antigen measurement level done")
 
 
 # ========================= INDIVIDUAL TABLES================================= # 
@@ -367,7 +408,7 @@ OBP_table        <- getIndividualTabs(OBP_id, OBP_patients, individuals_id, 3, F
 PSAL_table      <- getIndividualTabs(PSAL_id, PSAL_patients, individuals_id, 3, FALSE)
 
 # Join the tables
-continuous_table <- VI_table %>% union_all(PSA_table) %>% union_all(PSAM_table) %>% union_all(BP_table) %>% union_all(OBP_table) %>% union_all(PSAL_table) %>% ungroup()
+continuous_table <- VI_table %>% union_all(PSAM_table) %>% union_all(PSA_table) %>% union_all(PSAL_table) %>% union_all(BP_table) %>% union_all(OBP_table) %>% ungroup()
 
 # Pivot the continuous table around, and rename person_id as subject_id. This
 # is later used to run the SMD function
@@ -390,50 +431,66 @@ info(logger, "- Got prostate cancer individual covariate tables")
 
 # =================== AGGREGATED COUNTS OF COVARIATES ======================== # 
 
-print(paste0("- Getting aggregated counts of prostate cancer covariate tables"))
-info(logger, "- Getting aggregated counts of prostate cancer covariate tables")
+print(paste0("- Getting aggregated counts of Prostate cancer covariate tables"))
+info(logger, "- Getting aggregated counts of Prostate cancer covariate tables")
 
 # All tables joined together
-# Cohort 1 - Prostate cancer after lockdown
+# Cohort 1 - Prostate cancer before lockdown
 All_tables_counts1 <- continuous_table %>%  
   inner_join(cohorts_db_df, by = "subject_id") %>% 
-  filter(cohort_definition_id ==7) %>%
+  filter(cohort_definition_id ==10) %>%
   group_by(covariate) %>% 
-  tally(value) %>% 
-    print()
+  tally(value)%>% 
+  print(n=18)
 
 
-
-# cohort 2 - Prostate cancer before lockdown
+# cohort 2 - Prostate cancer during lockdown
 All_tables_counts2 <- continuous_table %>%  
   inner_join(cohorts_db_df, by = "subject_id") %>% 
-  filter(cohort_definition_id ==8) %>%
+  filter(cohort_definition_id ==11) %>%
   group_by(covariate) %>% 
   tally(value) %>% 
-    print()
+  print(n=18)
 
-All_tables_counts1 <- All_tables_counts1 %>% rename("n after lockdown" = "n") %>% rename("Covariate" = "covariate")
-All_tables_counts2 <- All_tables_counts2 %>% rename("n before lockdown" = "n") %>% rename("Covariate" = "covariate")
 
-All_count_joined <- All_tables_counts2 %>% inner_join(All_tables_counts1) %>% print()
+# cohort 3 - Prostate cancer after lockdown
+All_tables_counts3 <- continuous_table %>%  
+  inner_join(cohorts_db_df, by = "subject_id") %>% 
+  filter(cohort_definition_id ==12) %>%
+  group_by(covariate) %>% 
+  tally(value) %>% 
+  print(n=18)
 
-Pretty_counts_table <- flextable(All_count_joined) %>% set_caption(caption = "Frequencies of visits, prostate cancer-related observations and procedures during different time periods before and after lockdown") 
+All_tables_counts1 <- All_tables_counts1 %>% rename("n before lockdown" = "n") %>% rename("Screening/diagnostic test" = "covariate")
+All_tables_counts2 <- All_tables_counts2 %>% rename("n during lockdown" = "n") %>% rename("Screening/diagnostic test" = "covariate")
+All_tables_counts3 <- All_tables_counts3 %>% rename("n after lockdown" = "n") %>% rename("Screening/diagnostic test" = "covariate")
+
+All_count_joined <- All_tables_counts1 %>% right_join(All_tables_counts2) %>% right_join(All_tables_counts3) %>% print()
+
+Pretty_counts_table <- flextable(All_count_joined) %>% set_caption(caption = 
+                                                                     "Frequencies of visits, Prostate cancer-related diagnostic/screening tests/visits during different time periods before, during and after lockdown") %>%
+  set_table_properties(layout = "autofit")
 Pretty_counts_table
 
-tablename <- paste0("All_covariate_counts", db.name, analysis.name, ".pdf")
+# save the table as a csv file
+write.csv(All_count_joined, here("Results", db.name, "Prostate", "Prostate_screening_diagnostic_counts_table.csv"), row.names = FALSE)
 
-# save the table as pdf
-save_as_image(Pretty_counts_table, here("Results", db.name , "Prostate",tablename), 
-              zoom=1, expand=100, webshot = "webshot")
 
-print(paste0("- Got aggregated counts of prostate cancer covariate tables"))
-info(logger, "- Got aggregated counts of prostate cancer covariate tables")
+# save the table as docx
+save_as_docx('Prostate_counts_table' = Pretty_counts_table, path=here("Results", db.name, "Prostate", "Prostate_screening_diagnostic_counts_table.docx"))
+
+
+# save RData objects
+save(All_count_joined, Pretty_counts_table, file = here("Results", db.name, "Prostate", "ProstateScreeningDiagnosticCounts.RData"))
+
+print(paste0("- Got aggregated counts of Prostate cancer covariate tables"))
+info(logger, "- Got aggregated counts of Prostate cancer covariate tables")
 
 
 # =============================== (SMD) ====================================== #
 
-print(paste0("- Getting SMD of prostate cancer covariate tables"))
-info(logger, "- Getting SMD of prostate cancer covariate tables")
+print(paste0("- Getting SMD of Prostate cancer covariate tables"))
+info(logger, "- Getting SMD of Prostate cancer covariate tables")
 
 # Get all person level tables together and filter by cohort_definition_id_1
 All_tables_cohort_1 <- individuals_id %>% select(person_id) %>%
@@ -442,8 +499,8 @@ All_tables_cohort_1 <- individuals_id %>% select(person_id) %>%
   select(subject_id, covariate, value) %>%
   inner_join(cohorts_db_df, by = "subject_id") %>%
   distinct() %>%
-  filter(cohort_definition_id==7)
- 
+  filter(cohort_definition_id==10)
+
 # Pivot the table so that all the covariates which were rows in the above code are now column headings
 All_tables_cohort_1 <- All_tables_cohort_1 %>% select(subject_id, covariate, value, cohort_definition_id, cohort_start_date, cohort_end_date) %>% 
   tidyr::pivot_wider(names_from = covariate, values_from = value,values_fill = 0) # if this throws an error it's because there are duplicate records in the data somewhere. Look for it!
@@ -456,43 +513,67 @@ All_tables_cohort_2 <- individuals_id %>% select(person_id) %>%
   select(subject_id, covariate, value) %>%
   inner_join(cohorts_db_df, by = "subject_id") %>%
   distinct() %>%
-  filter(cohort_definition_id==8)
+  filter(cohort_definition_id==11)
 
 # Pivot the table so that all the covariates which were rows in the above code are now column headings
 All_tables_cohort_2 <- All_tables_cohort_2 %>% select(subject_id, covariate, value, cohort_definition_id, cohort_start_date, cohort_end_date) %>% 
   tidyr::pivot_wider(names_from = covariate, values_from = value,values_fill = 0)
 
 
+# Get all person level tables together and filter by cohort_definition_id_3
+All_tables_cohort_3 <- individuals_id %>% select(person_id) %>%
+  rename("subject_id"="person_id") %>%
+  left_join(continuous_table) %>%
+  select(subject_id, covariate, value) %>%
+  inner_join(cohorts_db_df, by = "subject_id") %>%
+  distinct() %>%
+  filter(cohort_definition_id==12)
+
+# Pivot the table so that all the covariates which were rows in the above code are now column headings
+All_tables_cohort_3 <- All_tables_cohort_3 %>% select(subject_id, covariate, value, cohort_definition_id, cohort_start_date, cohort_end_date) %>% 
+  tidyr::pivot_wider(names_from = covariate, values_from = value,values_fill = 0)
+
 # Run SMD function to create table of all
-All_SMD <- compute_continuous_smd(All_tables_cohort_1, All_tables_cohort_2) 
+All_SMD_Pre_lock <- compute_continuous_smd(All_tables_cohort_1, All_tables_cohort_2) 
+All_SMD_Pre_post <- compute_continuous_smd(All_tables_cohort_1, All_tables_cohort_3) 
 
-All_SMD <- All_SMD %>% rename("mean after lockdown" = "mean1") %>% rename("var after lockdown" = "var1") %>% 
-          rename("mean before lockdown" = "mean2") %>% rename("var before lockdown" = "var2") %>%
-          rename("Covariate" = "covariate") 
+All_SMD_Pre_lock  <- All_SMD_Pre_lock  %>% rename("SMD Before lockdown vs. During lockdown" = "SMD") 
+All_SMD_Pre_post  <- All_SMD_Pre_post  %>% rename("SMD Before lockdown vs. After lockdown" = "SMD") 
 
-All_SMD <- All_SMD[,c(1,4,5,2,3,6)]
+All_SMD_Pre_post  <- All_SMD_Pre_post  %>%  rename("mean3" = mean2) %>% rename("var3" = var2) 
 
-Pretty_SMD_table <- flextable(All_SMD) %>% set_caption(caption = "Mean(var) frequencies of visits, prostate cancer-related observations and procedures during different time periods before and after lockdown") 
-Pretty_SMD_table
 
-tablename <- paste0("All_covariate_SMD", db.name, analysis.name, ".pdf")
+All_SMD <- All_SMD_Pre_lock %>% full_join(All_SMD_Pre_post) %>% arrange(covariate)
 
-# save the table as pdf
-save_as_image(Pretty_SMD_table, here("Results", db.name , "Prostate",tablename), 
-              zoom=1, expand=100, webshot = "webshot")
+All_SMD_formatted <- All_SMD %>% mutate("Mean (var) before lockdown"= paste0(paste(mean1)," (", paste(var1), ")")) %>%
+  mutate("Mean (var) during lockdown"= paste0(paste(mean2)," (", paste(var2), ")")) %>%
+  mutate("Mean(var) after lockdown"= paste0(paste(mean3)," (", paste(var3), ")")) %>%
+  rename("Screening/Diagnostic Test" = "covariate") 
+
+All_SMD_formatted <-  All_SMD_formatted[-c(2,3,4,5,7,8)]
+All_SMD_formatted <-  All_SMD_formatted[c(1,4,5,6,2,3)]
+
+Pretty_Prostate_SMD_table <- flextable(All_SMD_formatted) %>% set_caption(caption = "Mean(var) frequencies of visits, Prostate cancer-related screening/diagnostic tests during different time periods before and after lockdown") %>%
+  set_table_properties(layout = "autofit")
+
+Pretty_Prostate_SMD_table
 
 ## ========================= Save all tables ================================ ##
 
-save(list = c("All_tables_counts1", "All_tables_counts2", "All_count_joined", "Pretty_counts_table", "All_tables_cohort_1", "All_tables_cohort_2",
-              "All_SMD", "Pretty_gender_table", "Pretty_SMD_table"), file = here("Results", db.name, "Prostate", "Prostate_covariates", "ProstateCountsSMDTabs.Rdata"))
+# save RData objects
+save(list = c("All_tables_counts1", "All_tables_counts2",  "All_tables_counts3", "All_count_joined", "Pretty_counts_table", "All_tables_cohort_1", "All_tables_cohort_2",
+              "All_tables_cohort_3", "All_SMD", "All_SMD_formatted", "Pretty_Prostate_SMD_table"), file = here("Results", db.name, "Prostate", "Prostate_covariates", "ProstateScreeningDiagnosticCountsSMDTabs.Rdata"))
 
-write.csv(All_count_joined, here("Results", db.name, "Prostate", "All_count_joined_prostate.csv"), row.names = FALSE)
-write.csv(All_SMD, here("Results", db.name, "Prostate", "All_SMD_prostate.csv"), row.names = FALSE)
+# save the table as a csv file
+write.csv(All_SMD_formatted, here("Results", db.name, "Prostate", "ProstateScreeningDiagnosticSMD.csv"), row.names = FALSE)
+write.csv(All_count_joined, here("Results", db.name, "Prostate", "All_count_joined_Prostate.csv"), row.names = FALSE)
+
+# save the table as docx
+save_as_docx('ProstateScreeningDiagnosticSMD' = Pretty_Prostate_SMD_table, path=here("Results", db.name, "Prostate", "ProstateScreeningDiagnosticSMD.docx"))
+
+print(paste0("- Got SMD of Prostate cancer covariate tables"))
+info(logger, "- Got SMD of Prostate cancer covariate tables")
 
 
-print(paste0("- Got SMD of prostate cancer covariate tables"))
-info(logger, "- Got SMD of prostate cancer covariate tables")
-
-
-print(paste0("- 3. PROSTATE CANCER CUSTOM CHARACTERISATIONS DONE"))
-info(logger, "- 3. PROSTATE CANCER CUSTOM CHARACTERISATIONS DONE")
+print(paste0("- 2. Prostate CANCER CUSTOM CHARACTERISATIONS DONE"))
+info(logger, "- 2. Prostate CANCER CUSTOM CHARACTERISATIONS DONE")
