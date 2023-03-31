@@ -157,15 +157,28 @@ save(result3, result4, covColorectalBefore, covColorectalDuring, covColorectalAf
 
 
 # need to add columns for after lockdown to the dataframe for before and during before making a flextable.
-Colorectal_combined_results <- cbind(result1, result2)
-names(Colorectal_combined_results)[2] = "Count before lockdown" 
-names(Colorectal_combined_results)[3] = "% (n=8,815) before lockdown"
-names(Colorectal_combined_results)[4] = "Count during lockdown"
-names(Colorectal_combined_results)[5] = "% (n=459) during lockdown"
-names(Colorectal_combined_results)[6] = "Std. Diff Before vs. during lockdown"
-names(Colorectal_combined_results)[10] = "Count after lockdown"
-names(Colorectal_combined_results)[11] = "% (n=2,900) after lockdown"
-names(Colorectal_combined_results)[12] = "Std. Diff Before vs. after lockdown"
+names(result3)[2] = "Count before lockdown"
+names(result3)[3] = "% (n=6,025) before lockdown"
+names(result3)[4] = "Count during lockdown"
+names(result3)[5] = "% (n=349) during lockdown"
+names(result3)[6] = "Std. Diff Before vs. during lockdown"
+names(result4)[1] = "Characteristic repeat"
+names(result4)[2] = "Count before lockdown"
+names(result4)[3] = "% (n=6,025) before lockdown"
+names(result4)[4] = "Count after lockdown"
+names(result4)[5] = "% (n=2,234) after lockdown"
+names(result4)[6] = "Std. Diff Before vs. after lockdown"
+
+# because result3 doesn't have any data for age 15-19, it will not be possible to cbind result3 and 4 together as the number of rows don't match. Therefore
+# add a row with this data in to result 3 and then re-order the rows so that this is in the same position as result 4. Then cbind.
+result3_add_row <- result3
+result3_add_row[nrow(result3_add_row) + 1,] = c("   15 -  19")
+result3_add_row <- result3_add_row[c(1, 108, 2:107),]
+
+
+Colorectal_combined_results <- cbind(result3_add_row, result4)
+
+# remove superfluous columns
 Colorectal_combined_results <- Colorectal_combined_results[-c(7,8,9)]
 Colorectal_combined_results <- Colorectal_combined_results[c(1,2,3,4,5,7,8,6,9)]
 
@@ -236,17 +249,31 @@ save(result5, result6, covLungBefore, covLungDuring, covLungAfter, file = here("
 
 
 # need to add columns for after lockdown to the dataframe for before and during before making a flextable.
-Lung_combined_results <- cbind(result1, result2)
-names(Lung_combined_results)[2] = "Count before lockdown" 
-names(Lung_combined_results)[3] = "% (n=8,815) before lockdown"
-names(Lung_combined_results)[4] = "Count during lockdown"
-names(Lung_combined_results)[5] = "% (n=459) during lockdown"
-names(Lung_combined_results)[6] = "Std. Diff Before vs. during lockdown"
-names(Lung_combined_results)[10] = "Count after lockdown"
-names(Lung_combined_results)[11] = "% (n=2,900) after lockdown"
-names(Lung_combined_results)[12] = "Std. Diff Before vs. after lockdown"
+names(result5)[2] = "Count before lockdown"
+names(result5)[3] = "% (n=5,766) before lockdown"
+names(result5)[4] = "Count during lockdown"
+names(result5)[5] = "% (n=435) during lockdown"
+names(result5)[6] = "Std. Diff Before vs. during lockdown"
+names(result6)[1] = "Characteristic repeat"
+names(result6)[2] = "Count before lockdown"
+names(result6)[3] = "% (n=5,766) before lockdown"
+names(result6)[4] = "Count after lockdown"
+names(result6)[5] = "% (n=2,102) after lockdown"
+names(result6)[6] = "Std. Diff Before vs. after lockdown"
+
+# because result3 doesn't have any data for age 15-19, it will not be possible to cbind result3 and 4 together as the number of rows don't match. Therefore
+# add a row with this data in to result 3 and then re-order the rows so that this is in the same position as result 4. Then cbind.
+result5_add_row <- result5
+result5_add_row[nrow(result5_add_row) + 1,] = c("   25 -  29")
+result5_add_row <- result5_add_row[c(1:3, 108, 4:107),]
+
+
+Lung_combined_results <- cbind(result5_add_row, result6)
+
+# remove superfluous columns
 Lung_combined_results <- Lung_combined_results[-c(7,8,9)]
 Lung_combined_results <- Lung_combined_results[c(1,2,3,4,5,7,8,6,9)]
+
 
 Pretty_Lung_table <- flextable(Lung_combined_results) %>% theme_vanilla() %>% 
   set_caption(caption = "Feature extraction for Lung cancer cohorts before, during and after lockdown") %>% 
@@ -313,17 +340,29 @@ print(result8, row.names = TRUE, right = FALSE)
 # save RData objects
 save(result7, result8, covProstateBefore, covProstateDuring, covProstateAfter, file = here("Results", db.name, "Prostate", "ProstateFeatureExtraction.RData"))
 
-
 # need to add columns for after lockdown to the dataframe for before and during before making a flextable.
-Prostate_combined_results <- cbind(result1, result2)
-names(Prostate_combined_results)[2] = "Count before lockdown" 
-names(Prostate_combined_results)[3] = "% (n=8,815) before lockdown"
-names(Prostate_combined_results)[4] = "Count during lockdown"
-names(Prostate_combined_results)[5] = "% (n=459) during lockdown"
-names(Prostate_combined_results)[6] = "Std. Diff Before vs. during lockdown"
-names(Prostate_combined_results)[10] = "Count after lockdown"
-names(Prostate_combined_results)[11] = "% (n=2,900) after lockdown"
-names(Prostate_combined_results)[12] = "Std. Diff Before vs. after lockdown"
+names(result7)[2] = "Count before lockdown"
+names(result7)[3] = "% (n=8,103) before lockdown"
+names(result7)[4] = "Count during lockdown"
+names(result7)[5] = "% (n=427) during lockdown"
+names(result7)[6] = "Std. Diff Before vs. during lockdown"
+names(result8)[1] = "Characteristic repeat"
+names(result8)[2] = "Count before lockdown"
+names(result8)[3] = "% (n=8,103) before lockdown"
+names(result8)[4] = "Count after lockdown"
+names(result8)[5] = "% (n=2,477) after lockdown"
+names(result8)[6] = "Std. Diff Before vs. after lockdown"
+
+# because result3 doesn't have any data for age 15-19, it will not be possible to cbind result3 and 4 together as the number of rows don't match. Therefore
+# add a row with this data in to result 3 and then re-order the rows so that this is in the same position as result 4. Then cbind.
+result7_add_row <- result7
+result7_add_row[nrow(result7_add_row) + 1,] = c("  Viral hepatitis C")
+result7_add_row <- result7_add_row[c(1:41, 108, 42:107),]
+
+
+Prostate_combined_results <- cbind(result7_add_row, result8)
+
+# remove superfluous columns
 Prostate_combined_results <- Prostate_combined_results[-c(7,8,9)]
 Prostate_combined_results <- Prostate_combined_results[c(1,2,3,4,5,7,8,6,9)]
 
