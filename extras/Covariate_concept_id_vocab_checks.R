@@ -1420,16 +1420,81 @@ tbl(db, sql("SELECT * FROM results.cohort_diagnostics_concept_counts_permanent_t
 
 
 
+################### FROM COHORT DIAGNOSTICS, I WILL CHECK THE FOLLOWING ORPHAN CODE #################################
+
+### BRONCHOSCOPY
+
+# Bronchoscopy normal - READ CODE - THIS MAPS TO 4065516  BRONCHOSCOPY NORMAL (CONDITION)
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45428535)
+
+# Bronchoscopy abnormal - READ CODE - THIS MAPS TO 4065519  BRONCHOSCOPY ABNORMAL (CONDITION)
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45495175)
+
+### BOWEL CANCER SCREENING PROGRAMME 
+
+# Bowel cancer screening programme: faecal occult blood result - READ CODE - THIS MAPS TO 44792842
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45419060)
+
+
+### COLONOSCOPY
+
+# Colonoscopy Study observation - LOINCCODE - THIS MAPS TO 3022145
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 3022145)
+
+# Diagnostic Colonoscopy - READ CODE - THIS MAPS TO 4068278
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45429037)
+
+# Colonoscopy normal - READ CODE - THIS MAPS TO 4197456
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45435170)
+
+# Colonoscopy ABnormal - READ CODE - THIS MAPS TO 4208962
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45428536)
+
+
+### MAMMOGRAMS
+
+# Breast neoplasm screen - READ CODE - THIS MAPS TO 4147961
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45485601)
+
+# Mammography normal - READ CODE - THIS MAPS TO 4059048
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45492145)
+
+# Breast neoplasm screen normal - READ CODE - THIS MAPS TO 4062647
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45492261)
+
+# Breast neoplasm screen ABnormal - READ CODE - THIS MAPS TO 4062648
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45438831)
+
+# Mammography attended - READ CODE - THIS MAPS TO 44813155
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45451970)
+
+# [D]Mammogram abnormal - READ CODE - THIS MAPS TO 4059049
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45437276)
 
 
 
+### PROSTATE SPECIFIC ANTIGEN
 
+# Total prostate specific antigen level - READ CODE - THIS MAPS TO 37392634
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45482021)
 
+# Serum prostate specific antigen level - READ CODE - THIS MAPS TO 37392151
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45518548)
 
+# Prostate specific antigen normal - READ CODE - THIS MAPS TO 4013978 
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45455113)
 
+# PSA - Serum prostate specific antigen level - READ CODE - THIS MAPS TO 37398806 
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45441837)
 
+# PSA - Prostate specific antigen threshold for referral - READ CODE - THIS MAPS TO 45769987 
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45773811)
 
+# Free prostate specific antigen level - READ CODE - THIS MAPS TO 37394310
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45478701)
 
+# Serum free prostate specific antigen level - READ CODE - THIS MAPS TO 37392159
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45491972)
 
-
-
+# Prostate specific antigen abnormal - READ CODE - THIS MAPS TO 439453
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45418775)
