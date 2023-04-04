@@ -1498,3 +1498,29 @@ cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(con
 
 # Prostate specific antigen abnormal - READ CODE - THIS MAPS TO 439453
 cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45418775)
+
+
+
+### SIGMOIDOSCOPY
+
+# Flexible sigmoidoscopy Study observation - LOINC CODE - THIS MAPS TO  3017418
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 3017418)
+
+# Sigmoidoscopy normal - READ CODE - THIS MAPS TO  3017418
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 4188430)
+
+# Sigmoidoscopy abnormal - READ CODE - THIS MAPS TO  3017418
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 44804675)
+
+# Colon operations and sigmoidoscopy of rectum - READ CODE - THIS MAPS TO   4139152
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45429029)
+
+# Sigmoidoscopy abnormal - READ CODE - THIS MAPS TO   44804675 
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45515182)
+
+# Bowel scope (flexible sigmoidoscopy) screen: cancer detected - READ CODE - THIS MAPS TO  4139152
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45462356)
+
+# Colon operations or rectal sigmoidoscopy NOS - READ CODE - THIS MAPS TO  44809777
+cdm$concept_relationship %>% filter(relationship_id == "Maps to") %>% filter(concept_id_1 == 45455435)
+  
