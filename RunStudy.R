@@ -31,6 +31,7 @@ if (!file.exists(output.folder8)){
 # table names----
 outcome_table_name_1 <- paste0(outcome_table_stem,"_cancers_before_after_lockdown") # this is the four cancers
 outcome_table_name_2 <- paste0(outcome_table_stem,"_cancers_3_time_periods") # this is the four cancers before, during and after lockdown
+outcome_table_name_3 <- paste0(outcome_table_stem,"_denominator_3_time_periods") # this is the denominator before, during and after lockdown
 
 start<-Sys.time()
 

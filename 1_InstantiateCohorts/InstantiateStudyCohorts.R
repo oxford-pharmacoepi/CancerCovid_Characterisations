@@ -42,3 +42,24 @@ cdm[[outcome_table_name_2]] %>% group_by(cohort_definition_id) %>% arrange(cohor
 info(logger, "- got cancer populations before, during and after lockdown")
 
 # ============================================================================ #
+
+
+# ============================================================================ #
+#           3.  DENOMINATOR BEFORE, DURING AND AFTER LOCKDOWN                  #
+# ============================================================================ #
+info(logger, "- getting denominator populations before, during and after lockdown")
+
+outcome_cohorts_3 <- readCohortSet(here("1_InstantiateCohorts", "Denominator"))
+
+cdm <- generateCohortSet(cdm = cdm, 
+                         cohortSet = outcome_cohorts_3,
+                         name = outcome_table_name_3,
+                         overwrite = TRUE) 
+
+cdm[[outcome_table_name_3]] %>% group_by(cohort_definition_id) %>% arrange(cohort_definition_id) %>% tally() %>% collect() 
+
+cdm$nb_cancer_covid_denominator_3_time_periods
+
+info(logger, "- got denominator populations before, during and after lockdown")
+
+# ============================================================================ #

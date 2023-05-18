@@ -1,0 +1,115 @@
+"","cohort_definition_id","region","n"
+"1",1,"North East",10
+"2",1,"Scotland",702
+"3",1,"West Midlands",425
+"4",1,"South Central",958
+"5",1,"South West",375
+"6",1,"London",197
+"7",1,"South East Coast",2237
+"8",1,"Northern Ireland",3406
+"9",1,"North West",392
+"10",1,"East of England",88
+"11",1,"Yorkshire  & The Humber",25
+"12",2,"Scotland",36
+"13",2,"South Central",28
+"14",2,"Northern Ireland",223
+"15",2,"London",3
+"16",2,"South West",17
+"17",2,"Yorkshire  & The Humber",1
+"18",2,"East of England",2
+"19",2,"North West",14
+"20",2,"West Midlands",25
+"21",2,"South East Coast",110
+"22",3,"Yorkshire  & The Humber",9
+"23",3,"North West",122
+"24",3,"South East Coast",852
+"25",3,"West Midlands",26
+"26",3,"Scotland",333
+"27",3,"South West",36
+"28",3,"London",3
+"29",3,"South Central",82
+"30",3,"Northern Ireland",1437
+"31",4,"Scotland",456
+"32",4,"Northern Ireland",2421
+"33",4,"South West",206
+"34",4,"North West",241
+"35",4,"South Central",512
+"36",4,"West Midlands",259
+"37",4,"South East Coast",1742
+"38",4,"East of England",52
+"39",4,"North East",4
+"40",4,"Yorkshire  & The Humber",21
+"41",4,"London",111
+"42",5,"Northern Ireland",167
+"43",5,"North West",8
+"44",5,"South West",11
+"45",5,"West Midlands",7
+"46",5,"East of England",1
+"47",5,"South East Coast",102
+"48",5,"South Central",18
+"49",5,"Scotland",33
+"50",5,"London",2
+"51",6,"North West",121
+"52",6,"Scotland",217
+"53",6,"Northern Ireland",1018
+"54",6,"South Central",47
+"55",6,"Yorkshire  & The Humber",5
+"56",6,"West Midlands",30
+"57",6,"South West",31
+"58",6,"South East Coast",765
+"59",7,"South West",169
+"60",7,"South Central",404
+"61",7,"East of England",39
+"62",7,"West Midlands",215
+"63",7,"Yorkshire  & The Humber",5
+"64",7,"North West",319
+"65",7,"Northern Ireland",2569
+"66",7,"South East Coast",1482
+"67",7,"North East",4
+"68",7,"London",86
+"69",7,"Scotland",474
+"70",8,"West Midlands",11
+"71",8,"North West",35
+"72",8,"London",2
+"73",8,"Scotland",36
+"74",8,"East of England",1
+"75",8,"Northern Ireland",212
+"76",8,"South East Coast",103
+"77",8,"South Central",21
+"78",8,"South West",14
+"79",9,"Scotland",197
+"80",9,"South Central",30
+"81",9,"Yorkshire  & The Humber",1
+"82",9,"Northern Ireland",1136
+"83",9,"South East Coast",568
+"84",9,"South West",17
+"85",9,"West Midlands",18
+"86",9,"North West",135
+"87",10,"North West",345
+"88",10,"South Central",937
+"89",10,"Scotland",608
+"90",10,"South East Coast",2377
+"91",10,"Yorkshire  & The Humber",24
+"92",10,"West Midlands",344
+"93",10,"North East",2
+"94",10,"Northern Ireland",2897
+"95",10,"London",122
+"96",10,"South West",370
+"97",10,"East of England",77
+"98",11,"London",3
+"99",11,"South West",13
+"100",11,"Scotland",64
+"101",11,"South Central",21
+"102",11,"South East Coast",114
+"103",11,"North West",20
+"104",11,"Northern Ireland",182
+"105",11,"East of England",1
+"106",11,"West Midlands",9
+"107",12,"Yorkshire  & The Humber",10
+"108",12,"South Central",66
+"109",12,"North West",88
+"110",12,"Scotland",229
+"111",12,"South West",27
+"112",12,"West Midlands",27
+"113",12,"South East Coast",829
+"114",12,"Northern Ireland",1201
