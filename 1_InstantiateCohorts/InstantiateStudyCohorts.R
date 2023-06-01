@@ -15,7 +15,7 @@ outcome_cohorts_1 <- readCohortSet(here("1_InstantiateCohorts", "CancerCohortsBe
 
 cdm <- generateCohortSet(cdm = cdm, 
                                        cohortSet = outcome_cohorts_1,
-                                       cohortTableName = outcome_table_name_1,
+                                       name = outcome_table_name_1,
                                        overwrite = TRUE) 
 
 cdm[[outcome_table_name_1]] %>% group_by(cohort_definition_id) %>% arrange(cohort_definition_id) %>% tally() %>% collect() 
@@ -34,7 +34,7 @@ outcome_cohorts_2 <- readCohortSet(here("1_InstantiateCohorts", "CancerCohorts3T
 
 cdm <- generateCohortSet(cdm = cdm, 
                          cohortSet = outcome_cohorts_2,
-                         cohortTableName = outcome_table_name_2,
+                         name = outcome_table_name_2,
                          overwrite = TRUE) 
 
 cdm[[outcome_table_name_2]] %>% group_by(cohort_definition_id) %>% arrange(cohort_definition_id) %>% tally() %>% collect() 

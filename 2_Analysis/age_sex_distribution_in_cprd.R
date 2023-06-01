@@ -1,7 +1,9 @@
-# Locating the location of the patients across time. CPRD has changed across the
-# last few years, with more practices moving over to AURUM
+# Characterising the age and sex distribution of CPRD patients for those enrolled
+# before, during and after lockdown. CPRD has changed across the
+# last few years, with more practices moving over to AURUM so need to determine if
+# they are roughly similar across timepoints
 
-# Connect to the database and then view the location table
+# Connect to the database and then view the person table
 
 
 # load r packages

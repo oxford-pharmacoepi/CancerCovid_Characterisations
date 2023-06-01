@@ -54,7 +54,7 @@ info(logger, 'FUNCTIONS FOR ALL CUSTOM CHARACTERISATIONS RAN')
 
 # Run custom characterisations on denominator population ----
 info(logger, 'RUNNING CUSTOM CHARACTERISATIONS OF DENOMINATOR POPULATION')
-source(here("2_Analysis","Denominator_Characterisations.R"))
+source(here("2_Analysis","Denominator_Characterisations_with_descendents.R"))
 info(logger, 'CUSTOM CHARACTERISATIONS OF DENOMINATOR POPULATION RAN')
 
 # Run custom characterisations on breast cancer population ----

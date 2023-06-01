@@ -105,4 +105,5 @@ cdm$person %>%
 
 # Run the study ------
 source(here("RunStudy.R"))
-# after the study is run you should have a zip folder in your output folder to share
+# If all has worked, there should now be .csv files, data objects and 
+#tables in the corresponding results folders for each population to share
