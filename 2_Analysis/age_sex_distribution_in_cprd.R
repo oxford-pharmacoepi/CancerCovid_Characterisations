@@ -116,7 +116,7 @@ Var_age_before <- var(Var_age_before$age) %>% print()
 Var_age_during <- age_distribution_denominator_cohorts %>% filter(cohort_definition_id==2)
 Var_age_during <- var(Var_age_during$age) %>% print()
 
-Var_age_after <- age_distribution_denominator_cohorts %>% filter(cohort_definition_id==1)
+Var_age_after <- age_distribution_denominator_cohorts %>% filter(cohort_definition_id==3)
 Var_age_after <- var(Var_age_after$age) %>% print()
 
 # FREQUENCIES OF AGES AT COHORT START DATE FOR DENOMINATOR POP BEFORE LOCKDOWN ------
