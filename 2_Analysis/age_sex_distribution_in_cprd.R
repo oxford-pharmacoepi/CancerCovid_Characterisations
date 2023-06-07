@@ -110,7 +110,15 @@ Mean_age_during <- mean(Mean_age_during$age) %>% print()
 Mean_age_after <- age_distribution_denominator_cohorts %>% filter(cohort_definition_id==3) 
 Mean_age_after <- mean(Mean_age_after$age) %>% print()
 
-  
+Var_age_before <- age_distribution_denominator_cohorts %>% filter(cohort_definition_id==1)
+Var_age_before <- var(Var_age_before$age) %>% print()
+
+Var_age_during <- age_distribution_denominator_cohorts %>% filter(cohort_definition_id==2)
+Var_age_during <- var(Var_age_during$age) %>% print()
+
+Var_age_after <- age_distribution_denominator_cohorts %>% filter(cohort_definition_id==1)
+Var_age_after <- var(Var_age_after$age) %>% print()
+
 # FREQUENCIES OF AGES AT COHORT START DATE FOR DENOMINATOR POP BEFORE LOCKDOWN ------
 age_table_1 <- age_distribution_denominator_cohorts %>% 
   filter(cohort_definition_id ==1) %>%
