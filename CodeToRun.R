@@ -12,6 +12,18 @@
 #renv::activate()
 #renv::restore()
 
+install.packages("remotes")
+remotes::install_github("ohdsi/CirceR")
+
+install.packages("drat")
+drat::addRepo("OHDSI")
+install.packages("FeatureExtraction")
+
+# install.packages("devtools")
+install.packages("devtools")
+devtools::install_github("davidgohel/gdtools")
+devtools::install_github("davidgohel/flextable")
+
 
 ## ----------------------------- LOAD PACKAGES ------------------------------ ##
 
@@ -27,7 +39,6 @@ library(tidyr)
 library(stringr)
 library(CDMConnector)
 library(ggplot2)
-library(RPostgres)
 library(lubridate)
 library(flextable)
 library(glue)
@@ -41,7 +52,9 @@ library(DatabaseConnector)
 library(Andromeda)
 library(gt)
 library(Hmisc)
-
+library(CodelistGenerator)
+library(readxl)
+library(gdtools)
 
 # database metadata and connection details -----
 # The name/ acronym for the database
