@@ -28,10 +28,6 @@ if (!file.exists(output.folder8)){
   dir.create(output.folder8, recursive = TRUE)}
 
 
-# table names----
-outcome_table_name_1 <- paste0(outcome_table_stem,"_cancers_before_after_lockdown") # this is the four cancers
-outcome_table_name_2 <- paste0(outcome_table_stem,"_cancers_3_time_periods") # this is the four cancers before, during and after lockdown
-outcome_table_name_3 <- paste0(outcome_table_stem,"_denominator_3_time_periods") # this is the denominator before, during and after lockdown
 
 start<-Sys.time()
 
@@ -56,6 +52,11 @@ info(logger, 'FUNCTIONS FOR ALL CUSTOM CHARACTERISATIONS RAN')
 info(logger, 'RUNNING CUSTOM CHARACTERISATIONS OF DENOMINATOR POPULATION')
 source(here("2_Analysis","Denominator_Characterisations_with_descendents.R"))
 info(logger, 'CUSTOM CHARACTERISATIONS OF DENOMINATOR POPULATION RAN')
+
+# Run age and sex distribution of denominator population ----
+info(logger, 'RUNNING AGE AND SEX DISTRIBUTION OF DENOMINATOR POPULATION')
+source(here("2_Analysis","Age_sex_distribution_in_database.R"))
+info(logger, 'AGE AND SEX DISTRIBUTION OF DENOMINATOR POPULATION RAN')
 
 # Run custom characterisations on breast cancer population ----
 info(logger, 'RUNNING CUSTOM CHARACTERISATIONS OF BREAST CANCER POPULATION')
@@ -82,10 +83,15 @@ info(logger, 'RUNNING FEATURE EXTRACTION OF ALL CANCERS')
 source(here("2_Analysis","FeatureExtraction.R"))
 info(logger, 'FEATURE EXTRACTION OF ALL CANCERS RAN')
 
+# Zip the files to export
+files2zip <- dir(c(output.folder, output.folder1, output.folder2, output.folder3, output.folder4, output.folder5, 
+                   output.folder6, output.folder7, output.folder8), full.names = TRUE)
+zip(zipfile = paste0(db.name, "_full_characterisation_results"), files = files2zip)
+
 
 print("Done!")
-print("-- If all has worked, there should now be .csv files, data objects and 
-      tables in the corresponding results folders for each popualtion to share")
+print("-- If all has worked, there should now be a zipped folder of all your results in your
+                 home directory to share to share")
 print("-- Thank you for running the study!")
 Sys.time()-start
 readLines(log_file)

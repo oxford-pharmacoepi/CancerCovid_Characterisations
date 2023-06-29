@@ -8,6 +8,9 @@
 #                                                                              #
 # ============================================================================ #
 
+# Load packages ------
+#renv::activate()
+#renv::restore()
 
 
 ## ----------------------------- LOAD PACKAGES ------------------------------ ##
@@ -37,6 +40,7 @@ library(FeatureExtraction)
 library(DatabaseConnector)
 library(Andromeda)
 library(gt)
+library(Hmisc)
 
 
 # database metadata and connection details -----
@@ -50,6 +54,11 @@ output.folder1<-here("Results", db.name, "Breast")
 output.folder2<-here("Results", db.name, "Colorectal")
 output.folder3<-here("Results", db.name, "Lung")
 output.folder4<-here("Results", db.name, "Prostate")
+
+output.folder5<-here("Results", db.name, "Breast", "Breast_covariates")
+output.folder6<-here("Results", db.name, "Colorectal", "Colorectal_covariates")
+output.folder7<-here("Results", db.name, "Lung", "Lung_covariates")
+output.folder8<-here("Results", db.name, "Prostate", "Prostate_covariates")
 
 # Specify databaseConnector connection details -----
 # database connection details
@@ -105,5 +114,5 @@ cdm$person %>%
 
 # Run the study ------
 source(here("RunStudy.R"))
-# If all has worked, there should now be .csv files, data objects and 
-#tables in the corresponding results folders for each population to share
+# If all has worked, there should now be a zipped folder of all your results in your
+# home directory to share

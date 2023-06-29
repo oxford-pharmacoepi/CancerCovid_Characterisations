@@ -18,7 +18,11 @@ cdm <- generateCohortSet(cdm = cdm,
                                        name = outcome_table_name_1,
                                        overwrite = TRUE) 
 
-cdm[[outcome_table_name_1]] %>% group_by(cohort_definition_id) %>% arrange(cohort_definition_id) %>% tally() %>% collect() 
+cohortCount(cdm[[outcome_table_name_1]]) %>%  glimpse()
+
+cohortAttrition(cdm[[outcome_table_name_1]]) %>%  glimpse()
+
+cohortSet(cdm[[outcome_table_name_1]]) %>%  glimpse()
 
 info(logger, "- got cancer populations before and after lockdown")
 
@@ -37,7 +41,11 @@ cdm <- generateCohortSet(cdm = cdm,
                          name = outcome_table_name_2,
                          overwrite = TRUE) 
 
-cdm[[outcome_table_name_2]] %>% group_by(cohort_definition_id) %>% arrange(cohort_definition_id) %>% tally() %>% collect() 
+cohortCount(cdm[[outcome_table_name_2]]) %>%  glimpse()
+
+cohortAttrition(cdm[[outcome_table_name_2]]) %>%  glimpse()
+
+cohortSet(cdm[[outcome_table_name_2]]) %>%  glimpse()
 
 info(logger, "- got cancer populations before, during and after lockdown")
 
@@ -56,9 +64,11 @@ cdm <- generateCohortSet(cdm = cdm,
                          name = outcome_table_name_3,
                          overwrite = TRUE) 
 
-cdm[[outcome_table_name_3]] %>% group_by(cohort_definition_id) %>% arrange(cohort_definition_id) %>% tally() %>% collect() 
+cohortCount(cdm[[outcome_table_name_3]]) %>%  glimpse()
 
-cdm$nb_cancer_covid_denominator_3_time_periods
+cohortAttrition(cdm[[outcome_table_name_3]]) %>%  glimpse()
+
+cohortSet(cdm[[outcome_table_name_3]]) %>%  glimpse()
 
 info(logger, "- got denominator populations before, during and after lockdown")
 

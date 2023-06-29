@@ -1,73 +1,12 @@
-# Characterising the age and sex distribution of CPRD patients for those enrolled
-# before, during and after lockdown. CPRD has changed across the
-# last few years, with more practices moving over to AURUM so need to determine if
-# they are roughly similar across timepoints
+# ============================================================================ #
+#          AGE AND SEX DISTRIBUTION OF YOUR DATABASE FOR THOSE ENROLLED         #
+#                       BEFORE, DURING AND AFTER LOCKDOWN                      #
+#                                Nicola Barclay                                #
+#                                 01-02-2023                                   #
+#                                                                              #
+#                                                                              #
+# ============================================================================ #
 
-# Connect to the database and then view the person table
-
-
-# load r packages
-
-library(here)
-library(DBI)
-library(dbplyr)
-library(dplyr)
-library(readr)
-library(tidyr)
-library(CDMConnector)
-library(RPostgres)
-library(lubridate)
-library(Hmisc)
-library(flextable)
-
-# table names instantiated in cdm with cancer diagnoses
-# "nb_cancer_covid_cancers_3_time_periods"
-
-outcome_table_stem <- "nb_cancer_covid" # this will form the start of the table name where the cohorts are instantiated
-# table names----
-outcome_table_name_3 <- paste0(outcome_table_stem,"_denominator_3_time_periods") # this is the denominator before, during and after lockdown
-
-db.name<-"CPRDGold_202201"
-
-
-# connect to database
-user        <-  Sys.getenv("DB_USER")
-password    <-  Sys.getenv("DB_PASSWORD")
-port        <-  Sys.getenv("DB_PORT") 
-host        <-  Sys.getenv("DB_HOST") 
-server_dbi  <-  Sys.getenv("DB_SERVER_DBI_cdm_gold_202201")
-server      <-  Sys.getenv("DB_SERVER_cdm_gold_202201")
-
-# Specify cdm_reference via DBI connection details -----
-# In this study we also use the DBI package to connect to the database
-# set up the dbConnect details below (see https://dbi.r-dbi.org/articles/dbi for more details)
-# you may need to install another package for this (although RPostgres is included with renv in case you are using postgres)
-# see here for details: https://odyosg.github.io/CDMConnector/articles/DBI_connection_examples.html
-db <- dbConnect(RPostgres::Postgres(),
-                dbname = server_dbi,
-                port = port,
-                host = host, 
-                user = user, 
-                password = password)
-
-# Set database details -----
-# The name of the schema that contains the OMOP CDM with patient-level data
-cdm_database_schema<-"public"
-
-# The name of the schema that contains the vocabularies 
-# (often this will be the same as cdm_database_schema)
-vocabulary_database_schema<-cdm_database_schema
-
-# The name of the schema where results tables will be created 
-results_database_schema<-"results"
-
-
-# create cdm reference for 1st ever cancer diagnoses---- 
-cdm <- CDMConnector::cdm_from_con(con = db, 
-                                  cdm_schema = cdm_database_schema,
-                                  write_schema = results_database_schema,
-                                  #cohort_tables = "nb_cancer_covid_cancers_3_time_periods")
-                                  cohort_tables = "nb_cancer_covid_denominator_3_time_periods")
 
 # count n in each cohort definition
 #cdm$nb_cancer_covid_cancers_3_time_periods %>% group_by(cohort_definition_id) %>% tally() %>% print(n=Inf)
@@ -79,13 +18,13 @@ cdm$nb_cancer_covid_denominator_3_time_periods %>% head()
 
 
 # ============================================================================ #
-#       Get age distribution for cancer cohorts in 3 time period            #
+#       Get age distribution for denominator cohorts in 3 time periods         #
 #          (make sure the correct cohort table is read into the cdm)           #
-#                 cdm$nb_denominator_covid_cancers_3_time_periods                   #
+#                 cdm$nb_denominator_covid_cancers_3_time_periods              #
 # ============================================================================ #
 
 ## AGE AT COHORT START DATE IN DENOMINATOR COHORTS ----------------------------
-age_distribution_denominator_cohorts <- cdm$nb_cancer_covid_denominator_3_time_periods %>% 
+age_distribution_denominator_cohorts <- cdm[[outcome_table_name_3]] %>% 
   rename("person_id" = subject_id) %>%
   left_join(cdm$person %>% select(person_id, year_of_birth), by = "person_id") %>%
   collect() %>%
@@ -167,9 +106,7 @@ Pretty_age_groups_table <- flextable(AGE_GROUPS) %>% theme_vanilla() %>%
   width(width = 3.5)
 
 
-save_as_docx('Pretty_age_groups_table' = Pretty_age_groups_table, path="~/R/CancerCovid_Characterisations/Results/CPRDGold_202201/Denominator/Pretty_age_groups_table.docx")
-
-
+save_as_docx('Pretty_age_groups_table' = Pretty_age_groups_table, path=here("Results", db.name, "Denominator", "Pretty_age_groups_table.docx"))
 
 
 
@@ -178,7 +115,7 @@ save_as_docx('Pretty_age_groups_table' = Pretty_age_groups_table, path="~/R/Canc
 
 
 ## SEX DENOMINATOR COHORT BEFORE LOCKDOWN ----------------------------
-sex_denominator_1 <-  cdm$nb_cancer_covid_denominator_3_time_periods %>% 
+sex_denominator_1 <-  cdm[[outcome_table_name_3]] %>% 
   rename("person_id" = subject_id) %>% 
   left_join(cdm$person) %>%
   filter(cohort_definition_id==1) %>%
@@ -193,7 +130,7 @@ sex_denominator_1 <-  cdm$nb_cancer_covid_denominator_3_time_periods %>%
 
 
 ## SEX DENOMINATOR COHORT DURING LOCKDOWN ----------------------------
-sex_denominator_2 <-  cdm$nb_cancer_covid_denominator_3_time_periods %>% 
+sex_denominator_2 <-  cdm[[outcome_table_name_3]] %>% 
   rename("person_id" = subject_id) %>% 
   left_join(cdm$person) %>%
   filter(cohort_definition_id==2) %>%
@@ -207,7 +144,7 @@ sex_denominator_2 <-  cdm$nb_cancer_covid_denominator_3_time_periods %>%
   print()
 
 ## SEX DENOMINATOR COHORT AFTER LOCKDOWN ----------------------------
-sex_denominator_3 <-  cdm$nb_cancer_covid_denominator_3_time_periods %>% 
+sex_denominator_3 <-  cdm[[outcome_table_name_3]] %>% 
   rename("person_id" = subject_id) %>% 
   left_join(cdm$person) %>%
   filter(cohort_definition_id==3) %>%

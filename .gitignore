@@ -6,3 +6,6 @@ Results*
 CodeToRun-local.R
 Denominator_Characterisations-old.R
 postgresql-42.2.18.jar 
+Old_files*
+*.zip
+.Rprofile
