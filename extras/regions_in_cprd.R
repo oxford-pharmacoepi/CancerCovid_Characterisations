@@ -32,7 +32,7 @@ db.name<-"CPRDGold_202201"
 user        <-  Sys.getenv("DB_USER")
 password    <-  Sys.getenv("DB_PASSWORD")
 port        <-  Sys.getenv("DB_PORT") 
-host        <-  Sys.getenv("DB_HOST") 
+host        <-  Sys.getenv("DB_HOST_OLD") 
 server_dbi  <-  Sys.getenv("DB_SERVER_DBI_cdm_gold_202201")
 server      <-  Sys.getenv("DB_SERVER_cdm_gold_202201")
 
@@ -63,9 +63,8 @@ results_database_schema<-"results"
 # create cdm reference for 1st ever cancer diagnoses---- 
 cdm <- CDMConnector::cdm_from_con(con = db, 
                                   cdm_schema = cdm_database_schema,
-                                  write_schema = results_database_schema)
-                                  #cohort_tables = "nb_cancer_covid_cancers_3_time_periods")
-                                  #cohort_tables = "nb_cancer_covid_denominator_3_time_periods")
+                                  write_schema = results_database_schema,
+                                  cohort_tables = c("nb_cancer_covid_cancers_3_time_periods","nb_cancer_covid_denominator_3_time_periods"))
 
 # count n in each cohort definition
 cdm$nb_cancer_covid_cancers_3_time_periods %>% group_by(cohort_definition_id) %>% tally() %>% print(n=Inf)
@@ -77,7 +76,7 @@ cdm$location %>% head()
 # Group by location source value
 
 cdm$location %>% group_by(location_source_value) %>% distinct() %>% tally() %>% collect()
-
+allRegions  <- cdm$location %>% pull(location_source_value)
 
 # ============================================================================ #
 #       Get region distribution for cancer cohorts in 3 time period            #
@@ -85,7 +84,7 @@ cdm$location %>% group_by(location_source_value) %>% distinct() %>% tally() %>% 
 #                 cdm$nb_cancer_covid_cancers_3_time_periods                   #
 # ============================================================================ #
 
-
+allRegions  <- cdm$location %>% pull(location_source_value)
 
 region_distribution_cancer_cohorts <- cdm$nb_cancer_covid_cancers_3_time_periods %>% 
   rename("person_id" = subject_id) %>%
@@ -94,10 +93,16 @@ region_distribution_cancer_cohorts <- cdm$nb_cancer_covid_cancers_3_time_periods
   left_join(cdm$location %>% select(location_id, region = location_source_value), by = "location_id") %>%
   select(-c(care_site_id, location_id)) %>%
   rename(subject_id = person_id) %>%
-  group_by(cohort_definition_id, region) %>% 
+  mutate(region_collapsed = case_when(region %in% c("Yorkshire  & The Humber", "East Midlands", 
+                                                    "West Midlands", "North East", "North West", "East of England", "London", 
+                                                    "South East", "South West") ~ "England",
+                                      region == "Northern Ireland" ~ "Northern Ireland",
+                                      region == "Scotland" ~ "Scotland",
+                                      region == "Wales" ~ "Wales")) %>%
+  group_by(cohort_definition_id, region_collapsed) %>% 
   tally() %>% 
   arrange(cohort_definition_id) %>%
-  collect()
+  collect() 
 
 write.csv(region_distribution_cancer_cohorts, file=here::here("Results", db.name, "Regions", "region_distribution_cancer_cohorts.csv"))
 save(region_distribution_cancer_cohorts, file=here::here("Results", db.name, "Regions", "region_distribution_cancer_cohorts.RData"))
@@ -118,22 +123,21 @@ save(region_distribution_cancer_cohorts, file=here::here("Results", db.name, "Re
 # C12 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==12)%>% mutate(freq = scales::label_percent()(n / sum(n)))
 
 
-# create a tibble of all 12 regions to later join with all regions so that you can populate cells with NA when missing rather than omitting the row
-region_names <- tibble::as_tibble_col(c("East of England", "East Midlands", "London", "North East", "North West", "Northern Ireland", "Scotland", "South Central", 
-                                        "South East Coast", "South West", "West Midlands", "Yorkshire  & The Humber"), column_name = "region")
+# create a tibble of all 4 regions to later join with all regions so that you can populate cells with NA when missing rather than omitting the row
+region_names <- tibble::as_tibble_col(c("England", "Wales", "Scotland", "Northern Ireland"), column_name = "region")
 
-C1 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==1)%>% mutate(freq = (n/sum(n))*100) %>% right_join(region_names) %>% mutate(cohort_definition_id = 1)
-C2 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==2)%>% mutate(freq = (n/sum(n))*100) %>% right_join(region_names) %>% mutate(cohort_definition_id = 2)
-C3 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==3)%>% mutate(freq = (n/sum(n))*100) %>% right_join(region_names) %>% mutate(cohort_definition_id = 3)
-C4 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==4)%>% mutate(freq = (n/sum(n))*100) %>% right_join(region_names) %>% mutate(cohort_definition_id = 4)
-C5 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==5)%>% mutate(freq = (n/sum(n))*100) %>% right_join(region_names) %>% mutate(cohort_definition_id = 5)
-C6 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==6)%>% mutate(freq = (n/sum(n))*100) %>% right_join(region_names) %>% mutate(cohort_definition_id = 6)
-C7 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==7)%>% mutate(freq = (n/sum(n))*100) %>% right_join(region_names) %>% mutate(cohort_definition_id = 7)
-C8 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==8)%>% mutate(freq = (n/sum(n))*100) %>% right_join(region_names) %>% mutate(cohort_definition_id = 8)
-C9 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==9)%>% mutate(freq = (n/sum(n))*100) %>% right_join(region_names) %>% mutate(cohort_definition_id = 9)
-C10 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==10)%>% mutate(freq = (n/sum(n))*100) %>% right_join(region_names) %>% mutate(cohort_definition_id = 10)
-C11 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==11)%>% mutate(freq = (n/sum(n))*100) %>% right_join(region_names) %>% mutate(cohort_definition_id = 11)
-C12 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==12)%>% mutate(freq = (n/sum(n))*100) %>% right_join(region_names) %>% mutate(cohort_definition_id = 12)
+C1 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==1)%>% mutate(freq = (n/sum(n))*100) #%>% right_join(region_names) %>% mutate(cohort_definition_id = 1)
+C2 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==2)%>% mutate(freq = (n/sum(n))*100) #%>% right_join(region_names) %>% mutate(cohort_definition_id = 2)
+C3 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==3)%>% mutate(freq = (n/sum(n))*100) #%>% right_join(region_names) %>% mutate(cohort_definition_id = 3)
+C4 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==4)%>% mutate(freq = (n/sum(n))*100) #%>% right_join(region_names) %>% mutate(cohort_definition_id = 4)
+C5 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==5)%>% mutate(freq = (n/sum(n))*100) #%>% right_join(region_names) %>% mutate(cohort_definition_id = 5)
+C6 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==6)%>% mutate(freq = (n/sum(n))*100) #%>% right_join(region_names) %>% mutate(cohort_definition_id = 6)
+C7 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==7)%>% mutate(freq = (n/sum(n))*100) #%>% right_join(region_names) %>% mutate(cohort_definition_id = 7)
+C8 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==8)%>% mutate(freq = (n/sum(n))*100) #%>% right_join(region_names) %>% mutate(cohort_definition_id = 8)
+C9 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==9)%>% mutate(freq = (n/sum(n))*100) #%>% right_join(region_names) %>% mutate(cohort_definition_id = 9)
+C10 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==10)%>% mutate(freq = (n/sum(n))*100) #%>% right_join(region_names) %>% mutate(cohort_definition_id = 10)
+C11 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==11)%>% mutate(freq = (n/sum(n))*100) #%>% right_join(region_names) %>% mutate(cohort_definition_id = 11)
+C12 <- region_distribution_cancer_cohorts %>% filter(cohort_definition_id==12)%>% mutate(freq = (n/sum(n))*100) #%>% right_join(region_names) %>% mutate(cohort_definition_id = 12)
 
 
 Proportions_regions_cancer_cohorts <- bind_rows(C1,C2,C3,C4,C5,C6,C7,C8,C9,C10,C11,C12)
@@ -159,19 +163,28 @@ Proportions_regions_cancer_cohorts <-  Proportions_regions_cancer_cohorts %>% mu
 
 Proportions_regions_cancer_cohorts$cohort_name <- paste(Proportions_regions_cancer_cohorts$Cancer, Proportions_regions_cancer_cohorts$Time, sep="_")
 
+# RENAME REGIONS_COLLAPSED
+Proportions_regions_cancer_cohorts <- Proportions_regions_cancer_cohorts %>% rename(Region = "region_collapsed") 
+
 write.csv(Proportions_regions_cancer_cohorts, file=here::here("Results", db.name, "Regions", "Proportions_regions_cancer_cohorts.csv"))
 save(Proportions_regions_cancer_cohorts, file=here::here("Results", db.name, "Regions", "Proportions_regions_cancer_cohorts.RData"))
 
 
 # plot proportion of regions faceted by cancer and time in a barchart
 
+
+Proportions_regions_cancer_cohorts <- Proportions_regions_cancer_cohorts  %>%
+  mutate(`Region` = factor(`Region`, levels=c("Scotland", "Wales","England", "Northern Ireland"))) 
+
 regions_cancer_plot <- 
-  ggplot(Proportions_regions_cancer_cohorts, aes(x = reorder(region, freq), y=freq, fill=region)) + 
+  ggplot(Proportions_regions_cancer_cohorts, aes(x = reorder(Region, freq), y=freq, fill=Region)) + 
   geom_bar(stat="identity") +
   facet_wrap(~Cancer~factor(Time, c("Before lockdown", "During lockdown", "After lockdown")),nrow=4, scale="free_y") +
   ggtitle("Proportion of cancer patients in each region of the UK diagnosed before, during and after lockdown") +
   ylab("Proportion") + xlab("Region")+
   scale_y_continuous(limits = c(0, 55), breaks = seq(0, 55, 10), labels=function(y) paste0(y,"%")) +
+#  guides(fill = guide_legend(reverse = FALSE))+
+  guides(fill = guide_legend(override.aes = list(color = NA))) +
   coord_flip() 
 
 ggsave(here("Results", db.name , "Regions", "Regions_cancer_plot.jpg"), regions_cancer_plot, dpi=600, scale = 1, width = 18, height = 9)
@@ -194,10 +207,16 @@ region_distribution_denominator <- cdm$nb_cancer_covid_denominator_3_time_period
   left_join(cdm$location %>% select(location_id, region = location_source_value), by = "location_id") %>%
   select(-c(care_site_id, location_id)) %>%
   rename(subject_id = person_id) %>%
-  group_by(cohort_definition_id, region) %>% 
+  mutate(region_collapsed = case_when(region %in% c("Yorkshire  & The Humber", "East Midlands", 
+                                                    "West Midlands", "North East", "North West", "East of England", "London", 
+                                                    "South East", "South West") ~ "England",
+                                      region == "Northern Ireland" ~ "Northern Ireland",
+                                      region == "Scotland" ~ "Scotland",
+                                      region == "Wales" ~ "Wales")) %>%
+  group_by(cohort_definition_id, region_collapsed) %>% 
   tally() %>% 
   arrange(cohort_definition_id) %>%
-  collect()
+  collect() 
 
 write.csv(region_distribution_denominator, file=here::here("Results", db.name, "Regions", "region_distribution_denominator.csv"))
 save(region_distribution_denominator, file=here::here("Results", db.name, "Regions", "region_distribution_denominator.RData"))
@@ -205,13 +224,12 @@ save(region_distribution_denominator, file=here::here("Results", db.name, "Regio
 # CREATE PROPORTIONS COLUMN IN THE TABLE SPLIT BY COHORT AND REGION
 
 
-# create a tibble of all 12 regions to later join with all regions so that you can populate cells with NA when missing rather than omitting the row
-region_names <- tibble::as_tibble_col(c("East of England", "East Midlands", "London", "North East", "North West", "Northern Ireland", "Scotland", "South Central", 
-                                        "South East Coast", "South West", "West Midlands", "Yorkshire  & The Humber"), column_name = "region")
+# create a tibble of all 4 regions to later join with all regions so that you can populate cells with NA when missing rather than omitting the row
+region_names <- tibble::as_tibble_col(c("England", "Wales", "Scotland", "Northern Ireland"), column_name = "region")
 
-D1 <- region_distribution_denominator %>% filter(cohort_definition_id==1)%>% mutate(freq = (n/sum(n))*100) %>% right_join(region_names) %>% mutate(cohort_definition_id = 1)
-D2 <- region_distribution_denominator %>% filter(cohort_definition_id==2)%>% mutate(freq = (n/sum(n))*100) %>% right_join(region_names) %>% mutate(cohort_definition_id = 2)
-D3 <- region_distribution_denominator %>% filter(cohort_definition_id==3)%>% mutate(freq = (n/sum(n))*100) %>% right_join(region_names) %>% mutate(cohort_definition_id = 3)
+D1 <- region_distribution_denominator %>% filter(cohort_definition_id==1)%>% mutate(freq = (n/sum(n))*100) #%>% right_join(region_names) %>% mutate(cohort_definition_id = 1)
+D2 <- region_distribution_denominator %>% filter(cohort_definition_id==2)%>% mutate(freq = (n/sum(n))*100) #%>% right_join(region_names) %>% mutate(cohort_definition_id = 2)
+D3 <- region_distribution_denominator %>% filter(cohort_definition_id==3)%>% mutate(freq = (n/sum(n))*100) #%>% right_join(region_names) %>% mutate(cohort_definition_id = 3)
 
 
 Proportions_regions_denominator <- bind_rows(D1,D2,D3)
@@ -221,15 +239,23 @@ Proportions_regions_denominator <-  Proportions_regions_denominator %>% mutate(T
                                                                                                       cohort_definition_id == 2 ~ "During lockdown",
                                                                                                       cohort_definition_id == 3 ~ "After lockdown"))
 
+# RENAME REGIONS_COLLAPSED
+Proportions_regions_denominator <- Proportions_regions_denominator %>% rename(Region = "region_collapsed") 
 
 write.csv(Proportions_regions_denominator, file=here::here("Results", db.name, "Regions", "Proportions_regions_denominator.csv"))
 save(Proportions_regions_denominator, file=here::here("Results", db.name, "Regions", "Proportions_regions_denominator.RData"))
 
 
+# plot proportion of regions faceted by cancer and time in a barchart
+
+
+Proportions_regions_denominator <- Proportions_regions_denominator  %>%
+  mutate(`Region` = factor(`Region`, levels=c("Scotland", "Wales","England", "Northern Ireland"))) 
+
 # plot proportion of regions faceted by time in a bar chart
 
 regions_denominator_plot <- 
-  ggplot(Proportions_regions_denominator, aes(x = reorder(region, freq), y=freq, fill=region)) + 
+  ggplot(Proportions_regions_denominator, aes(x = reorder(Region, freq), y=freq, fill=Region)) + 
   geom_bar(stat="identity") +
   facet_wrap(~factor(Time, c("Before lockdown", "During lockdown", "After lockdown")),nrow=4, scale="free_y") +
   ggtitle("Proportion of population in each region of the UK observed in CPRD before, during and after lockdown") +
@@ -239,8 +265,3 @@ regions_denominator_plot <-
 
 ggsave(here("Results", db.name , "Regions", "Regions_denominator_plot.jpg"), regions_denominator_plot, dpi=600, scale = 1, width = 18, height = 9)
 
-
-
-# test - this might be wrong
-region_test <- cdm$person %>% select(person_id, care_site_id) %>% left_join(cdm$care_site %>% select(care_site_id, location_id)) %>% left_join(cdm$location %>% select(location_id, location_source_value))
-region_test

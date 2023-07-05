@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.2.1",
+    "Version": "4.2.3",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -117,7 +117,7 @@
     },
     "DatabaseConnector": {
       "Package": "DatabaseConnector",
-      "Version": "6.2.2",
+      "Version": "6.2.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -136,7 +136,7 @@
         "urltools",
         "utils"
       ],
-      "Hash": "f19612218b99a6e03c0e3a108ace03b6"
+      "Hash": "91f9fc9ccec0b3203153c4371349ae31"
     },
     "FeatureExtraction": {
       "Package": "FeatureExtraction",
@@ -218,7 +218,7 @@
     },
     "Matrix": {
       "Package": "Matrix",
-      "Version": "1.5-1",
+      "Version": "1.5-4.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -230,11 +230,11 @@
         "stats",
         "utils"
       ],
-      "Hash": "539dc0c0c05636812f1080f473d2c177"
+      "Hash": "38082d362d317745fb932e13956dccbb"
     },
     "ParallelLogger": {
       "Package": "ParallelLogger",
-      "Version": "3.2.0",
+      "Version": "3.1.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -245,7 +245,7 @@
         "utils",
         "xml2"
       ],
-      "Hash": "28193dcf6f3a60b54ed7e2d34d1ffd9a"
+      "Hash": "8d893bed8c8bfe21217464dd3f9ec3e9"
     },
     "PatientProfiles": {
       "Package": "PatientProfiles",
@@ -842,17 +842,6 @@
       ],
       "Hash": "dea6970ff715ca541c387de363ff405e"
     },
-    "drat": {
-      "Package": "drat",
-      "Version": "0.2.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "utils"
-      ],
-      "Hash": "733d3b4439bbd165b00b214883cc62cc"
-    },
     "e1071": {
       "Package": "e1071",
       "Version": "1.7-13",
@@ -1016,7 +1005,7 @@
     },
     "foreign": {
       "Package": "foreign",
-      "Version": "0.8-82",
+      "Version": "0.8-84",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1025,7 +1014,7 @@
         "stats",
         "utils"
       ],
-      "Hash": "32b25c97ce306a760c4d9f787991b5d9"
+      "Hash": "467ec0ca895d4e61a22cfbac9bccddf8"
     },
     "fs": {
       "Package": "fs",
@@ -1720,7 +1709,7 @@
     },
     "nnet": {
       "Package": "nnet",
-      "Version": "7.3-18",
+      "Version": "7.3-19",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1728,7 +1717,7 @@
         "stats",
         "utils"
       ],
-      "Hash": "170da2130d5332bea7d6ede01875ba1d"
+      "Hash": "2c797b46eea7fb58ede195bc0b1f1138"
     },
     "numDeriv": {
       "Package": "numDeriv",
