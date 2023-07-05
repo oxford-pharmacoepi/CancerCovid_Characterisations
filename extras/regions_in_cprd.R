@@ -263,5 +263,5 @@ regions_denominator_plot <-
   scale_y_continuous(limits = c(0, NA), breaks = seq(0, 55, 10), labels=function(y) paste0(y,"%")) +
   coord_flip() 
 
-ggsave(here("Results", db.name , "Regions", "Regions_denominator_plot.jpg"), regions_denominator_plot, dpi=600, scale = 1, width = 18, height = 9)
+ggsave(here("Results", db.name , "Regions", "Regions_denominator_plot.jpg"), regions_denominator_plot, dpi=900, scale = 1, width = 12, height = 9)
 
