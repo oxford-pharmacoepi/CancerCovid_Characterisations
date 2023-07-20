@@ -13,7 +13,7 @@ lockdown$lockdown <- 1
 
 lockdown <- lockdown  %>%  mutate(periods = factor(periods, levels=c("Pre-Lockdown (Jan 2017 - Feb 2020)", "Lockdown (March 2020 - June 2020)", "Post-First Lockdown (July 2020 - Oct 2020)",
                                                                      "Second Lockdown (Nov 2020 - Dec 2020)", "Third Lockdown (Jan 2021 - March 2021)", "Easing of Restrictions (April 2021 - June 2021)", 
-                                                                     "Legal Restrictions Removed (July 2021 - Jan 2022)") ))
+                                                                     "Legal Restrictions Removed (July 2021 - Dec 2021)") ))
 
 lockdown <- lockdown %>% rename("Lockdown Periods" = periods) 
 
@@ -26,7 +26,7 @@ Observation_period_plot <- ggplot(lockdown, aes(x = start, y = lockdown, fill = 
   labs(x = "Date", y = "Lockdown Period") +
  # scale_y_continuous(limits = c(0,1)) +
  # coord_cartesian(ylim=c(0.25,0.5)) +
-  scale_x_date(date_labels="%b %Y",date_breaks  ="2 month", limits = as.Date(c("2017-01-01", "2022-01-01")), expand = c(0, 0)) +
+  scale_x_date(date_labels="%b %Y",date_breaks  ="2 month", limits = as.Date(c("2017-01-01", "2021-12-01")), expand = c(0, 0)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=12),
         axis.title.x = element_blank(),
         axis.text.y = element_blank(),
@@ -39,5 +39,5 @@ Observation_period_plot <- ggplot(lockdown, aes(x = start, y = lockdown, fill = 
 
 Observation_period_plot
 
-ggsave(here("extras","Observation_period_plot.jpg"), Observation_period_plot, dpi=600, scale = 1,  width = 12, height = 4)
+ggsave(here("extras","Observation_period_plot.jpg"), Observation_period_plot, dpi=600, scale = 1,  width = 16, height = 8)
 
