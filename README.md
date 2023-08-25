@@ -27,4 +27,6 @@ https://github.com/oxford-pharmacoepi/CancerCovid_Characterisations
 
 https://github.com/oxford-pharmacoepi/CancerCovid_IncidencePrevalence
 
+https://github.com/oxford-pharmacoepi/CancerCovid_NegativeBinomialReg
+
 In addition, a shiny app through which to view additional cohort diagnostics can be found here: https://dpa-pde-oxford.shinyapps.io/CancerCovid_CohortDiagnosticsShiny_paper1/
